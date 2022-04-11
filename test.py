@@ -16,14 +16,22 @@
 #     tt.climb()
 #     tt.run()
 
-print('..... please input a number which I guess')
-temp = input('please input:')
-guess = int(temp)
+# print('..... please input a number which I guess')
+# temp = input('please input:')
+# guess = int(temp)
+#
+# if guess == 8:
+#     print('your guess is right!')
+#
+# else:
+#     print('your guess is wrong')
+#
+# print('game over!!!')
 
-if guess == 8:
-    print('your guess is right!')
-
-else:
-    print('your guess is wrong')
-
-print('game over!!!')
+while True:
+  while True:
+    break
+    print(1)
+  print(2)
+  break
+print(3)
