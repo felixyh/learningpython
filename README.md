@@ -717,6 +717,8 @@ continue 用来终止本轮循环，开始下一轮循环
 
 7. 什么情况下我们要使循环永远为真？ 
 
+   保证循环体的内容一定要执行的情况下
+
 8. 【学会提高代码的效率】你的觉得以下代码效率方面怎样？有没有办法可以大幅度改进(仍然使用while)？ 
 
    ```python
@@ -727,11 +729,84 @@ continue 用来终止本轮循环，开始下一轮循环
      i += 1
    ```
 
+   ```python
+   # 修改后的程序，避免每次循环都要run 一次len() 函数
+   string = 'ILoveFishC.com'
+   count = len(string)
+   i = 0
+   while i < count:
+     print(i)
+     i += 1
+   ```
+
    
 
 ### Practice
 
 1. 设计一个验证用户密码程序，用户只有三次机会输入错误，不过如果用户输入的内容中包含**"\*"**则不计算在内。 
+
+   ```python
+   # 设计一个验证用户密码程序，用户只有三次机会输入错误，不过如果用户输入的内容中包含**"\*"**则不计算在内。
+   
+   password = "novirus"
+   count = 0
+   while True:
+       if count <= 2:
+           userInputPass = input('please input the password:')
+           if userInputPass == password:
+               print('your password input is correct! Congrats!')
+               break
+           else:
+               if '*' not in userInputPass:
+                   count += 1
+               print('your password input is incorrect, please input again!')
+   
+       else:
+           print('you already input 3 times, the password input is frozen!')
+           break
+   ```
+
+   ```python
+   # 优化一下上述程序
+   
+   password = "novirus"
+   count = 3
+   while True:
+       if count > 0:
+           userInputPass = input('please input the password:')
+           if userInputPass == password:
+               print('your password input is correct! Congrats!')
+               break
+           elif '*' not in userInputPass:
+               count -= 1
+               print('your password input is incorrect, you have %d tries left' % count)
+           else:
+               print('your password input is incorrect, you have %d tries left' % count)
+               continue
+       else:
+           print('you already input 3 times, the password input is frozen!')
+           break
+   ```
+
+   
+
+   ```python
+   ## 进一步优化
+   
+   password = "novirus"
+   count = 3
+   while count:
+       userInputPass = input('please input the password:')
+       if userInputPass == password:
+           print('your password input is correct! Congrats!')
+           break
+       elif '*' in userInputPass:
+           print('your password input is incorrect, you have %d tries left' % count )
+           continue
+       else:
+           print('your password input is incorrect, you have %d tries left' % (count-1))
+       count -= 1
+   ```
 
    
 
@@ -739,15 +814,51 @@ continue 用来终止本轮循环，开始下一轮循环
 
 > 如果一个 3 位数等于其各位数字的立方和，则称这个数为水仙花数。例如：153 = 1^3 + 5^3 + 3^3，因此 153 就是一个水仙花数。 
 
+```python
+# 1. 编写一个程序，求 100~999 之间的所有水仙花数。
+#
+# > 如果一个 3 位数等于其各位数字的立方和，则称这个数为水仙花数。例如：153 = 1^3 + 5^3 + 3^3，因此 153 就是一个水仙花数。
+
+for number in range(100, 1000):
+    hundreds = number // 100
+    tens = (number // 10) % 10
+    single = number % 10
+
+    if number == hundreds ** 3 + tens ** 3 + single ** 3:
+        print(number, end=' ')
+```
 
 
-2. 三色球问题 
 
-> 有红、黄、蓝三种颜色的求，其中红球 3 个，黄球 3 个，绿球 6 个。先将这 12 个球混合放在一个盒子中，从中任意摸出 8 个球，编程计算摸出球的各种颜色搭配。 
+```python
+# 另外一种方法，通过字符串和整型的互相转换
+for number in range(100, 1000):
+    numstr = str(number)
+    if number == int(numstr[0])**3 + int(numstr[1])**3 + int(numstr[2])**3:
+        print(number, end=' ')
+```
+
+3. 三色球问题 
+
+> 有红、黄、蓝三种颜色的求，其中红球 3 个，黄球 3 个，蓝球 6 个。先将这 12 个球混合放在一个盒子中，从中任意摸出 8 个球，编程计算摸出球的各种颜色搭配。 
+
+```python
+# 3. 三色球问题
+#
+# > 有红、黄、蓝三种颜色的求，其中红球 3 个，黄球 3 个，蓝球 6 个。先将这 12 个球混合放在一个盒子中，从中任意摸出 8 个球，编程计算摸出球的各种颜色搭配。
 
 
+# x + y + z = 8
+# x is red, y is yellow, z is blue
 
-3. 请写下这一节课你学习到的内容：格式不限，回忆并复述是加强记忆的好方式！ 
+for x in range(0, 4):
+    for y in range(0, 4):
+        for z in range(2, 7):
+            if x + y + z == 8:
+                print('totally we can have %d red, %d yellow, %d blue' % (x, y, z))
+```
+
+4. 请写下这一节课你学习到的内容：格式不限，回忆并复述是加强记忆的好方式！ 
 
 
 
