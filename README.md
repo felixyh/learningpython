@@ -1545,3 +1545,523 @@ list3=[y + ":" + x[2:] for x in list1 for y in list2 if x[0] == y[0]]
 
 
 
+# 013. 元组：戴上了枷锁的列表
+
+## 知识点
+
+- 由于和列表是近亲关系，所以元组和列表在实际使用上是非常相似的。
+
+- 元组可以切片，但是元组是不可改变的，不能随意插入修改元素
+
+  ```
+  >>> tuple1 = (1, 2, 3, 4, 5, 6, 7, 8)
+  >>> type(tuple1)
+  <class 'tuple'>
+  >>> 
+  >>> 
+  >>> tuple1
+  (1, 2, 3, 4, 5, 6, 7, 8)
+  >>> 
+  >>> tuple1[1]
+  2
+  >>> 
+  >>> tuple1[5:]
+  (6, 7, 8)
+  >>> 
+  >>> tuple2 = tuple1[:]
+  >>> 
+  >>> tuple2
+  (1, 2, 3, 4, 5, 6, 7, 8)
+  >>> 
+  >>> tuple1[1] = 3
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  TypeError: 'tuple' object does not support item assignment
+  >>> 
+  ```
+
+  
+
+- 主要讨论以下知识点：
+
+  - 创建和访问一个元组； 逗号是定义一个元组的关键，而不是小括号
+
+    ```
+    >>> temp = (1)
+    >>> temp
+    1
+    >>> 
+    >>> type(temp)
+    <class 'int'>
+    >>> 
+    >>> temp2 = 2, 3, 4
+    >>> 
+    >>> temp2
+    (2, 3, 4)
+    >>> 
+    >>> type(temp2)
+    <class 'tuple'>
+    >>> 
+    >>> temp = ()
+    >>> type(temp)
+    <class 'tuple'>
+    >>> temp
+    ()
+    >>> 
+    >>> temp = (1, )
+    >>> type(temp)
+    <class 'tuple'>
+    >>> 
+    >>> temp
+    (1,)
+    >>> 
+    >>> temp = 1, 
+    >>> temp
+    (1,)
+    >>> type(temp)
+    <class 'tuple'> 
+    ```
+
+  - 更新和删除一个元组
+
+    通过连接符来修改一个元组，注意修改完之后，原来的元组还在内存中，过一会python 会检查是否还有标签（变量名）指向它，如果没有，会从内存中回收它
+
+    ```
+    >>> temp = ('小甲鱼', '小布丁', '迷途', '黑夜')
+    >>> temp
+    ('小甲鱼', '小布丁', '迷途', '黑夜')
+    >>> 
+    >>> temp = temp[:2] + ('怡静', ) + temp[2:]
+    >>> 
+    >>> temp
+    ('小甲鱼', '小布丁', '怡静', '迷途', '黑夜')
+    ```
+
+    如果要强行回收资源，可以使用del 语法 
+
+    ```
+    >>> del temp
+    >>> 
+    >>> temp
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    NameError: name 'temp' is not defined
+    ```
+
+
+
+- 列表的操作符和元组一样
+
+
+
+## 课后作业
+
+### Quiz
+
+1. 请用一句话描述什么是列表？再用一句话描述什么是元组？ 
+
+   列表：一个大仓库，你可以随时往里边添加和删除任何东西。 
+
+   元组：封闭的列表，一旦定义，就不可改变（不能添加、删除或修改）
+
+2. 什么情况下你需要使用元组而不是列表？
+
+   当我们希望内容不被轻易改写的时候，我们使用元组（把权力关进牢笼）。 当我们需要频繁修改数据，我们使用列表。 
+
+3. 当元组和列表掉下水，你会救谁？ 
+
+   如果是我，我会救列表，因为列表提供了比元组更丰富的内置方法，这相当大的提高了编程的灵活性。 
+
+   回头来看下元组，元组固然安全，但元组一定创建就无法修改（除非通过新建一个元组来间接修改，但这就带来了消耗），而我们人是经常摇摆不定的，所以元组只有在特殊的情况才用到，平时还是列表用的多。 综上所述，小甲鱼会救列表（列表是美眉）
+
+4. 请将下图左边列表的内置方法与右边的注释连线，并圈出元组可以使用的方法。 
+
+   ![img](https://images2018.cnblogs.com/blog/1274778/201805/1274778-20180510092732778-991558013.png)
+
+   元组只能使用2个方法：count（）和index（）
+
+5. 创建一个元组，什么情况下逗号和小括号必须同时存在，缺一不可？ 
+
+   在通过拼接符创建元组的时候
+
+6. x, y, z = 1, 2, 3 请问x, y, z是元组吗？ 
+
+   所有的多对象的、逗号分隔的、没有明确用符号定义的这些集合默认的类型都是元组
+
+   ```
+   >>> x, y, z = 1, 2, 3
+   >>> 
+   >>> type(x)
+   <class 'int'>
+   >>> 
+   >>> h = x, y, z
+   >>> type(h)
+   <class 'tuple'>
+   ```
+
+   
+
+7. 请写出以下情景中应该使用列表还是元组来保存数据： 
+
+   1. 游戏中角色的属性： 列表
+   2. 你的身份证信息： 元组
+   3. 论坛的会员： 列表
+   4. 团队合作开发程序，传递给一个你并不了解具体实现的函数的参数：元组 
+   5. 航天火箭各个组件的具体配置参数： 元组
+   6. NASA系统中记录已经发现的行星数据： 列表
+
+8. 上节课我们通过课后作业的形式学习到了“列表推导式”，那请问如果我把中括号改为小括号，会不会得到“元组推导式”呢？ 
+
+   不能，因为元组不能向列表一样迭代更新
+
+
+
+# 014. 字符串：各种奇葩的内置方法
+
+## 知识点
+
+### 字符串，列表，元组
+
+- 字符串， 列表，元组 都属于序列类型，很多用法非常类似
+- 字符串更像元组，一旦被定义，就不能修改。非要“修改”的话，可以参考元组的方式，采用拼接符“+” 的方式，注意旧的字符串还在，并没有改变
+- 字符串和列表，元组一样可以索引，切片操作
+- 字符串和列表，元组一样，使用比较操作符，逻辑操作符，成员关系操作符，连接操作符，重复操作符
+
+
+
+### 字符串方法及注释
+
+> 字符串的方法不会改变原来的字符串，一般都是返回一个新的字符串
+
+| capitalize()                              | 把字符串的第一个字符改为大写                                 |
+| ----------------------------------------- | ------------------------------------------------------------ |
+| casefold()                                | 把整个字符串的所有字符改为小写                               |
+| center(width)                             | 将字符串居中，并使用空格填充至长度 width 的新字符串          |
+| count(sub[, start[, end]])                | 返回 sub 在字符串里边出现的次数，start 和 end 参数表示范围，可选。 |
+| encode(encoding=‘utf-8’, errors=‘strict’) | 以 encoding 指定的编码格式对字符串进行编码。                 |
+| endswith(sub[, start[, end]])             | 检查字符串是否以 sub 子字符串结束，如果是返回 True，否则返回 False。start 和 end 参数表示范围，可选。 |
+| expandtabs([tabsize=8])                   | 把字符串中的 tab 符号（\t）转换为空格，如不指定参数，默认的空格数是 tabsize=8。 |
+| find(sub[, start[, end]])                 | 检测 sub 是否包含在字符串中，如果有则返回索引值，否则返回 -1，start 和 end 参数表示范围，可选。 |
+| index(sub[, start[, end]])                | 跟 find 方法一样，不过如果 sub 不在 string 中会产生一个异常。 |
+| isalnum()                                 | 如果字符串至少有一个字符并且所有字符都是字母或数字则返回 True，否则返回 False。 |
+| isalpha()                                 | 如果字符串至少有一个字符并且所有字符都是字母则返回 True，否则返回 False。 |
+| isdecimal()                               | 如果字符串只包含十进制数字则返回 True，否则返回 False。      |
+| isdigit()                                 | 如果字符串只包含数字则返回 True，否则返回 False。            |
+| islower()                                 | 如果字符串中至少包含一个区分大小写的字符，并且这些字符都是小写，则返回 True，否则返回 False。 |
+| isnumeric()                               | 如果字符串中只包含数字字符，则返回 True，否则返回 False。    |
+| isspace()                                 | 如果字符串中只包含空格，则返回 True，否则返回 False。        |
+| istitle()                                 | 如果字符串是标题化（所有的单词都是以大写开始，其余字母均小写），则返回 True，否则返回 False。 |
+| isupper()                                 | 如果字符串中至少包含一个区分大小写的字符，并且这些字符都是大写，则返回 True，否则返回 False。 |
+| join(sub)                                 | 以字符串作为分隔符，插入到 sub 中所有的字符之间。            |
+| ljust(width)                              | 返回一个左对齐的字符串，并使用空格填充至长度为 width 的新字符串。 |
+| lower()                                   | 转换字符串中所有大写字符为小写。                             |
+| lstrip()                                  | 去掉字符串左边的所有空格                                     |
+| partition(sub)                            | 找到子字符串 sub，把字符串分成一个 3 元组 (pre_sub, sub, fol_sub)，如果字符串中不包含 sub 则返回 (‘原字符串’, ‘’, ‘’) |
+| replace(old, new[, count])                | 把字符串中的 old 子字符串替换成 new 子字符串，如果 count 指定，则替换不超过 count 次。 |
+| rfind(sub[, start[, end]])                | 类似于 find() 方法，不过是从右边开始查找。                   |
+| rindex(sub[, start[, end]])               | 类似于 index() 方法，不过是从右边开始。                      |
+| rjust(width)                              | 返回一个右对齐的字符串，并使用空格填充至长度为 width 的新字符串。 |
+| rpartition(sub)                           | 类似于 partition() 方法，不过是从右边开始查找。              |
+| rstrip()                                  | 删除字符串末尾的空格。                                       |
+| split(sep=None, maxsplit=-1)              | 不带参数默认是以空格为分隔符切片字符串，如果 maxsplit 参数有设置，则仅分隔 maxsplit 个子字符串，返回切片后的子字符串拼接的列表。 |
+| splitlines(([keepends]))                  | 在输出结果里是否去掉换行符，默认为 False，不包含换行符；如果为 True，则保留换行符。。 |
+| startswith(prefix[, start[, end]])        | 检查字符串是否以 prefix 开头，是则返回 True，否则返回 False。start 和 end 参数可以指定范围检查，可选。 |
+| strip([chars])                            | 删除字符串前边和后边所有的空格，chars 参数可以定制删除的字符，可选。 |
+| swapcase()                                | 翻转字符串中的大小写。                                       |
+| title()                                   | 返回标题化（所有的单词都是以大写开始，其余字母均小写）的字符串。 |
+| translate(table)                          | 根据 table 的规则（可以由 str.maketrans(‘a’, ‘b’) 定制）转换字符串中的字符。 |
+| upper()                                   | 转换字符串中的所有小写字符为大写。                           |
+| zfill(width)                              | 返回长度为 width 的字符串，原字符串右对齐，前边用 0 填充。   |
+
+
+
+```
+>>> str1.capitalize()
+'Abdc'
+>>> str1
+'abdc'
+>>> str1.center(2)
+'abdc'
+>>> str1
+'abdc'
+>>> str1.center(12)
+'    abdc    '
+>>> str1.casefold()
+'abdc'
+>>> str2 = 'DAXDIExiaoyang'
+>>> 
+>>> str2.count('xi')
+1
+>>> str2.endswith('ng')
+True
+>>> 
+>>> str3 = 'I\tlove\tFishC.com!'
+>>> str3.expandtabs()
+'I       love    FishC.com!'
+>>> str3
+'I\tlove\tFishC.com!'
+>>> print(str3)
+I	love	FishC.com!
+>>> str3 = 'I\tlove\tFishC.com!'
+>>> 
+>>> print(str3)
+I	love	FishC.com!
+>>> str3.expandtabs(tabsize=18)
+'I                 love              FishC.com!'
+>>> str3.find('efc')
+-1
+>>> 
+>>> str3.find('com')
+13
+>>> str3.index('efc')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: substring not found
+>>> str4 = 'FishC'
+>>> 
+>>> str4.join('12345')
+'1FishC2FishC3FishC4FishC5'
+>>> str5 = '    i love you   '
+>>> str5.lstrip()
+'i love you   '
+>>> str5
+'    i love you   '
+>>> str5.rstrip()
+'    i love you'
+>>> 
+>>> str6 = 'l love fish'
+>>> str6.partition('ov')
+('l l', 'ov', 'e fish')
+>>> 
+>>> str6
+'l love fish'
+>>> str6.replace('fish', 'felix')
+'l love felix' 
+>>> str6
+'l love fish'
+>>> str6.split()
+['l', 'love', 'fish']
+>>> str6.split('i')
+['l love f', 'sh']
+>>> str6.startswith('I')
+False
+>>> str6.startswith('i')
+False
+>>> str6.startswith('1')
+False
+>>> str6
+'l love fish'
+>>> str6.startswith('l')
+True
+>>> str7 = '     aaaasssss    '
+>>> str7.strip()
+'aaaasssss'
+>>> str7 = str7.strip()
+>>> str7
+'aaaasssss'
+>>> str7.strip('s')
+'aaaa'
+>>> str7.swapcase()
+'AAAASSSSS'
+>>> 
+>>> str7.title()
+'Aaaasssss'
+```
+
+
+
+## 课后作业
+
+### Quiz
+
+1. 还记得如何定义一个跨越多行的字符串吗（请至少写出两种实现的方法）？
+
+   ```
+   方法一： 
+   >>> str1 = '''待我长发及腰，将军归来可好？ 
+   此身君子意逍遥，怎料山河萧萧。 
+   天光乍破遇，暮雪白头老。 
+   寒剑默听奔雷，长枪独守空壕。 
+   醉卧沙场君莫笑，一夜吹彻画角。 
+   江南晚来客，红绳结发梢。''' 
+   
+   方法二： 
+   >>> str2 = '待卿长发及腰，我必凯旋回朝。\ 
+   昔日纵马任逍遥，俱是少年英豪。\ 
+   东都霞色好，西湖烟波渺。\ 
+   执枪血战八方，誓守山河多娇。\ 
+   应有得胜归来日，与卿共度良宵。\ 
+   盼携手终老，愿与子同袍。' 
+   
+   方法三： 
+   >>> str3 = ('待卿长发及腰，我必凯旋回朝。' 
+   '昔日纵马任逍遥，俱是少年英豪。' 
+   '东都霞色好，西湖烟波渺。' 
+   '执枪血战八方，誓守山河多娇。' 
+   '应有得胜归来日，与卿共度良宵。' 
+   '盼携手终老，愿与子同袍。')
+   ```
+
+    
+
+2. 三引号字符串通常我们用于做什么使用？ 
+
+   注释
+
+3. file1 = open('C:\windows\temp\readme.txt', 'r') 表示以只读方式打开“C:\windows\temp\readme.txt”这个文本文件，但事实上这个语句会报错，知道为什么吗？你会如何修改？ 
+
+   文件名中包含默认的制表符：\t, \r... 需要指定用原始字符读取文件名，'r' 置于整个字符串的前面
+
+   ```
+   >>> file1 = open(r'C:\windows\temp\readme.txt', 'r')
+   ```
+
+4. 有字符串：
+
+   ```
+   str1 = '<a href="http://www.fishc.com/dvd" target="_blank">鱼C资源打包</a>'
+   ```
+
+   请问如何提取出子字符串：'www.fishc.com' 
+
+   ```
+   # 使用split() 方法可以以‘/’ 切片字符串，返回一个列表
+   str1.split('/')[2]
+   
+   或者
+   
+   # 使用partition() 方法可以直接截取，返回一个元组
+   str1.partition('www.fishc.com')[1]
+   ```
+
+   
+
+5. 如果使用负数作为索引值进行分片操作，按照第三题的要求你能够正确目测出结果吗？ 
+
+   ```
+    str1.split('/')[-3]
+   ```
+
+   
+
+6. 还是第三题那个字符串，请问下边语句会显示什么内容？ 	
+
+```
+>> str1[20:-36] 
+'fishc'
+```
+
+
+
+7. 据说只有智商高于150的鱼油才能解开这个字符串（还原为有意义的字符串）：
+
+   str1 = 'i2sl54ovvvb4e3bferi32s56h;$c43.sfc67o0cm99' 
+
+   ```
+   >>> str1[::3]
+   'ilovefishc.com'
+   ```
+
+   
+
+### Practice
+
+1. 请写一个密码安全性检查的脚本代码：check.py 
+
+> 密码安全性检查代码 
+>
+> 低级密码要求： 
+>
+> 1. 密码由单纯的数字或字母组成 
+> 2. 密码长度小于等于8位 
+>
+> 中级密码要求： 
+>
+> 1. 密码必须由数字、字母或特殊字符（仅限：~!@#$%^&*()_=-/,.?<>;:[]{}|\）任意两种组合 *
+> 2. 密码长度不能低于8位 
+>
+> 高级密码要求： 
+>
+> 1. 密码必须由数字、字母及特殊字符（仅限：~!@#$%^&*()_=-/,.?<>;:[]{}|\）三种组合 
+>
+> 2. 密码只能由字母开头
+>
+> 3. 密码长度不能低于16位 
+
+程序演示： 
+
+```python
+specialchar = "~!@#$%^&*()_=-/,.?<>;:[]{}|\\"
+
+while True:
+    alphaflag, digitflag, specharflag = 0, 0, 0
+    passstr = input('Please input your password: ')
+    
+		# 设置标记位
+    for each in passstr:
+        if each.isalpha():
+            alphaflag = 1
+        elif each.isdigit():
+            digitflag = 1
+        elif each in specialchar:
+            specharflag = 1
+        else:
+            continue
+
+    if passstr[0].isalpha() and len(passstr) >= 16 and alphaflag+digitflag+specharflag == 3:
+        print('The password is strong!')
+        break
+    elif len(passstr) >= 8 and alphaflag+digitflag+specharflag >= 2:
+        print('The password is medium!')
+        break
+    elif len(passstr) < 8 and (passstr.isdigit() or passstr.isalpha()):
+        print('The password is weak!')
+        break
+    else:
+        print('The password does not meet requirement, please input again!')
+```
+
+
+
+# 015. 字符串：格式化
+
+## 知识点
+
+### format()
+
+- 位置参数格式化
+
+- 关键字参数格式化
+
+- 混合位置和关键字参数格式化
+
+  - 位置参数必须在关键字参数之前
+
+  ```
+  >>> "{0} love {1}.{2}".format("I", "flish", "com")
+  'I love flish.com'
+  >>> 
+  >>> "{a} love {b}.{c}".format(a="I", b="flish", c="com")
+  'I love flish.com'
+  >>> 
+  >>> "{0} love {b}.{c}".format("I", b="flish", c="com")
+  'I love flish.com'
+  >>> 
+  >>> 
+  >>> "{a} love {b}.{0}".format(a="I", b="flish", "com")
+    File "<stdin>", line 1
+      "{a} love {b}.{0}".format(a="I", b="flish", "com")
+                                                       ^
+  SyntaxError: positional argument follows keyword argument
+  ```
+
+  
+
+
+
+
+
+## 课后作业
+
+### Quiz
+
