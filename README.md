@@ -932,6 +932,8 @@ for x in range(0, 4):
 - insert()
 
   ```
+  >>> member.insert(0, '牡丹')
+  >>> 
   >>> member
   ['牡丹', '小布丁', '小甲鱼', '福禄娃娃', '竹林小溪', 'crybaby']
   >>> 
@@ -2485,3 +2487,465 @@ if not IsFind:
    ```
 
    
+
+# 017. 函数：Python的乐高积木
+
+## 知识点
+
+```
+>>> def MyFirstFunction():
+...     print('这是我创建的第一个函数')
+...     print('我表示很激动')
+... 
+>>> MyFirstFunction()
+这是我创建的第一个函数
+我表示很激动
+```
+
+
+
+- 先定义函数
+- 执行函数时候，就是调用函数，向上面回找，依次执行函数体的内容
+- 如果Python 向上找函数的时候，没有找到相应的函数名的定义过程，会报错
+
+
+
+### 函数的参数
+
+- Python 函数支持多个参数，但是尽量不用太多
+- 函数要写好注释
+
+```python
+>>> def MySecondFunction(name):
+...     print(name + 'I love You!' )
+... 
+>>>
+>>> MySecondFunction()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: MySecondFunction() missing 1 required positional argument: 'name'
+>>> 
+>>> 
+>>> MySecondFunction('小甲鱼')
+小甲鱼I love You!
+
+>>> def add(num1, num2):
+...     result = num1 + num2
+...     print(result)
+... 
+>>> 
+>>> add(1, 2)
+3
+
+```
+
+### 函数的返回值
+
+- 采用关键字return
+
+```
+>>> def add(num1, num2):
+...     return (num1 + num2)
+... 
+>>> 
+>>> add(1, 2)
+3
+```
+
+
+
+## 课后作业
+
+### Quiz
+
+1. 你有听说过DRY吗？ 
+
+   DRY是程序员们公认的指导原则：Don't Repeat Yourself.
+
+2. 都是重复一段代码，为什么我要使用函数（而不使用简单的拷贝黏贴）呢？ 
+
+   - 维护效率高
+   - 提高代码效率
+   - 降低代码量
+   - 易于阅读
+
+3. 函数可以有多个参数吗？ 
+
+   可以有多个参数
+
+4. 创建函数使用什么关键字，要注意什么？ 
+
+   使用“def”关键字，要注意函数名后边要加上小括号“()”，然后小括号后边是冒号“:”，然后缩进部分均属于函数体的内容
+
+   
+
+5. 请问这个函数有多少个参数？ 
+
+   ```python
+   def MyFun((x, y), (a, b)):
+     return x * y - a * b
+   ```
+
+   0，因为类似于这样的写法是错误的！我们分析下，函数的参数需要的是变量，而这里你试图用“元祖”的形式来传递是不可行的。
+
+6. 请问调用以下这个函数会打印什么内容？ 
+
+   ```python
+   def hello():
+     print('Hello World!') 
+     return
+   	print('Welcome To FishC.com!')
+   ```
+
+   会打印‘Hello World!’。因为return会结束函数的执行。
+
+### Practice
+
+1. 编写一个函数power()模拟内建函数pow()，即power(x, y)为计算并返回x的y次幂的值。 
+
+   ```python
+   def power(x, y):
+       if y == 0:
+           return 1
+       elif y > 0:
+           if y == 1:
+               return x
+           else:
+               result = x
+               for i in range(y-1):
+                   result *= x
+               return result
+       else:
+           if y == -1:
+               return 1/x
+           else:
+               result = x
+               for i in range((-y-1)):
+                   result *= x
+               return 1/result
+   
+   print(power(2, -2))
+   ```
+
+   
+
+2. 编写一个函数，利用欧几里得算法（脑补链接）求最大公约数，例如gcd(x, y)返回值为参数x和参数y的最大公约数。 
+
+   ```python
+   def gcder(a, b):
+       flag = a % b
+       result = b
+       while flag != 0:
+           flag = a % b
+           result = b
+           a = b
+           b = flag
+       return result
+   
+   print(gcder(121, 11))
+   ```
+
+   
+
+3. 编写一个将十进制转换为二进制的函数，要求采用“除2取余”（脑补链接）的方式，结果与调用bin()一样返回字符串形式。 
+
+   ```python
+   def biner(x):
+       binarylist = []
+       while x != 0:
+           flag = str(x % 2)
+           binarylist.insert(0, flag)
+           x = x // 2
+       # 将列表或元组转换成字符串的方法：''.join(object)
+       return ''.join(binarylist)
+   
+   print(biner(4))
+   ```
+
+   
+
+# 018. 函数：灵活即强大
+
+## 知识点
+
+### 形参和实参
+
+- `\>>> def MySecondFunction(name):` 函数定义过程中的name是叫形参， # 因为它只是一个形式，表示占据一个位置
+- `\>>> MySecondFunction('小甲鱼')` ：传递进来的小甲鱼叫做实参，因为它是具体的参数值
+
+### 函数文档
+
+- 系统默认特殊属性： `.__doc__`
+
+- 利用函数文档，对函数的内容，参数，意义以及返回值有一个介绍，让别人可以理解使用
+
+  ```python
+  >>> def MyFirstFunction(name):
+  ...     '函数定义过程中的name是叫形参'
+  ...     #因为它只是一个形式，表示占据一个参数位置
+  ...     print('传递进来的' + name + '叫做实参，因为它是具体的参数值！')
+  ... 
+  >>> 
+  >>> MyFirstFunction('小甲鱼')
+  传递进来的小甲鱼叫做实参，因为它是具体的参数值！
+  >>> 
+  >>> MyFirstFunction.__doc__
+  '函数定义过程中的name是叫形参'
+  >>> 
+  >>> 
+  >>> print.__doc__
+  "print(value, ..., sep=' ', end='\\n', file=sys.stdout, flush=False)\n\nPrints the values to a stream, or to sys.stdout by default.\nOptional keyword arguments:\nfile:  a file-like object (stream); defaults to the current sys.stdout.\nsep:   string inserted between values, default a space.\nend:   string appended after the last value, default a newline.\nflush: whether to forcibly flush the stream."
+  >>> 
+  ```
+
+### 关键字参数
+
+- 利用关键字匹配参数，可以避免搞不清楚顺序按照位置匹配引起的问题
+
+  ```python
+  >>> def SaySome(name, words):
+  ...     print(name + '->' + words)
+  ... 
+  >>> SaySome('小甲鱼', '让编程改变世界')
+  小甲鱼->让编程改变世界
+  >>> 
+  >>> SaySome('让编程改变世界', '小甲')
+  让编程改变世界->小甲
+  >>> SaySome(words='让编程改变世界', name='小甲鱼')
+  小甲鱼->让编程改变世界
+  ```
+
+  
+
+### 默认参数
+
+- 在参数定义的过程中，为形参赋初始值
+
+  ```python
+  >>> def SaySome(name='小甲鱼', words='让编程改变世界'):
+  ...     print(name + '->' + words)
+  ... 
+  >>> 
+  >>> 
+  >>> SaySome()
+  小甲鱼->让编程改变世界
+  >>> 
+  >>> 
+  >>> SaySome('默默')
+  默默->让编程改变世界
+  >>> 
+  >>> SaySome('默默', '你好')
+  默默->你
+  ```
+
+### 收集参数
+
+- 可变参数，原因是函数的作者有时候也搞不清楚到底需要多少个参数
+
+- 在参数前面加上*号即可
+
+- Python 把标识为收集参数的参数用一个元组打包起来
+
+  ```python
+  >>> def test(*params):
+  ...     print('参数的长度是', len(params))
+  ...     print('第二个参数是', params[1])
+  ... 
+  >>> 
+  >>> 
+  >>> test(1, '小鲫鱼', 3, 5, 7)
+  参数的长度是 5
+  第二个参数是 小鲫鱼
+  ```
+
+- 如果除了收集参数，还有其他定制参数，需要使用关键字参数来定制，不然会报错
+
+  ```python
+  >>> def test(*params, exp):
+  ...     print('参数的长度是', len(params), exp)
+  ...     print('第二个参数是', params[1])
+  ... 
+  >>> 
+  >>> 
+  >>> test(1, '小鲫鱼', 3, 5, 7)
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  TypeError: test() missing 1 required keyword-only argument: 'exp'
+  >>> 
+  >>> 
+  >>> test(1, '小鲫鱼', 3, 5, 7, exp=8)
+  参数的长度是 5 8
+  第二个参数是 小鲫鱼
+  ```
+
+  
+
+## 课后作业
+
+### Quiz
+
+1. 请问以下哪个是形参哪个是实参？
+
+   ```python
+   def MyFun(x):
+   	return x ** 3
+   y = 3
+   print(MyFun(y))
+   ```
+
+   x 是形参，y 是实参；形参指的是函数定义过程中，小括号里面的参数；实参指的是函数调用过程中传递进去的参数
+
+2. 函数文档和直接用“#”为函数写注释有什么不同
+
+   函数文档会保存在内置函数：`__doc__` ，可以通过 `help()` 或者 `.__doc__`  来查看
+
+3. 使用关键字参数，可以有效避免什么问题的出现呢？
+
+   可以避免忘记参数位置导致传入的实参不匹配的问题
+
+4. 使用help(print)查看print()这个BIF有哪些默认参数？分别起到什么作用？
+
+   `print(value, ..., sep=' ', end='\n', file=sys.stdout, flush=False)`
+
+   
+
+5. 默认参数和关键字参数表面最大的区别是什么
+
+   默认参数会默认指定一个值，如果没有传入任何实参的时候，会使用默认值
+
+### Practice
+
+1. 编写一个符合以下要求的函数：
+
+   a. 计算打印所有参数的和乘以基数（base=3）的结果
+
+   b. 如果参数中最后一个参数为（base=5），则设定基数为5，基数不参与求和计算
+
+   ```python
+   # 编写一个符合以下要求的函数：
+   # a. 计算打印所有参数的和乘以基数（base=3）的结果
+   # b. 如果参数中最后一个参数为（base=5），则设定基数为5，基数不参与求和计算
+   
+   def practice1(*pram, base=3):
+       return sum(pram)*base
+   
+   
+   print(practice1(1, 3, 4))
+   print(practice1(1, 3, 4,  base=5))
+   ```
+
+   
+
+2. 寻找水仙花数
+
+   题目要求：如果一个3位数等于其各位数字的立方和，则称这个数为水仙花数。例如153 = 1^3+5^3+3^3，因此153是一个水仙花数。编写一个程序，找出所有的水仙花数。
+
+   ```python
+   # 寻找水仙花数
+   # 题目要求：如果一个3位数等于其各位数字的立方和，则称这个数为水仙花数。例如153 = 1^3+5^3+3^3，因此153是一个水仙花数。编写一个程序，找出所有的水仙花数。
+   
+   def narcissistic():
+       for i in range(100, 1000):
+           x = i // 100
+           y = (i // 10) % 10
+           z = i % 10
+           if i == pow(x, 3) + pow(y, 3) + pow(z, 3):
+               print('narcissistic number: %d' % i)
+   
+   
+   narcissistic()
+   ```
+
+   
+
+3. 编写一个函数 findstr()，该函数统计一个长度为 2 的子字符串在另一个字符串中出现的次数。例如：假定输入的字符串为“You cannot improve your past, but you can improve your future. Once time is wasted, life is wasted.”，子字符串为“im”，函数执行后打印“子字母串在目标字符串中共出现 3 次”。
+
+   ```python
+   # 编写一个函数 findstr()，该函数统计一个长度为 2 的子字符串在另一个字符串中出现的次数。
+   # 例如：假定输入的字符串为
+   # “You cannot improve your past, but you can improve your future. Once time is wasted, life is wasted.”，
+   # 子字符串为“im”，函数执行后打印“子字母串在目标字符串中共出现 3 次”。
+   
+   def findstr(x, y):
+       a = y[0]
+       b = y[1]
+       count = 0
+       xlen = len(x)
+       for i in range(xlen):
+           if x[i] == a and x[i+1] == b:
+               count += 1
+       print(count)
+   
+   
+   findstr('You cannot improve your past, but you can improve your future. Once time is wasted, life is wasted.', 'im')
+   ```
+
+   
+
+# 019. 函数：我的地盘听我的
+
+## 知识点
+
+
+
+
+
+
+
+## 课后作业
+
+### Quiz
+
+
+
+
+
+### Practice
+
+
+
+
+
+
+
+# 020. 函数：内嵌函数和闭包
+
+## 知识点
+
+
+
+
+
+
+
+## 课后作业
+
+### Quiz
+
+
+
+
+
+### Practice
+
+
+
+# 021. 函数：Lambda表达式
+
+## 知识点
+
+
+
+
+
+
+
+## 课后作业
+
+### Quiz
+
+
+
+
+
+### Practice
