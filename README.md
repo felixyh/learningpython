@@ -2886,15 +2886,188 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
 
 ## 知识点
 
+### 函数和过程
+
+- 函数是有返回值的
+
+- 过程是简单的，特殊的，没有返回值的
+
+- Python 只有函数，没有过程。Python的所有函数都是有返回的，有返回值就返回值，没有返回值就返回None
+
+  ```python
+  >>> def hello():
+  ...     print('hello, fishC!')
+  ... 
+  >>> temp = hello()
+  hello, fishC!
+  >>> 
+  >>> temp
+  >>> 
+  >>> type(temp)
+  <class 'NoneType'>
+  ```
+
+### 再谈谈返回值
+
+- Python 动态确定类型，不需要提前定义
+
+- Python是没有变量的，只有名字
+
+- Python 是可以返回多个返回值的
+
+  ```python
+  >>> def back():
+  ...     return[1, '小甲鱼', 3.14]
+  ... 
+  >>> back()
+  [1, '小甲鱼', 3.14]
+  >>> 
+  >>> 
+  >>> 
+  >>> def back():
+  ...     return 1, '小甲鱼', 3.14
+  ... 
+  >>> back()
+  (1, '小甲鱼', 3.14)
+  ```
 
 
 
+### 我的地盘听我的 - 局部和全局变量
 
+- **局部变量**： 作用域范围在函数内，在外面调用会出错；Python 在调用函数时，利用栈来存储函数所需要的代码和局部变量，当执行完函数，函数的栈会自动清空，所以函数执行完之后再试图访问函数体内的变量会出错
 
+  ```python
+  def discounts(price, rate):
+      final_price = price * rate
+      return final_price
+  
+  
+  old_price = float(input('请输入原价：'))
+  rate = float(input('请输入折扣率：'))
+  new_price = discounts(old_price, rate)
+  print('打折扣价格是：', new_price)
+  
+  # 试图打印局部变量：final_price 会报错
+  print('试图打印局部变量final_price', final_price)
+  ```
+
+  ```python
+  请输入原价：12
+  请输入折扣率：0.3
+  打折扣价格是： 3.5999999999999996
+  Traceback (most recent call last):
+    File "/Users/felix_yang/PycharmProjects/learningpython/19/test01.py", line 15, in <module>
+      print('试图打印局部变量final_price', final_price)
+  NameError: name 'final_price' is not defined
+  ```
+
+- **全局变量**：拥有更大的作用域，他们的作用域是整个代码段。那如果在函数体内部访问全局变量是不是可以呢？
+
+  ```python
+  def discounts(price, rate):
+      final_price = price * rate
+    
+      # 试图打印全局变量: old_price 不会报错
+      print('试图打印全局变量old_price', old_price)
+      
+      return final_price
+  
+  
+  old_price = float(input('请输入原价：'))
+  rate = float(input('请输入折扣率：'))
+  new_price = discounts(old_price, rate)
+  
+  print('打折扣价格是：', new_price)
+  ```
+
+  ```python
+  请输入原价：12
+  请输入折扣率：0.4
+  试图打印全局变量old_price 12.0
+  打折扣价格是： 4.800000000000001
+  ```
+
+  ***不要试图在函数内不修改全局变量，因为那样的话，python 会试图在函数内部创建一个名字一样的局部变量存储在函数的栈当中***
+
+  
 
 ## 课后作业
 
 ### Quiz
+
+1. 下边程序会输出什么？
+
+   ```python
+   def next():  
+       print('我在next()函数里...')  
+       pre()  
+     
+   def pre():  
+       print('我在pre()函数里...')  
+     
+   next()
+   ```
+
+   我在next()函数里...
+
+   我在pre()函数里...
+
+2. 请问以下这个函数有返回值吗？
+
+   ```python
+   def hello():  
+       print('Hello FishC!') 
+   ```
+
+   有，返回值是none
+
+
+
+3. 请问Python的return语句可以返回多个不同类型的值吗？
+
+   可以，可以return 列表，或者元组，把不同类型的值放到列表/元组中返回
+
+   
+
+4. 请目测以下程序会打印什么内容？
+
+   ```python
+   def fun(var):  
+       var = 1314  
+       print(var, end = '')  
+     
+   var = 520  
+   fun(var)  
+   print(var) 
+   ```
+
+   *1314520*
+
+   第一个打印出来的是函数体内的局部变量（名字也叫var），第二个打印出来的是定义在函数之外的全局变量var
+
+5. 目测以下程序会打印什么内容？
+
+   ```
+   var = 'Hi'  
+     
+   def fun1():  
+       global var  
+       var = ' Baby '  
+       return fun2(var)  
+     
+   def fun2(var):  
+       var += 'I love you'  
+       fun3(var)  
+       return var  
+     
+   def fun3(var):  
+       var = ' 小甲鱼 '  
+     
+   print(fun1())
+   ```
+
+   Baby I love you
 
 
 
@@ -2902,31 +3075,316 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
 
 ### Practice
 
+1. 编写一个函数，判断传入的字符串参数是否为“回文联”
 
+   ```python
+   # 编写一个函数，判断传入的字符串参数是否为“回文联”
+   
+   # list的reverse()方法是返回None的，只会对列表内的元素逆序排序。而string的reserved()方法是会返回逆序后的字符串的
+   
+   def check(var):
+       list1 = list(var)
+       list2 = list1[:]
+       list2.reverse()
+   
+       if list1 == list2:
+           print('传入的参数 %s 是：回文联' % var)
+       else:
+           print('传入的参数 %s 不是：回文联' % var)
+   
+   
+   check('1234321')
+   ```
 
+   
 
+2. 编写一个函数，分别统计传入字符串参数（可能不止一个参数）的英文字母、空格、数字和其它字符的个数。
 
+   ```python
+   # 编写一个函数，分别统计传入字符串参数（可能不止一个参数）的英文字母、空格、数字和其它字符的个数。
+   
+   # 单个参数的情况
+   def count_str(var):
+       str_count = 0
+       space_count = 0
+       number_count = 0
+       other_count = 0
+   
+       for i in var:
+           if i.isdigit():
+               number_count += 1
+           elif i.isalpha():
+               str_count += 1
+           elif i.isspace():
+               space_count += 1
+           else:
+               other_count += 1
+   
+       print('英文字母个数是：%d' % str_count)
+       print('数字个数是：%d' % number_count)
+       print('空格个数是：%d' % space_count)
+       print('其他字符个数是：%d' % other_count)
+   
+   
+   count_str('12d99  safe')
+   ```
 
+   ```python
+   # 编写一个函数，分别统计传入字符串参数（可能不止一个参数）的英文字母、空格、数字和其它字符的个数。
+   
+   # 多个参数的情况
+   
+   def count_str(*param):
+       var_number = len(param)
+       for i in range(var_number):
+           str_count = 0
+           space_count = 0
+           number_count = 0
+           other_count = 0
+           for each in param[i]:
+               if each.isdigit():
+                   number_count += 1
+               elif each.isalpha():
+                   str_count += 1
+               elif each.isspace():
+                   space_count += 1
+               else:
+                   other_count += 1
+           print('第 %d 个参数有 %d 英文字母，%d 数字， %d 空格， %d 其他字符' % (i, str_count, number_count, space_count, other_count))
+   
+   
+   count_str('1fe', '1ssssf sfe')
+   ```
+
+   
 
 # 020. 函数：内嵌函数和闭包
 
 ## 知识点
 
+### 全局Global 关键字
+
+- 上节课提到不要试图去修改全局变量，python 会使用shadowing 的机制防止全局变量被修改
+
+  ```python
+  >>> count = 5
+  >>> def MyFun():
+  ...     count = 10
+  ...     print(count)
+  ... 
+  >>> MyFun()
+  10
+  >>> print(count)
+  5
+  ```
+
+- 如果非要修改，可以使用global 关键字，把想要变成全局变量的局部变量变成全局变量
+
+  ```python
+  >>> def MyFun():
+  ...     global count
+  ...     count = 10
+  ...     print(count)
+  ... 
+  >>> MyFun()
+  10
+  >>> 
+  >>> print(count)
+  10
+  ```
 
 
 
+### 内嵌函数
 
+- python 是支持函数嵌套的，先看一个例子。注意嵌套里面的函数无法在外面调用。
 
+  ```python
+  >>> def fun1():
+  ...     print('fun1 is being called')
+  ...     def fun2():
+  ...             print('fun2 is being called')
+  ...     fun2()
+  ... 
+  >>> fun1()
+  fun1 is being called
+  fun2 is being called
+  ```
+
+### 闭包
+
+- 闭包是一种编程范式；其他的编程范式有：面向对象编程，面向过程编程，这些都是对代码的抽象和概括，使得代码的可用性和重用性变高
+
+- 如果在一个内部函数里，对在外部作用域的变量（不是全局作用域的变量）进行引用，那么这个内部函数就是一个闭包
+
+  ```python
+  >>> def FunX(x):
+  ...     def FunY(y):
+  ...             return x * y
+  ...     return FunY
+  ... 
+  >>> i = FunX(8)
+  >>> i
+  <function FunX.<locals>.FunY at 0x103343040>
+  >>> 
+  >>> 
+  >>> type(i)
+  <class 'function'>
+  >>> 
+  >>> i(5)
+  40
+  >>> 
+  >>> FunX(8)(5)
+  40
+  >>> 
+  >>> FunY(5)
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  NameError: name 'FunY' is not defined
+  ```
+
+- 因为闭包的概念是由内嵌函数演变而来， 所以也不能从外部函数的外面调用内部函数
+
+- 在内部函数中只能对外部作用域的变量进行引用，不能修改，如果修改的话，这个变量同样会被shadowing，python 会在内部函数创建一个同名的内部作用域变量。以下例子显示了新建的内部作用域变量由于未被事先定义而报错
+
+  ```python
+  >>> def Fun1():
+  ...     x = 5
+  ...     def Fun2():
+  ...             x *= x
+  ...             return x
+  ...     return Fun2()
+  ... 
+  >>> 
+  >>> Fun1()
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+    File "<stdin>", line 6, in Fun1
+    File "<stdin>", line 4, in Fun2
+  UnboundLocalError: local variable 'x' referenced before assignment
+  ```
+
+  - 有没有解决的办法呢？Python3 之前没有解决办法，只有通过容器类型来解决，比如列表，因为不会存储在栈里面，不会报错
+
+    ```python
+    >>> def Fun1():
+    ...     x = [5]
+    ...     def Fun2():
+    ...             x[0] *= x[0]
+    ...             return x[0]
+    ...     return Fun2()
+    ... 
+    >>> 
+    >>> Fun1()
+    25
+    ```
+
+  
+
+  - Python3 开始，可以通过***nonlocal*** 关键字来解决，类似于***global*** 关键字
+
+    ```python
+    >>> def Fun1():
+    ...     x = 5
+    ...     def Fun2():
+    ...             nonlocal x
+    ...             x *= x
+    ...             return x
+    ...     return Fun2()
+    ... 
+    >>> 
+    >>> Fun1()
+    25
+    ```
+
+    
 
 ## 课后作业
 
 ### Quiz
+
+1. 如果希望在函数中修改全局变量的值，应该使用什么关键字？
+
+2. 在嵌套函数中，如果希望在内部函数修改外部函数的局部变量，应该是用什么关键字？
+
+3. Python的函数可以嵌套，但是要注意访问的作用域问题，请问以下代码存在什么问题呢？
+
+4. 请问为什么代码A没有报错，但是代码B却报错了？应该如何修改？
+
+   代码A：
+
+   ```python
+   1 def outside():
+   2     var = 5
+   3     def inside():
+   4         var = 3
+   5         print(var )
+   6     inside()
+   7 outside()
+   ```
+
+    
+
+   代码B：
+
+   ```python
+   1 def outside():
+   2     var = 5
+   3     def inside():
+   4         print(var )
+   5         var = 3
+   6     inside()
+   7 outside()
+   ```
+
+5. 请问如何访问FunIn()呢？
+
+   ```python
+   1 def funOut():
+   2     def funIn():
+   3         print("宾果！恭喜成功访问到啦~")
+   4     return funIn()
+   ```
+
+
+
+6. 请问如何访问FunIn()呢？
+
+   ```python
+   1 def funOut():
+   2     def funIn():
+   3         print("宾果！恭喜成功访问到啦~")
+   4     return funIn
+   ```
+
+
+
+7. 以下是“闭包”的一个例子，请你目测下会打印什么内容？
+
+   ```
+    1 def funX():
+    2     x=5
+    3     def funY():
+    4         nonlocal  x
+    5         x+=1
+    6         return x
+    7     return funY
+    8 a=funX()
+    9 print(a())
+   10 print(a())
+   11 print(a())
+   ```
 
 
 
 
 
 ### Practice
+
+1. 统计下边这个长字符串中各个字符出现的次数并找到小甲鱼送给大家的一句话
+2. 请用已经学过的只是编写程序，找出小甲鱼藏在下边这个长字符串中的密码，密码的埋藏点符合以下规律：
+     a. 每位密码为单个小写字母
+     b. 没为密码的左右两边均有且只有三个大写字母
 
 
 
@@ -2934,18 +3392,167 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
 
 ## 知识点
 
+### 匿名函数Lambda
 
+- Lambda 表达式用冒号分隔，冒号前面是参数，后面是函数体内容
 
+- 先举一个例子 - 1 个参数
 
+  ```python
+  >>> def ds(x):
+  ...     return 2 * x + 1
+  ... 
+  >>> ds(5)
+  11
+  >>> 
+  >>> 
+  >>> 
+  >>> lambda x : 2 * x + 1
+  <function <lambda> at 0x1033431f0>
+  >>> g = lambda x : 2 * x + 1
+  >>> 
+  >>> g(5)
+  11
+  ```
 
+- 再举一个例子 - 2个参数
 
+  ```python
+  >>> def add(x, y):
+  ...     return x + y
+  ... 
+  >>> add(3, 4)
+  7
+  >>> 
+  >>> lambda x, y : x + y
+  <function <lambda> at 0x103343310>
+  >>> 
+  >>> g = lambda x, y : x + y
+  >>> g(3, 4)
+  7
+  ```
+
+### Lambda 表达式的作用
+
+- Python写一些执行脚本的时候，使用lambda就可以省下定义函数的过程，比如说我们只是需要写个简单的脚本来管理服务器时间，我们就不需要专门定义一个函数然后再写调用，使用lambda可以使得代码更加精简。
+- 对于一些比较抽象并且整个程序执行下来只需要调用一两次的函数，有时候给函数起个名字是比较头疼的问题，使用lambda就不需要考虑命名的问题了。
+- 简化代码的可读性，由于普通屌丝函数阅读经常要跳到开头def 定义部分，使用lambda函数可以省去这样的步骤
+
+### 两个比较牛逼的BIF
+
+- filter() : 
+
+  - filter(function or None, iterable)
+
+  - Return an iterator yielding those items of iterable for which function(item) is true. If function is None, return the items that are true. (如果第一个参数是函数，返回一个迭代器，返回iterable中function(item)为true的元素;   如果第一个参数是none，返回值为true的item)
+
+    举例：如果第一个参数为函数：
+
+    ```python
+    >>> def odd(x):
+    ...     return x % 2
+    ... 
+    >>> temp = range(10)
+    >>> show = filter(odd, temp)
+    >>> list(show)
+    [1, 3, 5, 7, 9]
+    ```
+
+    用lambda 实现
+
+    ```python
+    >>> show = filter(lambda x : x % 2, range(10))
+    >>> list(show)
+    [1, 3, 5, 7, 9]
+    ```
+
+    举例：如果第一个参数为None：
+
+    ```python
+    >>> filter(None, [1, 0, False, True])
+    <filter object at 0x103325730>
+    >>> 
+    >>> list(filter(None, [1, 0, False, True]))
+    [1, True]
+    ```
+
+    
+
+- map()
+
+  - map(func, *iterables)  第一个参数是函数，后面的参数是一个或者多个序列
+
+  - Make an iterator that computes the function using arguments from each of the iterables. Stops when the shortest iterable is exhausted. (使用每个可迭代对象的参数计算函数，来创建一个迭代器，当最短的可迭代对象耗尽时停止。)
+
+    举例：一个序列
+
+    ```python
+    >>> list(map(lambda x : x * 2, range(10)))
+    [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
+    ```
+
+    举例：多个序列
+
+    ```python
+    >>> list(map(lambda x, y : x * y, range(10), range(5)))
+    [0, 1, 4, 9, 16]
+    ```
+
+    
 
 ## 课后作业
 
 ### Quiz
 
+1. 请使用lambda表达式将下边函数转变为匿名函数？
 
+   ```
+   1 def fun_A(x, y=3):
+   2 return x * y
+   3 
+   4 
+   5 fun_A = lambda x,y=3 : x*y;
+   ```
 
+2. 请将下边的匿名函数转变为普通的屌丝函数？
 
+   ```
+   1 lambda x : x if x % 2 else None
+   2 
+   3 def fun_1(x):
+   4 
+   5 if x % 2:
+   6 return x;
+   7 else:
+   8 return None;
+   ```
+
+3. 感受一下使用匿名函数后给你的编程生活带来的变化？
+
+4. 你可以利用filter()和lambda表达式快速求出100以内所有3的倍数吗？
+
+5. 还记得列表推导式吗？完全可以使用列表推导式代替filter()和lambda组合，你可以做到吗？
+
+6. 还记得zip吗？使用zip会将两数以元祖的形式绑定在一块，例如：
+
+   ```
+   >>> list(zip([1, 3, 5, 7, 9], [2, 4, 6, 8, 10]))
+   [(1, 2), (3, 4), (5, 6), (7, 8), (9, 10)]
+   ```
+
+   但如果我希望打包的形式是灵活多变的列表而不是元祖（希望是[[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]]这种形式），你能做到吗？（采用map和lambda表达式）
+
+7. 请目测以下表达式会打印什么？
+
+   ```
+   def make_repeat(n):
+   return lambda s : s * n
+   
+   double = make_repeat(2)
+   print(double(8))
+   print(double('FishC'))
+   ```
+
+   
 
 ### Practice
