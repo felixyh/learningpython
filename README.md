@@ -3382,9 +3382,17 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
 ### Practice
 
 1. 统计下边这个长字符串中各个字符出现的次数并找到小甲鱼送给大家的一句话
+
+   [string1.txt](https://github.com/felixyh/learningpython/blob/main/20/string1.txt)
+
+   
+
 2. 请用已经学过的只是编写程序，找出小甲鱼藏在下边这个长字符串中的密码，密码的埋藏点符合以下规律：
-     a. 每位密码为单个小写字母
-     b. 没为密码的左右两边均有且只有三个大写字母
+
+   [string2.txt](https://github.com/felixyh/learningpython/blob/main/20/string2.txt)
+
+   - 每位密码为单个小写字母
+   - 没为密码的左右两边均有且只有三个大写字母
 
 
 
