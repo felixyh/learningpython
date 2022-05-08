@@ -3305,9 +3305,24 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
 
 1. 如果希望在函数中修改全局变量的值，应该使用什么关键字？
 
+   global
+
 2. 在嵌套函数中，如果希望在内部函数修改外部函数的局部变量，应该是用什么关键字？
 
+   nonlocal
+
 3. Python的函数可以嵌套，但是要注意访问的作用域问题，请问以下代码存在什么问题呢？
+
+   ```python
+      def outside():
+            print('I am outside!')
+            def inside():
+                  print('I am inside!')
+   
+      inside()
+   ```
+
+   不能直接访问嵌套内函数，只能访问outside()
 
 4. 请问为什么代码A没有报错，但是代码B却报错了？应该如何修改？
 
@@ -3337,6 +3352,8 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
    7 outside()
    ```
 
+   在内部函数中只能对外部作用域的变量进行引用，不能修改，如果修改的话，这个变量同样会被shadowing，python 会在内部函数创建一个同名的内部作用域变量。代码B 新建的内部作用域变量var 由于未被事先定义而被打印：print(var) 而报错。而代码A 已经事先定义： var=3，所以不会报错
+
 5. 请问如何访问FunIn()呢？
 
    ```python
@@ -3346,7 +3363,7 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
    4     return funIn()
    ```
 
-
+   funOut()
 
 6. 请问如何访问FunIn()呢？
 
@@ -3357,7 +3374,13 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
    4     return funIn
    ```
 
+​		funOut()() 
 
+​		或者
+
+​		a = funOut()
+
+​		a()
 
 7. 以下是“闭包”的一个例子，请你目测下会打印什么内容？
 
@@ -3375,7 +3398,11 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
    11 print(a())
    ```
 
+​		6
 
+​		7
+
+​		8
 
 
 
@@ -3385,14 +3412,37 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
 
    [string1.txt](https://github.com/felixyh/learningpython/blob/main/20/string1.txt)
 
+   ```python
+   def count_str(x):
+       temp_list = []
+       temp_number = []
+       lenth = len(x)
    
+       def show():
+           for i in range(lenth):
+               current_char = x[i]
+               if current_char not in temp_list:
+                   temp_list.append(current_char)
+                   temp_number.append(x.count(current_char))
+           final_list = list(zip(temp_list, temp_number))
+           print(final_list)
+           # print('字符 %s 的数量是：%d' % (current, number))
+       return show()
+   
+   
+   count_str(string1)
+   ```
 
-2. 请用已经学过的只是编写程序，找出小甲鱼藏在下边这个长字符串中的密码，密码的埋藏点符合以下规律：
+   `[('%', 6104), ('$', 6046), ('@', 6157), ('_', 6112), ('^', 6030), ('#', 6115), (')', 6186), ('&', 6043), ('!', 6079), ('+', 6066), (']', 6152), ('*', 6034), ('}', 6105), ('[', 6108), ('(', 6154), ('{', 6046), ('\n', 1219), ('G', 1), ('O', 2), ('D', 1), ('L', 1), ('U', 1), ('C', 1), ('K', 1)]`
+
+   GOODLUCK
+
+2. 请用已经学过的知识编写程序，找出小甲鱼藏在下边这个长字符串中的密码，密码的埋藏点符合以下规律：
 
    [string2.txt](https://github.com/felixyh/learningpython/blob/main/20/string2.txt)
 
    - 每位密码为单个小写字母
-   - 没为密码的左右两边均有且只有三个大写字母
+   - 每位密码的左右两边均有且只有三个大写字母
 
 
 
@@ -3515,31 +3565,51 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
 1. 请使用lambda表达式将下边函数转变为匿名函数？
 
    ```
-   1 def fun_A(x, y=3):
-   2 return x * y
-   3 
-   4 
-   5 fun_A = lambda x,y=3 : x*y;
+   def fun_A(x,y=3):
+       return x*y
    ```
+
+   ```python
+   lambda x, y=3 : x * y
+   ```
+
+   
 
 2. 请将下边的匿名函数转变为普通的屌丝函数？
 
+   ```python
+   lambda x: x if x % 2 else None
    ```
-   1 lambda x : x if x % 2 else None
-   2 
-   3 def fun_1(x):
-   4 
-   5 if x % 2:
-   6 return x;
-   7 else:
-   8 return None;
+
+   ```python
+   def ds(x):
+   		if x % 2:
+   				return x
+   		else:
+   				return None
    ```
+
+   
 
 3. 感受一下使用匿名函数后给你的编程生活带来的变化？
 
+   不用为起函数名而烦恼了
+
 4. 你可以利用filter()和lambda表达式快速求出100以内所有3的倍数吗？
 
+   ```python
+   >>> list(filter(lambda x : not( x % 3 ), range(100)))
+   [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90, 93, 96, 99]
+   ```
+
 5. 还记得列表推导式吗？完全可以使用列表推导式代替filter()和lambda组合，你可以做到吗？
+
+   ```python
+   >>> [ x for x in range(100) if x % 3 == 0 ]
+   [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90, 93, 96, 99]
+   ```
+
+   
 
 6. 还记得zip吗？使用zip会将两数以元祖的形式绑定在一块，例如：
 
@@ -3550,17 +3620,26 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
 
    但如果我希望打包的形式是灵活多变的列表而不是元祖（希望是[[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]]这种形式），你能做到吗？（采用map和lambda表达式）
 
+   ```python
+   >>> list(map(lambda x, y :  [x, y], [1, 3, 5, 7, 9], [2, 4, 6, 8, 10] ))
+   [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]]
+   ```
+
+   
+
 7. 请目测以下表达式会打印什么？
 
-   ```
+   ```python
    def make_repeat(n):
-   return lambda s : s * n
-   
+       return lambda s: s * n
    double = make_repeat(2)
    print(double(8))
    print(double('FishC'))
    ```
 
-   
+   ```undefined
+   16
+   FishCFishC
+   ```
 
 ### Practice
