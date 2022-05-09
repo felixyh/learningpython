@@ -3297,7 +3297,28 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
     25
     ```
 
-    
+
+
+
+### 闭包在实际开发中的作用
+
+- 闭包的实际应用，主要是用来封装变量。即把变量隐藏起来，不让外面拿到和修改。
+
+  ```
+  闭包就是能够读取其他函数内部变量的函数，说白了闭包就是个函数，只不过是处于其他函数内部而已。
+  
+  由于在python中，只有函数内部的子函数才能读取局部变量，所以说，闭包可以简单理解成“定义在一个函数内部的函数“。
+  
+  所以，在本质上，闭包是将函数内部和函数外部连接起来的桥梁。
+  
+  知乎大神说：闭包是指在 JavaScript 中，内部函数总是可以访问其所在的外部函数中声明的参数和变量，即使在其外部函数被返回（寿命终结）了之后。
+  
+  二：用途是什么?
+  
+  1.访问函数内部的变量
+  
+  2.防止函数内部的变量执行完城后，被销毁，使其一直保存在内存中。
+  ```
 
 ## 课后作业
 
@@ -3397,12 +3418,20 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
    10 print(a())
    11 print(a())
    ```
+   
+   6
+   
+   7
+   
+   8
+   
+   大家可能会迷惑，这。。。怎么跟全局变量一样了？局部变量x不是应该再每次调用的时候都重新初始化了吗？！
+   
+   其实大家自己看看就明白了，当a = funX()，只要a变量没有被重新赋值，funX()就没有被释放，也就是说局部变量x就没有被重新初始化。
+   
+   所以当全局变量不适用的时候，可以考虑使用闭包更稳定和安全
 
-​		6
-
-​		7
-
-​		8
+​		
 
 
 
@@ -3443,8 +3472,41 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
 
    - 每位密码为单个小写字母
    - 每位密码的左右两边均有且只有三个大写字母
-
-
+   
+   ```python
+   def find_pass(x):
+       str_length = len(x) - 9
+       pass_list = ''
+   
+       def show_pass():
+           # 指定pass_list 为nonlocal，因为需要从闭包函数里面调用修改
+           nonlocal pass_list
+   
+           # 判断第一个password 字符，其实是从第4个字符开始： xxx[]xxxx，前后3个字符都是大写字母，第8个字符是小写
+           if x[:3].isupper() and x[4:7].isupper() and (x[3]+x[7]).islower() and x[:7].isalpha():
+               pass_list += x[3]
+   
+           # 每次截取9个字符放到temp_string，判断中间的一个字符和两头的字符是小写，前后3个字符为大写
+           for i in range(str_length):
+               temp_string = x[i:i+9]
+               temp_low = temp_string[0] + temp_string[4] + temp_string[-1]
+               temp_up = temp_string[1:4] + temp_string[-4:-1]
+               if temp_low.islower() and temp_up.isupper() and (temp_up + temp_string[4]).isalpha():
+                   pass_list += temp_string[4]
+   
+           # 判断最后一个password 字符，其实是从倒数第4个字符开始： xxxx[]xxx，前后3个字符都是大写字母，倒数第8个字符是小写
+           if x[-7:-4].isupper() and x[-3:].isupper() and (x[-4]+x[-7]).islower() and x[-7:].isalpha():
+               pass_list += x[-4]
+   
+           print(pass_list)
+   
+       return show_pass()
+   
+   
+   find_pass(string2)
+   ```
+   
+   
 
 # 021. 函数：Lambda表达式
 
@@ -3643,3 +3705,79 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
    ```
 
 ### Practice
+
+
+
+
+
+# 022. 递归是神马？
+
+## 知识点
+
+递归其实就是函数调用自己
+
+- 汉诺塔游戏： 使用递归会比迭代更好
+- 树结构的定义： 使用递归定义结构体会比其他方法容易很多
+- 谢尔宾斯基三角形：递归组成的图案
+- 女神自拍
+
+### 一个递归的例子
+
+- 写一个求阶乘的函数
+
+  - 正整数阶乘指从1乘以2乘以3乘以4一直乘到所要求的数
+  - 例如所给的数是5，则阶乘式是1x2x3x4x5，得到的积是120，所以120就是5的阶乘
+
+  1. 非递归版本范例：
+
+     ```python
+     def factorial(x):
+         result = x
+         for n in range(1, x):
+             result *= n
+         return result
+     
+     
+     number = int(input('please input a number:'))
+     final_result = factorial(number)
+     print(final_result)
+     ```
+
+     
+
+  2. 递归版本范例
+
+     ```python
+     def factorial(n):
+         if n == 1:
+             return 1
+         else:
+             return n * factorial(n-1)
+     
+     
+     number = int(input('please input a number:'))
+     final_result = factorial(number)
+     print(final_result)
+     ```
+
+     ![image-20220509110226777](/Users/felix_yang/Library/Application Support/typora-user-images/image-20220509110226777.png)
+
+
+
+## 课后作业
+
+### Quiz
+
+1. 递归在编程上的形式是如何表现的呢？
+2. 递归必须满足哪两个基本条件？
+3. 思考一下，按照递归的特性，在编程中有没有不得不使用递归的情况？
+4. 用递归去计算阶乘问题或斐波那契数列是很糟糕的算法，你知道为什么吗？
+5. 请聊一聊递归的优缺点（无需官方陈词，想到什么写什么就可以）
+6. 拿手机拍一张“递归自拍照片”
+
+
+
+### Practice
+
+1. 使用递归编写一个power()函数内建函数pow()，即power(x,y)为计算并返回x的y次幂的值。
+2. 使用递归编写一个函数，利用欧几里得算法求最大公约数，例如gcd(x,y)返回值为参数x和参数y的最大公约数。

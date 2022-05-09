@@ -1,3 +1,11 @@
+# 请用已经学过的知识编写程序，找出小甲鱼藏在下边这个长字符串中的密码，密码的埋藏点符合以下规律：
+#
+# [string2.txt](https://github.com/felixyh/learningpython/blob/main/20/string2.txt)
+#
+# - 每位密码为单个小写字母
+# - 每位密码的左右两边均有且只有三个大写字母
+
+
 string2 = '''ACFlCTLIQlAIVMTqHFkswqbDDHtpgcWaXSSglUYKE
 lqNsYCyaQXBzrFUbkAUAWAKrDgDtAlGMBqWQhpEwquZqWZJpslUfMllCwWptqINjrOBTLuPzwvXNbLCx
 oFRritKRpJgBOaGPZdkUzvYnvYmAlEsVmKRXqyQUOdCBqLYyboOYeAQNLnkuiDXCiNiksSSRpDMVQQgs
@@ -101,6 +109,41 @@ WsMhSGfIcBChcqrRKgKpjvGnFipjswgjetRtniMagakbCXAjpzWTtMlgZGCJwGyglpcLebrKWhgwJfWV
 qGifWNEpCtjuejHoyVCdIxzMYGnfoslgTNAJdtVBWDVoGLzHSAVBTnhNIvAOExQNiJOIPPiHkdaRbfaP
 ixDDoCDOOeAqvQJFxLWDICfGmufyxmaMshbvcrtjqqVtffZTnbtCOQfzRMGwOQEKaAmSWjnYdNgvdkmd
 dQmaKZSdqKNrnvJlcyVMKuNWmuoOeyKecgjXbmSqnpjwJEaDYoehEklEgJyiksGxdEKgfYRXQecRZgfe
-qKWGc'''
+qKWGc
+'''
+
 
 def find_pass(x):
+    str_length = len(x) - 9
+    pass_list = ''
+
+    def show_pass():
+        # 指定pass_list 为nonlocal，因为需要从闭包函数里面调用修改
+        nonlocal pass_list
+
+        # 判断第一个password 字符，其实是从第4个字符开始： xxx[]xxxx，前后3个字符都是大写字母，第8个字符是小写
+        if x[:3].isupper() and x[4:7].isupper() and (x[3]+x[7]).islower() and x[:7].isalpha():
+            pass_list += x[3]
+
+        # 每次截取9个字符放到temp_string，判断中间的一个字符和两头的字符是小写，前后3个字符为大写
+        for i in range(str_length):
+            temp_string = x[i:i+9]
+            temp_low = temp_string[0] + temp_string[4] + temp_string[-1]
+            temp_up = temp_string[1:4] + temp_string[-4:-1]
+            if temp_low.islower() and temp_up.isupper() and (temp_up + temp_string[4]).isalpha():
+                pass_list += temp_string[4]
+
+        # 判断最后一个password 字符，其实是从倒数第4个字符开始： xxxx[]xxx，前后3个字符都是大写字母，倒数第8个字符是小写
+        if x[-7:-4].isupper() and x[-3:].isupper() and (x[-4]+x[-7]).islower() and x[-7:].isalpha():
+            pass_list += x[-4]
+
+        print(pass_list)
+
+    return show_pass()
+
+
+find_pass(string2)
+
+
+
+
