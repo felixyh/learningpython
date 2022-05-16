@@ -30,8 +30,9 @@ def ad_insert():
         if edit_check == 'YES':
             address_book[name] = input('请输入用户联系电话：')
     else:
-        phone = input('请输入用户联系电话：')
-        address_book[name] = phone
+        # phone = input('请输入用户联系电话：')
+        # address_book[name] = phone
+        address_book.setdefault(name, input('请输入用户联系电话：'))
 
 
 def ad_delete():
@@ -39,7 +40,7 @@ def ad_delete():
     if name in address_book.keys():
         del_check = input('是否删除已有联系人: %s（YES/NO）' % name)
         if del_check == 'YES':
-            del address_book[name]
+            address_book.pop(name)
     else:
         print('输入的联系人不存在！')
 

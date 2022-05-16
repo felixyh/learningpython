@@ -4181,7 +4181,7 @@ x ---> z
 
    ![在这里插入图片描述](https://img-blog.csdnimg.cn/2019042718425940.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0ODk1OTI3,size_16,color_FFFFFF,t_70)
 
-​	
+​	**Version-1**:
 
 ```python
 # 尝试利用字典的特性编写一个通讯录程序吧
@@ -4252,3 +4252,126 @@ if __name__ == '__main__':
 
 ```
 
+
+
+**Version-2**:  dict.pop() 删除字典键值, dict.setdefault() 修改字典：插入字典键值
+
+```python
+# 尝试利用字典的特性编写一个通讯录程序吧
+
+
+address_book = {'小甲鱼': '020-88974563', 'Felix': '025-52680000'}
+welcome_msg = '''
+|--- 欢迎进入通讯录程序---|
+|--- 1： 查询联系人资料---|
+|--- 2： 插入新的联系人---|
+|--- 3： 删除已有联系人---|
+|--- 4： 退出通讯录程序---|
+'''
+bye_msg = '''
+|--- 感谢使用通讯录程序---|
+'''
+
+
+def ad_search():
+    name = input('请输入联系人姓名：')
+    if name in address_book.keys():
+        print(address_book[name])
+    else:
+        print('输入的联系人不存在！')
+
+
+def ad_insert():
+    name = input('请输入联系人姓名：')
+    if name in address_book.keys():
+        print('您输入的姓名在通讯录中已存在 --->> %s : %s' %(name, address_book[name]))
+        edit_check = input('是否修改用户资料（YES/NO）')
+        if edit_check == 'YES':
+            address_book[name] = input('请输入用户联系电话：')
+    else:
+        # phone = input('请输入用户联系电话：')
+        # address_book[name] = phone
+        address_book.setdefault(name, input('请输入用户联系电话：'))
+
+
+def ad_delete():
+    name = input('请输入联系人姓名：')
+    if name in address_book.keys():
+        del_check = input('是否删除已有联系人: %s（YES/NO）' % name)
+        if del_check == 'YES':
+            address_book.pop(name)
+    else:
+        print('输入的联系人不存在！')
+
+
+def address():
+    while True:
+        print(welcome_msg)
+        code = int(input('请输入相关的指令代码：'))
+        if code == 2:
+            ad_insert()
+        elif code == 1:
+            ad_search()
+        elif code == 3:
+            ad_delete()
+        elif code == 4:
+            print(bye_msg)
+            break
+        else:
+            print('输入有误，请重新输入代码')
+
+
+if __name__ == '__main__':
+    address()
+```
+
+
+
+# 026. 字典：当索引不好用时2
+
+## 知识点
+
+### 字典的常用内建方法
+
+- 创建字典：fromkeys(): 
+
+  > **fromkeys**(iterable, value=None, /) method of builtins.type instance;  Create a new dictionary with keys from iterable and values set to value.
+
+  ```python
+  >>> dict1 = {}
+  >>> dict1.fromkeys((1, 2, 3))
+  {1: None, 2: None, 3: None}
+  >>> 
+  >>> 
+  >>> dict1.fromkeys((1, 2, 3), 'number')
+  {1: 'number', 2: 'number', 3: 'number'}
+  ```
+
+  注意这个内置函数不能修改已有的字典，它每次都会生成一个新的字典；比如尝试修改1和3 的键值，但是只会生成一个新的字典
+
+  ```python
+  >>> dict1.fromkeys((1, 3), '数字')
+  {1: '数字', 3: '数字'}
+  ```
+
+  
+
+- 访问字典：keys(), values(), items()
+
+- 查找字典：判断键的成员资格：get(),  in/not in 判断
+
+  - get() : 
+
+    > **get**(self, key, default=None, /)  Return the value for key if key is in the dictionary, else default.
+
+- 清空字典：clear(),  不推荐直接赋值空字典{} 的方式来清空，因为有数据泄漏风险
+
+- 浅拷贝字典：copy()
+
+- 删除/弹出对应的键值：pop()
+
+- 删除/随机弹出字典键值：popitem()
+
+- 修改字典：setdefault() ：和get() 类似，但是setdefault 找不到对应的值的时候，会自动添加，随机添加到某个位置，因为字典不存在顺序
+
+- 修改字典：用字典去更新另外一个字典：update(), 类似于列表的extend()

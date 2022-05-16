@@ -6,11 +6,13 @@
     <option name="recentlyUsedProfiles">
       <list>
         <option value="profile:default" />
+        <option value="profile:phc1" />
       </list>
     </option>
     <option name="recentlyUsedRegions">
       <list>
         <option value="us-east-1" />
+        <option value="us-east-2" />
       </list>
     </option>
   </component>
