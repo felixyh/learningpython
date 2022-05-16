@@ -3710,7 +3710,7 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
 
 
 
-# 022. 递归是神马？
+# 022. 函数：递归是神马？
 
 ## 知识点
 
@@ -3841,3 +3841,306 @@ TypeError: MySecondFunction() missing 1 required positional argument: 'name'
    
    print(gcder(9, 6))
    ```
+
+
+
+
+
+# 023. 递归：这帮小兔崽子
+
+## 知识点
+
+### 斐波那契数列
+
+![image-20220513210700654](/Users/felix_yang/Library/Application Support/typora-user-images/image-20220513210700654.png)
+
+
+
+- 递归算法 - 思路清晰，但是耗费资源
+
+  ```python
+  def fibonacci(n):
+      if n == 1 or n == 2:
+          return 1
+      elif n < 1:
+          return -1
+      else:
+          return fibonacci(n-1) + fibonacci(n-2)
+  
+  
+  n = input('please input a number:')
+  result = fibonacci(int(n))
+  if result != -1:
+      print(result)
+  ```
+
+  
+
+- 迭代算法
+
+  ```python
+  def fibonacci(n):
+      n1 = 1
+      n2 = 1
+  
+      if n < 1:
+          print('The number is incorrect')
+  
+      elif n == 1 or n == 2:
+          return 1
+      else:
+          while (n-2) > 0:
+              n3 = n1 + n2
+              n1 = n2
+              n2 = n3
+              n -= 1
+          return n3
+  
+  
+  n = int(input('please input a number:'))
+  result = fibonacci(n)
+  print(result)
+  ```
+
+  
+
+
+
+# 024. 递归：汉诺塔
+
+## 知识点
+
+<img src="/Users/felix_yang/Library/Application Support/typora-user-images/image-20220515204116145.png" alt="image-20220515204116145" style="zoom:50%;" />
+
+<img src="/Users/felix_yang/Library/Application Support/typora-user-images/image-20220516082730879.png" alt="image-20220516082730879" style="zoom:50%;" />
+
+<img src="/Users/felix_yang/Library/Application Support/typora-user-images/image-20220516082806121.png" alt="image-20220516082806121" style="zoom:50%;" />
+
+
+
+```
+In [1]: def hanoi(n, x, y, z):
+   ...:     if n == 1:
+   ...:         print(x, '--->', z)
+   ...:     else:
+   ...:         hanoi(n-1, x, z, y)
+   ...:         print(x, '--->', z)
+   ...:         hanoi(n-1, y, x, z)
+   ...: 
+
+
+In [2]: n = int(input('please input the hanoi levels:'))
+please input the hanoi levels:3
+
+In [3]: hanoi(n, 'x', 'y', 'z')
+x ---> z
+x ---> y
+z ---> y
+x ---> z
+y ---> x
+y ---> z
+x ---> z
+```
+
+
+
+## 课后作业
+
+### Quiz
+
+
+
+### Practice
+
+1. 使用递归编写一个十进制转换为二进制的函数（要求采用“取2取余”的方式，结果与调用bin()一样返回字符串形式）
+   $$
+   b = f(x) = \left\{
+     \begin{array}{lr}
+       1 & : x = 1\\
+       f( x // 2) \Join x \% 2 & : x > 1
+     \end{array}
+   \right.
+   $$
+
+   $$
+   \Join 表示拼接；
+   公式的意思是：如果十进制正整数 x 等于 1，那它对应的二进制 b 就是 1；
+   否则 x 大于 1，那它的二进制就是 d 整除 2 的商对应的二进制，拼接 x 整除 2 的余数。
+   $$
+
+   
+
+   ```python
+   # 使用递归编写一个十进制转换为二进制的函数（要求采用“取2取余”的方式，结果与调用bin()一样返回字符串形式）
+   
+   
+   def bin_recursion(n):
+       if n == 1:
+           return 1
+       else:
+           return str(bin_recursion(n // 2)) + str(n % 2)
+   
+   
+   print(bin_recursion(8))
+   ```
+
+   
+
+2. 写一个函数get_digits(n)，将参数n分解出每个位的数字并按顺序存放到列表中。举例：get_digits(12345) ==> [1, 2, 3, 4, 5] 
+
+   
+   $$
+   b = f(x) = \left\{  \begin{array}{lr}
+   [ ] & : x = 0 \\    
+   [f( x // 10) , x \% 10 ]& : x > 0  
+   \end{array}\right.
+   $$
+
+   ```python
+   # 写一个函数get_digits(n)，将参数n分解出每个位的数字并按顺序存放到列表中。举例：get_digits(12345) ==> [1, 2, 3, 4, 5]
+   
+   
+   def get_digits(n):
+       result = []
+       if n == 0:
+           return []
+       else:
+           result.extend(get_digits(n // 10))
+           result.append(n % 10)
+           return result
+   
+   
+   print(get_digits(12342321421321))
+   ```
+
+   
+
+3. 还记得求回文字符串那道题吗？现在让你使用递归的方式来求解，亲还能骄傲的说我可以吗   
+
+4. 使用递归编程求解以下问题： 
+
+   有5个人坐在一起，问第五个人多少岁？他说比第4个人大2岁。问第4个人岁数，他说比第3个人大2岁。问第三个人，又说比第2人大两岁。问第2个人，说比第一个人大两岁。最后问第一个人，他说是10岁。请问第五个人多大？ 
+   
+   ```python
+   # 使用递归编程求解以下问题：
+   #
+   # 有5个人坐在一起，问第五个人多少岁？他说比第4个人大2岁。问第4个人岁数，他说比第3个人大2岁。问第三个人，又说比第2人大两岁。问第2个人，说比第一个人大两岁。最后问第一个人，他说是10岁。请问第五个人多大？
+   
+   
+   def age(n):
+       if n == 1:
+           return 10
+       else:
+           return age(n-1) + 2
+   
+   
+   print(age(5))
+   ```
+   
+   
+
+# 025. 字典：当索引不好用时
+
+## 知识点
+
+- Python的字典，key-value，也称为HASH，关系数组
+
+- 映射类型区别于序列类型，通过数组的形式进行存储的，通过索引进行存取
+
+  ```python
+  In [9]: brand = ['李宁', '耐克', '阿迪达斯', '鱼C 工作室']
+  
+  In [10]: slogan = ['一切皆有可能', 'Just Do It', 'Impossible is nothing', '让编程改变世界']
+  
+  In [11]: print('鱼C 工作室的口号是：', slogan[brand.index('鱼C 工作室')])
+  鱼C 工作室的口号是： 让编程改变世界
+  ```
+
+- 创建和访问字典
+
+  ```python
+  In [12]: dict1 = {'李宁':'一切皆有可能', '耐克':'Just Do It', '阿迪达斯':'Impossible is nothing', '鱼C 工作室':'让编程改变世界'}
+  
+  In [13]: print('鱼C 工作室的口号是：', dict1['鱼C 工作室'])
+  鱼C 工作室的口号是： 让编程改变世界
+  
+  In [14]: dict2 = {1:'one', 2:'two', 3:'three'}
+  
+  In [15]: dict2
+  Out[15]: {1: 'one', 2: 'two', 3: 'three'}
+  
+  In [16]: dict2[2]
+  Out[16]: 'two'
+  
+  In [17]: dict3 = {}
+  
+  In [18]: dict3
+  Out[18]: {}
+  ```
+
+  
+
+  - dict() 工厂函数 创建字典
+
+    > 工厂函数看上去有点像函数，实质上他们是类，当你调用他们时，实际上是生成了该类型的一个实例，就像工厂生产货物一样，常见的工厂函数有：list(), tuple(), dict(), int(), float()
+
+    ```python
+    In [19]: dict3 = dict((('F', 70), ('i', 105), ('h', 104), ('c', 67)))
+    
+    In [20]: dict3
+    Out[20]: {'F': 70, 'i': 105, 'h': 104, 'c': 67}
+    ```
+
+  - 关键字参数创建字典
+
+    ```python
+    In [25]: dict4 = dict(李宁='一切皆有可能', 耐克='Just Do It')
+    
+    In [26]: dict4
+    Out[26]: {'李宁': '一切皆有可能', '耐克': 'Just Do It'}
+    ```
+
+  - 直接给字典的键赋值，如果这个键不存在，会直接创建这个键
+
+    ```python
+    In [29]: dict4['阿迪达斯'] = 'Impossible is nothing'
+    
+    In [30]: dict4
+    Out[30]: {'李宁': '一切皆有可能', '耐克': 'Just Do It', '阿迪达斯': 'Impossible is nothing'}
+    ```
+
+- 字典常用方法
+
+  > clear()   fromkeys()  items()   pop()    setdefault() values()   
+  >
+  > ​        copy()    get()    keys()    popitem()  update()
+
+
+
+
+
+## 课后作业
+
+### Quiz
+
+1. 当你听到小伙伴们在谈论“映射”、“哈希”、“散列”或者“关系数组”的时候，事实上他们就是在讨论什么呢？
+
+2. 尝试一下将数据（‘F’: 70, ‘C’: 67, ‘h’: 104, ‘i’: 105, ‘s’: 115）创建为一个字典并访问键 ‘C’ 对应的值？
+
+3. 用方括号（“[]”）括起来的数据我们叫列表，那么使用大括号（“{}”）括起来的数据我们就叫字典，对吗？
+
+4. 你如何理解有些东西字典做得到，但“万能的”列表却难以实现（臣妾做不到T_T）？
+
+5. 下边这些代码，他们都在执行一样的操作吗？你看得出差别吗？
+
+6. 如图，你可以推测出打了马赛克部分的代码吗？
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/20190427184131580.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0ODk1OTI3,size_16,color_FFFFFF,t_70)
+
+   
+
+### Practice
+
+1. 尝试利用字典的特性编写一个通讯录程序吧，功能如图：
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/2019042718425940.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0ODk1OTI3,size_16,color_FFFFFF,t_70)
