@@ -4364,14 +4364,138 @@ if __name__ == '__main__':
 
     > **get**(self, key, default=None, /)  Return the value for key if key is in the dictionary, else default.
 
-- 清空字典：clear(),  不推荐直接赋值空字典{} 的方式来清空，因为有数据泄漏风险
+- 清空字典：clear(),  或者del dict(key=)不推荐直接赋值空字典{} 的方式来清空，因为有数据泄漏风险
 
-- 浅拷贝字典：copy()
+- 浅拷贝字典：copy(), 拷贝意味着生成一个新字典，与赋值是不同的。
 
 - 删除/弹出对应的键值：pop()
 
-- 删除/随机弹出字典键值：popitem()
+- 删除/弹出字典键值 - 默认最后一个：popitem()
 
 - 修改字典：setdefault() ：和get() 类似，但是setdefault 找不到对应的值的时候，会自动添加，随机添加到某个位置，因为字典不存在顺序
 
 - 修改字典：用字典去更新另外一个字典：update(), 类似于列表的extend()
+
+
+
+
+
+## 课后作业
+
+### Quiz
+
+1. Python的字典是否支持一键（Key）多值（Value）？
+
+   不支持，除非这个值是元祖和列表括起来的
+
+2. 在字典中，如果试图为一个不存在的键（Key）赋值会怎样？
+
+   会创建这个key and value
+
+3. 成员资格操作符（in和not in）可以检查一个元素是否存在序列中，当然也可以用来检查一个键（Key）是否存在字典中，那么请问哪种的检查效率更高些？为什么？
+
+   字典效率更高，因为是直接查找到相应的Key； 而序列是从第一个元素开始遍历
+
+4. Python对键（Key）和值（Value）有没有类型限制？
+
+   没有
+
+5. 请目测下边代码执行后，字典dict1的内容是什么？
+
+   ```
+   >>> dict1.fromkeys((1, 2, 3), ('one', 'two', 'three'))
+    
+   >>> dict1.fromkeys((1, 3), '数字')
+   ```
+
+   ```
+   （1:('one', 'two', 'three')， 2:('one', 'two', 'three')， 3:('one', 'two', 'three') ）
+   (1:'数字', 3:'数字' )
+   ```
+
+6. 如果你需要将字典dict1 = {1: 'one', 2: 'two', 3: 'three'}拷贝到dict2，你应该怎么做？
+
+   ```
+   dict2 = dict1.copy()
+   ```
+
+   
+
+### Practice
+
+1. 尝试编写一个用户登录程序（这次尝试将功能封装成函数），程序实现如图
+
+   <img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly94eHguaWxvdmVmaXNoYy5jb20vZm9ydW0vMjAxNDAzLzI0LzE5MDIwMjdrZDcyNTZoNnh5Nzc1ZGQucG5n?x-oss-process=image/format,png" alt="img" style="zoom:100%;" />
+
+```python
+# 尝试编写一个用户登录程序（这次尝试将功能封装成函数），程序实现如图
+
+log_user = {}
+
+welcome_msg = '''
+|---新建用户：N/n---|
+|---登陆账号：E/e---|
+|---退出程序：Q/q---|
+'''
+
+register_msg = '''
+注册成功，赶紧试试登陆吧！
+'''
+
+logon_msg = '''
+欢迎进入xxoo系统，请点击右上方的x结束程序！
+'''
+
+quit_msg = '''
+已成功退出系统！
+'''
+
+
+def logon():
+    name = input('请输入用户名：')
+    while name not in log_user.keys():
+        name = input('您输入的用户名不存在，请重新输入：')
+    passwd = input('请输入密码：')
+    count = 3
+    while log_user[name] != passwd:
+        count -= 1
+        if count > 0:
+            passwd = input('密码错误，请重新输入')
+        else:
+            print('密码输入错误3次，退出程序')
+            break
+    print(logon_msg)
+
+
+def create():
+    name = input('请输入用户名：')
+    while name in log_user.keys():
+        name = input('此用户已经被使用，请重新输入：')
+    log_user.setdefault(name, input('请输入密码：'))
+    print(register_msg)
+
+
+def logon_main():
+    while True:
+        print(welcome_msg, end='')
+        code = input('|---请输入指令代码：')
+
+        if code == 'N' or code == 'n':
+            create()
+        elif code == 'E' or code == 'e':
+            logon()
+        elif code == 'Q' or code == 'q':
+            print(quit_msg)
+            break
+
+
+if __name__ == '__main__':
+    logon_main()
+
+
+```
+
+
+
+
+
