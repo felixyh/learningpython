@@ -4043,6 +4043,8 @@ x ---> z
 
 ## 知识点
 
+### 字典概念
+
 - Python的字典，key-value，也称为HASH，关系数组
 
 - 映射类型区别于序列类型，通过数组的形式进行存储的，通过索引进行存取
@@ -4109,11 +4111,13 @@ x ---> z
     Out[30]: {'李宁': '一切皆有可能', '耐克': 'Just Do It', '阿迪达斯': 'Impossible is nothing'}
     ```
 
-- 字典常用方法
+  
 
-  > clear()   fromkeys()  items()   pop()    setdefault() values()   
-  >
-  > ​        copy()    get()    keys()    popitem()  update()
+### 字典常用内建方法
+
+> clear()   fromkeys()  items()   pop()    setdefault() values()   
+>
+> ​        copy()    get()    keys()    popitem()  update()
 
 
 
@@ -4499,3 +4503,164 @@ if __name__ == '__main__':
 
 
 
+# 027. 集合：在我的世界里，你就是唯一
+
+## 知识点
+
+### 集合的概念
+
+- 集合是字典的“表亲”,  type = set, 用花括号括起一堆没有映射关系的元素
+
+  ```
+  >>> num = {}
+  >>> type(num)
+  <class 'dict'>
+  >>> 
+  >>> 
+  >>> num2 = {1, 2, 3, 4}
+  >>> type(num2)
+  <class 'set'>
+  ```
+
+  
+
+- 集合的元素是唯一，会自动过滤掉重复的元素
+
+  ```
+  >>> num2 = {1, 2, 3, 4, 5, 4, 3, 2, 1}
+  >>> 
+  >>> num2
+  {1, 2, 3, 4, 5}
+  ```
+
+- 集合的元素是无序的，无法通过索引操作元素
+
+  ```
+  >>> num2[2]
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  TypeError: 'set' object is not subscriptable
+  ```
+
+  
+
+- 创建集合
+
+  - 直接把一堆元素用花括号括起来
+
+  - 使用set() 工厂函数,  可以传入序列参数
+
+    ```
+    >>> set1 = set([1, 2, 3, 4, 5, 5])
+    >>> set1
+    {1, 2, 3, 4, 5}
+    ```
+
+- 一个例子
+
+  要求：去掉列表中重复的元素  [0, 1, 2, 3, 4, 5, 5, 3, 1]
+
+  ```
+  >>> list1 = [0, 1, 2, 3, 4, 5, 5, 3, 1]
+  >>> 
+  >>> list2 = list(set(list1))
+  >>> list2
+  [0, 1, 2, 3, 4, 5]
+  ```
+
+  注意：set 函数得到的集合是无序的！！！
+
+  
+
+### 集合的常用内建方法
+
+- add()
+- remove()
+
+### Frozenset
+
+- 不可变集合： 通过frozenset()
+
+  ```
+  >>> num3 = frozenset([1, 23, 4, 4])
+  >>> num3
+  frozenset({1, 4, 23})
+  >>> 
+  >>> num3.add(0)
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  AttributeError: 'frozenset' object has no attribute 'add'
+  ```
+
+  
+
+## 课后作业
+
+### Quiz
+
+1. 请问集合的唯一作用是什么呢？
+
+   确保集合中的元素具有唯一性
+
+2. 如果你希望创建的集合是不变的，应该怎么做？
+
+   frozenset()
+
+3. 请问如何确定一个集合里边有多少个元素？
+
+   len() 函数
+
+4. 请目测一下代码会打印什么内容？
+
+   ```
+   >>> num_set = set([1,2,3,4,5])
+   
+   >>> num_set[0]
+   ```
+
+   报错，集合是无序的，没有索引
+
+5. 请问set1 = {[1,2]}和set1 = set([1,2])执行的结果一样吗？
+
+   不一样，第一个会报错，第二个会生成一个集合
+
+6. 打开你的IDLE，输入set1 ={1,1.0},你发现了什么？
+
+   过滤掉相同的元素，得到{1}
+
+7. 请问如何给集合添加和删除元素？
+
+   add(), remove()
+
+### Practice
+
+1. 自学扩展：自己花点时间看下这个表格
+
+   ![image.png](https://www.pianshen.com/images/918/769b9a085dba5f8b204a3f5abb4b2976.png)
+
+
+
+# 028. 文件：因为懂你，所以永恒
+
+## 知识点
+
+- 文件的处理流程： 输入，处理， 输出
+- 
+
+
+
+
+
+
+
+## 课后作业
+
+### Quiz
+
+
+
+
+
+
+
+### Practice
