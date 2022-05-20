@@ -36,6 +36,7 @@ for each_line in f1:
         girl_list = []
         count += 1
 
+
 # 循环结束，写入最后一段内容
 file_name_boy = 'boy_' + str(count) + '.txt'
 file_name_girl = 'girl_' + str(count) + '.txt'
