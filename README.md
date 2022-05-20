@@ -4917,6 +4917,29 @@ f1.close()
 
    ![img](https://imgconvert.csdnimg.cn/aHR0cHM6Ly94eHguaWxvdmVmaXNoYy5jb20vZm9ydW0vMjAxNDA0LzAyLzIxNDAwMmw4bXd3Y2I1MmY5ZjVxOWYucG5n?x-oss-process=image/format,png)
 
+   ```python
+   # 编写一个程序，接受用户的输入并保存为新的文件，程序实现如图
+   
+   
+   name = input('请输入文件名：')
+   # lines = []
+   f = open(name, 'x')
+   print('请输入内容【单独输入\':w\' 保存退出】:')
+   
+   
+   while True:
+       # 其实是循环等待每行输入，但是让input的输入提示符为空，效果是看起来一直没有打断的输入
+       content = input()
+       if content != ':w':
+           content += '\n'
+           f.write(content)
+       else:
+           break
+           f.close()
+   ```
+
+   
+
 2. 编写一个程序，比较用户输入的两个文件，如果不同，显示出所有不同处的行号与第一个不同字符的位置，程序实现如图：
 
    ![img](https://imgconvert.csdnimg.cn/aHR0cHM6Ly94eHguaWxvdmVmaXNoYy5jb20vZm9ydW0vMjAxNDA0LzA2LzIyMjYxNWlrM2J5cnB4NmpyampiNGIucG5n?x-oss-process=image/format,png)
