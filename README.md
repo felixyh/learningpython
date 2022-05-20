@@ -4721,7 +4721,7 @@ if __name__ == '__main__':
     f.close()
     ```
 
-  - f.write(str), f.writeline(list对象), 写入的类型都是字符串类型
+  - f.write(str), f.writelines(seq, 比如list对象), 写入的类型都是字符串类型
 
     ```
     >>> f = open('test.txt', 'w')
@@ -4814,7 +4814,7 @@ if __name__ == '__main__':
 
 1. 尝试将某个文件(OpenMe.mp3)打印到屏幕上
 
-   ```
+   ```python
    f = open('OpenMe.mp3')
    for each_line in f:
        print(each_line, end='')
@@ -4824,5 +4824,67 @@ if __name__ == '__main__':
    
 
 2. 编写代码，将上一题中的文件（OpenMe.mp3）保存为新文件（OpenMe.txt）
+
+   ```python
+   f1 = open('OpenMe.mp3')
+   f2 = open('OpenMe.txt', 'x') # 使用'x'打开更安全，避免使用‘w’打开覆盖已有的文件
+   
+   f2.write(f1.read())
+   
+   f1.close()
+   f2.close()
+   ```
+
+   
+
+# 029. 文件：一个任务
+
+## 知识点
+
+> 任务：将文件(record.txt)中的数据进行分割，并按照以下规则保存起来。
+>  1.小甲鱼的对话单独保存为boy_*.txt的文件(去掉"小甲鱼:")
+>  2.小客服的对话单独保存为girl_*.txt的文件(去掉"小客服:")
+>  3.文件中总共有三段对话，分别保存为boy_1.txt、boy_2.txt、boy_3.txt、gilr_1.txt、gilr_2.txt、gilr_3.txt
+>    共6个文件。(提示：不同的对话已经使用"===="进行分割)
+
+
+
+
+
+## 课后作业
+
+### Quiz
+
+
+
+
+
+### Practice
+
+1. 编写一个程序，接受用户的输入并保存为新的文件，程序实现如图：
+
+   ![img](https://imgconvert.csdnimg.cn/aHR0cHM6Ly94eHguaWxvdmVmaXNoYy5jb20vZm9ydW0vMjAxNDA0LzAyLzIxNDAwMmw4bXd3Y2I1MmY5ZjVxOWYucG5n?x-oss-process=image/format,png)
+
+2. 编写一个程序，比较用户输入的两个文件，如果不同，显示出所有不同处的行号与第一个不同字符的位置，程序实现如图：
+
+   ![img](https://imgconvert.csdnimg.cn/aHR0cHM6Ly94eHguaWxvdmVmaXNoYy5jb20vZm9ydW0vMjAxNDA0LzA2LzIyMjYxNWlrM2J5cnB4NmpyampiNGIucG5n?x-oss-process=image/format,png)
+
+
+
+3. 编写一个程序，当用户输入文件名和行数（N）后，将该文件的前N行内容打印到屏幕上，程序实现如图：
+
+   ![img](https://imgconvert.csdnimg.cn/aHR0cHM6Ly94eHguaWxvdmVmaXNoYy5jb20vZm9ydW0vMjAxNDA0LzAyLzIxNTEzM3FzMml0dHRnMTFidnQwMTAucG5n?x-oss-process=image/format,png)
+
+
+
+4. 呃，不得不说我们的用户变得越来越刁钻了。要求在上一题的基础上扩展，用户可以随意输入需要显示的行数。（如输入13:21打印第13行到第21行，输入:21打印前21行，输入21:则打印从第21行开始到文件结尾所有内容）
+
+   ![img](https://imgconvert.csdnimg.cn/aHR0cHM6Ly94eHguaWxvdmVmaXNoYy5jb20vZm9ydW0vMjAxNDA0LzAyLzIxNTMzMXhmMTg2amYzd21qcjVyeHoucG5n?x-oss-process=image/format,png)
+
+
+
+5. 编写一个程序，实现“全部替换”功能，程序实现如图：
+
+   ![img](https://imgconvert.csdnimg.cn/aHR0cHM6Ly94eHguaWxvdmVmaXNoYy5jb20vZm9ydW0vMjAxNDA0LzAyLzIxNTM1NHZzNms4Nmw4bGZnMGw5cXEucG5n?x-oss-process=image/format,png)
 
    
