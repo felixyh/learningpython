@@ -4962,12 +4962,108 @@ f1.close()
 2. 编写一个程序，比较用户输入的两个文件，如果不同，显示出所有不同处的行号与第一个不同字符的位置，程序实现如图：
 
    ![img](https://imgconvert.csdnimg.cn/aHR0cHM6Ly94eHguaWxvdmVmaXNoYy5jb20vZm9ydW0vMjAxNDA0LzA2LzIyMjYxNWlrM2J5cnB4NmpyampiNGIucG5n?x-oss-process=image/format,png)
+   
+   ```python
+   # 编写一个程序，比较用户输入的两个文件，如果不同，显示出所有不同处的行号与第一个不同字符的位置，程序实现如图：
+   
+   name1 = input('请输入需要比较的头一个文件名：')
+   name2 = input('请输入需要比较的另一个文件名：')
+   
+   name1_f = open(name1, 'rt')
+   name2_f = open(name2, 'rt')
+   
+   name1_list = name1_f.readlines()
+   name2_list = name2_f.readlines()
+   
+   name1_f.close()
+   name2_f.close()
+   
+   
+   diff_count = []
+   name1_len = len(name1_list)
+   name2_len = len(name2_list)
+   
+   
+   if name1_len >= name2_len:
+       file_min_len = name2_len
+   else:
+       file_min_len = name1_len
+   
+   
+   for i in range(file_min_len):
+       if name1_list[i] != name2_list[i]:
+           diff_count.append(i)
+   
+   
+   print('两个文件共有【 %d 】处不同：' % len(diff_count))
+   
+   for each in diff_count:
+       print('第 %d 行不一样' % each)
+   ```
+   
+   另一种写法：
+   
+   ```python
+   def cp_file(fname1, fname2):
+       name1_f = open(fname1, 'rt')
+       name2_f = open(fname2, 'rt')
+   
+       diff_row = []
+       count = 0
+       row_number = 1
+       for each_line in name1_f:
+           if each_line != name2_f.readline():
+               count += 1
+               diff_row.append(row_number)
+           row_number += 1
+       name2_f.close()
+       name2_f.close()
+       if count == 0:
+           print('两个文件相同')
+       else:
+           print('两个文件共有【 %d 】处不同：' % count)
+           for each in diff_row:
+               print('第 %d 行不一样' % each)
+   
+   
+   def cp_main():
+       name1 = input('请输入需要比较的头一个文件名：')
+       name2 = input('请输入需要比较的另一个文件名：')
+   
+       cp_file(name1, name2)
+   
+   
+   if __name__ == '__main__':
+       cp_main()
+   ```
+   
+   
 
 
 
 3. 编写一个程序，当用户输入文件名和行数（N）后，将该文件的前N行内容打印到屏幕上，程序实现如图：
 
    ![img](https://imgconvert.csdnimg.cn/aHR0cHM6Ly94eHguaWxvdmVmaXNoYy5jb20vZm9ydW0vMjAxNDA0LzAyLzIxNTEzM3FzMml0dHRnMTFidnQwMTAucG5n?x-oss-process=image/format,png)
+   
+   ```python
+   # 编写一个程序，当用户输入文件名和行数（N）后，将该文件的前N行内容打印到屏幕上，程序实现如图：
+   
+   def show_file(name, rows):
+       f_open = open(name, 'rt')
+       for i in range(int(rows)):
+           print(f_open.readline(), end='')
+       f_open.close()
+   
+   
+   f_name = input('请输入要打开的文件：')
+   f_rows = input('请输入需要显示该文件前几行：')
+   print('文件 %s 的前 %s 的内容如下：' % (f_name, f_rows))
+   
+   if __name__ == '__main__':
+       show_file(f_name, f_rows)
+   ```
+   
+   
 
 
 
@@ -4975,10 +5071,82 @@ f1.close()
 
    ![img](https://imgconvert.csdnimg.cn/aHR0cHM6Ly94eHguaWxvdmVmaXNoYy5jb20vZm9ydW0vMjAxNDA0LzAyLzIxNTMzMXhmMTg2amYzd21qcjVyeHoucG5n?x-oss-process=image/format,png)
 
+​		
+
+```python
+# 呃，不得不说我们的用户变得越来越刁钻了。
+# 要求在上一题的基础上扩展，用户可以随意输入需要显示的行数。
+# （如输入13:21打印第13行到第21行，输入:21打印前21行，输入21:则打印从第21行开始到文件结尾所有内容）
+
+
+def show_file(name, rows):
+    f_open = open(name, 'rt')
+    f_lines = f_open.readlines()
+
+    start_s, end_s = rows.split(':')
+    if start_s == '':
+        row_start = 0
+        row_start_msg = '开始'
+    else:
+        row_start = int(start_s)-1
+        row_start_msg = '第' + start_s + '行'
+    if end_s == '':
+        row_end = len(f_lines)
+        row_end_msg = '末尾'
+    else:
+        row_end = int(end_s)
+        row_end_msg = '第' + end_s + '行'
+
+    print('文件 %s 从 %s 到 %s 行的内容如下：' % (f_name, row_start_msg, row_end_msg))
+    for each_line in range(row_start, row_end):
+        print(f_lines[each_line], end='')
+    f_open.close()
+
+
+f_name = input('请输入要打开的文件：')
+f_rows = input('请输入需要显示的行数【格式如 13：21 或 ：21 或 21：】：')
+
+
+if __name__ == '__main__':
+    show_file(f_name, f_rows)
+```
+
 
 
 5. 编写一个程序，实现“全部替换”功能，程序实现如图：
 
    ![img](https://imgconvert.csdnimg.cn/aHR0cHM6Ly94eHguaWxvdmVmaXNoYy5jb20vZm9ydW0vMjAxNDA0LzAyLzIxNTM1NHZzNms4Nmw4bGZnMGw5cXEucG5n?x-oss-process=image/format,png)
 
+   ​	
+   
+   ```python
+   # 编写一个程序，实现“全部替换”功能，程序实现如图：
+   
+   def file_replace(name, o_str, n_str):
+       f_read = open(name, 'rt')
+       f_content = f_read.read()
+       f_read.close()
+       count = f_content.count(o_str)
+       if count == 0:
+           print('没有找到需要替换的字符')
+       else:
+           print('文件 %s 中共有 %d 个 【%s】' %(name, count, o_str))
+           print('你确定要把所有【%s】的替换为【%s】吗' %(o_str, n_str))
+           answer = input('[YES/NO]:')
+           if answer == 'YES':
+               f_content = f_content.replace(o_str, n_str)
+               f_write = open(name, 'w')
+               f_write.write(f_content)
+               f_write.close()
+   
+   
+   f_name = input('请输入文件名：')
+   old_str = input('请输入需要替换的单词或字符：')
+   new_str = input('请输入新的单词或字符：')
+   
+   
+   if __name__ == '__main__':
+       file_replace(f_name, old_str, new_str)
+   ```
+   
    
