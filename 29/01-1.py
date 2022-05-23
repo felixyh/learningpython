@@ -12,3 +12,4 @@ for line in iter(input, ':w'):
 
 f.write(txt)
 f.close()
+
