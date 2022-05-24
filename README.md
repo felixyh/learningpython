@@ -5390,6 +5390,26 @@ if __name__ == '__main__':
 
    ![img](https://img-blog.csdn.net/20180829233243506?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI0NTQ2MTM3/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
+   ```python
+   # 编写一个程序，计算当前文件夹下所有文件的大小，程序实现如图：
+   
+   import os
+   import os.path
+   
+   
+   def file_size(f_path):
+       os.chdir(f_path)
+       file_list = list(filter(lambda x: os.path.isfile(x), os.listdir(f_path)))
+       for each_file in file_list:
+           print(each_file + '  【%d Bytes】 ' % os.path.getsize(each_file))
+   
+   
+   if __name__ == '__main__':
+       file_size(input('please input the path:'))
+   ```
+
+   
+
 3. 编写一个程序，用户输入文件名以及开始搜索的路径，搜索该文件是否存在。如遇到文件夹，则进入文件夹继续搜索，程序实现如图：
 
    ![img](https://img-blog.csdn.net/20180829233256964?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI0NTQ2MTM3/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
