@@ -1,4 +1,4 @@
-# 编写一个程序，实现“全部替换”功能，程序实现如图：
+# 编写一个程序，实现“全部替换”功能，程序实现如图 ：
 
 def file_replace(name, o_str, n_str):
     f_read = open(name, 'rt')

@@ -5203,6 +5203,78 @@ if __name__ == '__main__':
   | os.linesep                                           | 当前平台使用的行终止符（Win下为'\r\n'，Linux下为'\n'）       |
   | os.name                                              | 指代当前使用的操作系统（包括：'posix', 'nt', 'mac', 'os2', 'ce', 'java'） |
 
+  
+
+  
+
+  ```python
+  >>> import os
+  >>> os.getcwd()
+  '/Users/felix'
+  
+  >>> os.chdir('/Users/felix/PycharmProjects/learningpython/30')
+  >>> 
+  >>> 
+  >>> 
+  >>> os.listdir('.')
+  []
+  >>> 
+  >>> 
+  >>> os.mkdir('A')
+  >>> os.mkdir('B')
+  >>> os.mkdir('./C/D')
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  FileNotFoundError: [Errno 2] No such file or directory: './C/D'
+  >>> 
+  >>> os.listdir('.')
+  ['A', 'B']
+  >>> 
+  >>> os.makedirs('./C/D')
+  >>> os.listdir()
+  ['A', 'C', 'B']
+  >>> os.remove
+  os.remove(      os.removedirs(  
+  >>> os.removedirs('C')
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+    File "/usr/local/Cellar/python@3.9/3.9.12_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/os.py", line 243, in removedirs
+      rmdir(name)
+  OSError: [Errno 66] Directory not empty: 'C'
+  
+  >>> 
+  >>> 
+  >>> os.removedirs('./C/D')
+  >>> 
+  >>> os.listdir()
+  ['A', 'B']
+  >>> os.rename('B', 'D')
+  >>> os.listdir()
+  ['A', 'D']
+  
+  >>> os.system('ls -l')
+  total 0
+  drwxr-xr-x  2 felix  staff  64 May 24 08:57 A
+  drwxr-xr-x  2 felix  staff  64 May 24 08:58 D
+  0
+    
+    
+  >>> os.listdir(os.curdir)
+  ['A', 'D']
+  >>> 
+  >>> os.listdir(os.pardir)
+  ['03', '04', '05', '02', '20', '18', '29', '16', '28', '17', '10', '19', '26', 'test.py', 'README.md', '09', '30', '01', '06', '.git', '24', '23', '15', '14', '22', '.idea', '25']
+  >>> os.listdir(os.pardir+ '/29')
+  ['05.py', 'task.py', '01.py', '01-1.py', '04.py', 'boy_1.txt', 'boy_2.txt', 'boy_3.txt', '03.py', 'girl_1.txt', '02-1.py', 'girl_2.txt', '02.py', 'input_nonstop.py', 'girl_3.txt']
+  
+  >>> os.name
+  'posix'
+  ```
+
+  
+
+- OS.PATH 模块
+
   - **os.path模块中关于路径常用的函数使用方法**
 
   | **函数名**                     | **使用方法**                                                 |
@@ -5225,7 +5297,54 @@ if __name__ == '__main__':
   | ismount(path)                  | 判断指定路径是否存在且是一个挂载点                           |
   | samefile(path1, paht2)         | 判断path1和path2两个路径是否指向同一个文件                   |
 
+  ```python
+  >>> import os.path
+  >>> 
+  >>> os.path.basename(os.curdir + 'A/sexy.txt')
+  'sexy.txt'
+  >>> 
+  >>> 
+  >>> os.path.dirname(os.curdir + 'A/sexy.txt')
+  '.A'
+  >>> 
+  >>> 
+  >>> 
+  >>> os.path.join('A', 'B', 'C')
+  'A/B/C'
+  >>> os.path.join('.', 'A', 'B', 'C')
+  './A/B/C'
+  >>> os.path.split(os.curdir + 'A/sexy.txt')
+  ('.A', 'sexy.txt')
+  >>> os.path.getsize(os.pardir+ '/29/05.py')
+  926
+  >>> 
+  >>> os.path.getatime(os.pardir+ '/29/05.py')
+  1653282351.295187
+  >>> 
+  >>> os.path.getmtime(os.pardir+ '/29/05.py')
+  1653279681.7378166
+  
+  >>> import time
+  >>> time.gmtime(os.path.getmtime(os.pardir+ '/29/05.py'))
+  time.struct_time(tm_year=2022, tm_mon=5, tm_mday=23, tm_hour=4, tm_min=21, tm_sec=21, tm_wday=0, tm_yday=143, tm_isdst=0)
+  >>> time.localtime(os.path.getmtime(os.pardir+ '/29/05.py'))
+  time.struct_time(tm_year=2022, tm_mon=5, tm_mday=23, tm_hour=12, tm_min=21, tm_sec=21, tm_wday=0, tm_yday=143, tm_isdst=0)
+  
+  >>> os.path.exists(os.curdir + '/A/sexy.txt')
+  False
+  >>> 
+  
+  >>> os.path.exists(os.curdir + '/A')
+  True
+  
+  >>> os.path.isabs(os.curdir + '/A')
+  False
+  >>> 
+  >>> os.path.isdir(os.curdir + '/A')
+  True
+  ```
 
+  
 
 ## 课后作业
 
@@ -5235,5 +5354,25 @@ if __name__ == '__main__':
 
 ### Practice
 
+1. 编写一个程序，统计当前目录下每个文件类型的文件数，程序实现如图：
 
+   ![img](https://img-blog.csdn.net/20180829233232993?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI0NTQ2MTM3/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+
+2. 编写一个程序，计算当前文件夹下所有文件的大小，程序实现如图：
+
+   ![img](https://img-blog.csdn.net/20180829233243506?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI0NTQ2MTM3/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+
+3. 编写一个程序，用户输入文件名以及开始搜索的路径，搜索该文件是否存在。如遇到文件夹，则进入文件夹继续搜索，程序实现如图：
+
+   ![img](https://img-blog.csdn.net/20180829233256964?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI0NTQ2MTM3/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+
+4. 编写一个程序，用户输入开始搜索的路径，查找该路径下（包含子文件夹）所有的视频格式文件（要求查找mp4，rmvb，avi的格式即可），并创建一个文件（vedioList.txt）存放找到的文件的路径，程序实现如图：
+
+   ![img](https://img-blog.csdn.net/20180829233514332?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI0NTQ2MTM3/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+
+   ![img](https://img-blog.csdn.net/20180829233329338?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI0NTQ2MTM3/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+
+5. 编写一个程序，用户输入关键字，查找当前文件夹内（如果当前文件夹内包含文件夹，则进入文件夹继续搜索）所有含有该关键字的文本文件（.txt后缀），要求显示该文件所在的位置以及关键字在文件中的具体位置（第几行第几个字符），程序实现如图：
+
+   ![img](https://img-blog.csdn.net/20180829233344730?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI0NTQ2MTM3/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
