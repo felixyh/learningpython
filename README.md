@@ -5414,11 +5414,89 @@ if __name__ == '__main__':
 
    ![img](https://img-blog.csdn.net/20180829233256964?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI0NTQ2MTM3/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
+   ```python
+   # 编写一个程序，用户输入文件名以及开始搜索的路径，搜索该文件是否存在。如遇到文件夹，则进入文件夹继续搜索，程序实现如图
+   
+   import os
+   import os.path
+   
+   
+   def search_file(path, file_name):
+       os.chdir(path)
+       temp_folder_name = list(filter(lambda x: os.path.isdir(x), os.listdir(path)))
+       temp_file_name = list(filter(lambda x: os.path.isfile(x), os.listdir(path)))
+       if file_name in temp_file_name:
+           print(os.path.join(path, file_name))
+       if temp_folder_name:
+           for sub_folder_name in temp_folder_name:
+               search_file(os.path.join(path, sub_folder_name), file_name)
+   
+   
+   if __name__ == '__main__':
+       search_file(input('请输入待查找的初始目录：'), input('请输入需要查找的目标文件：'))
+   ```
+
+   还可以通过os.walk() 来实现：
+
+   ```python
+   # 编写一个程序，用户输入文件名以及开始搜索的路径，搜索该文件是否存在。如遇到文件夹，则进入文件夹继续搜索，程序实现如图
+   
+   import os
+   import os.path
+   
+    
+   def search_file(path, file_name):
+       # os.walk() 返回的是一个三元组迭代器，有三元组参数，通过for 循环使用
+       for folder, sub_folders, sub_files in os.walk(path): 
+           if file_name in sub_files:
+               print(os.path.join(folder, file_name))
+   
+   
+   if __name__ == '__main__':
+       search_file(input('请输入待查找的初始目录：'), input('请输入需要查找的目标文件：'))
+   ```
+
+   
+
 4. 编写一个程序，用户输入开始搜索的路径，查找该路径下（包含子文件夹）所有的视频格式文件（要求查找mp4，rmvb，avi的格式即可），并创建一个文件（vedioList.txt）存放找到的文件的路径，程序实现如图：
 
    ![img](https://img-blog.csdn.net/20180829233514332?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI0NTQ2MTM3/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
    ![img](https://img-blog.csdn.net/20180829233329338?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI0NTQ2MTM3/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+
+   ```python
+   # 编写一个程序，用户输入开始搜索的路径，查找该路径下（包含子文件夹）所有的视频格式文件（要求查找mp4，rmvb，avi的格式即可），
+   # 并创建一个文件（vedioList.txt）存放找到的文件的路径，程序实现如图：
+   
+   import os
+   import os.path
+   
+   file_list = []
+   
+   def search_video(path, format_list=['.mp4', '.rmvb', '.avi']):
+       os.chdir(path)
+       temp_folder = list(filter(lambda x: os.path.isdir(x), os.listdir(path)))
+       temp_file = list(filter(lambda x: (os.path.isfile(x) and os.path.splitext(x)[1] in format_list), os.listdir(path)))
+       file_list.extend(os.path.join(path, each_file) for each_file in temp_file)
+       if temp_folder:
+           for sub_folder in temp_folder:
+               search_video(os.path.join(path, sub_folder))
+   
+       f_video_list = open('/Users/felix/PycharmProjects/learningpython/vedioList.txt', 'w')
+       
+       # 如果直接使f_video_list.writelines(file_list) 写入的文件内容没有换行
+       # f_video_list.writelines(file_list)
+       for each_file_path in file_list:
+           f_video_list.write(each_file_path)
+           f_video_list.write('\n')
+       f_video_list.close()
+   
+   
+   if __name__ == '__main__':
+       search_video(input('请输入待查找的初始目录：'))
+   ```
+
+   
 
 5. 编写一个程序，用户输入关键字，查找当前文件夹内（如果当前文件夹内包含文件夹，则进入文件夹继续搜索）所有含有该关键字的文本文件（.txt后缀），要求显示该文件所在的位置以及关键字在文件中的具体位置（第几行第几个字符），程序实现如图：
 
