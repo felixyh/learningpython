@@ -14,6 +14,11 @@ def extract(file_name):
     girl_list = []
     record_file = open(file_name, 'r')
     for each_line in record_file:
+        # people, words = tuple(each_line.split(':'))
+        # if people == '小甲鱼':
+        #     boy_list.append(words)
+        # elif people == '小客服':
+        #     girl_list.append(words)
         temp_list = each_line.split(':')
         if temp_list[0] == '小甲鱼':
             boy_list.append(temp_list[1])
