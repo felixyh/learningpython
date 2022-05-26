@@ -5615,3 +5615,113 @@ if __name__ == '__main__':
    
    
 
+# 031. 永久存储：腌制一缸美味的泡菜
+
+## 知识点
+
+### pickle 模块
+
+> 我们之前学习了文件和文件系统，我们知道从一个文件里面去读取字符串是非常简单的，但是你如果要试图读取出数值的话，那么就要多费点周折了，因为无论你是使用read()方法还是readline()方法，都是返回一个字符串，如果我们希望从字符串中取出数值的话，我们会使用int()或float()函数，把类似于1,2,3或者3.14的字符串强制转换为整型或者浮点型数值，我们一直在讲保存文件，然而当你要保存的数据像列表，字典，集合甚至是类的实例这些更加复杂的数据类型的时候，你就会举手无措了，兴许你可能会把这些都转化为字符串，然后再写入到一个文本文件中保存起来，但是很快你就会发现，把这个过程反过来的时候，也就是从文本文件中恢复数据对象，即把一个字符串恢复成列表，字典，集合，类的实例的时候，你会发现这异常的困难，所幸的是，Python提供了一个标准的模块（pickle）使用这个模块，我们就可以轻松地将列表，字典，集合，类的实例这类复杂的类型转换为二进制文件了。这个模块就是我们要学习的pickle模块了。
+
+- 令人惊叹的模块，几乎可以把所有的python 对象 转换成二进制的形式存储. `import pickle`
+
+- 存取数据：pickling - pickle.dump(src_object, pickle_file_object)
+
+- 读取数据：unpickling - pickle.load(pickle_file_object)
+
+  ```
+  >>> import pickle
+  >>> 
+  >>> my_list = [123, 1232, '小甲鱼']
+  >>> 
+  >>> pickle_file = open('my_list.pkl', 'wb')
+  >>> pickle.dump(my_list, pickle_file)
+  >>> pickle_file.close()
+  
+  >>> pickle_file = open('my_list.pkl', 'rb')
+  >>> my_list2 = pickle.load(pickle_file)
+  >>> my_list2
+  [123, 1232, '小甲鱼']
+  >>> pickle_file.close()
+  ```
+
+- 可以把一些大数据“腌制成泡菜“ ，即保存成一个pkl 二进制文件，在代码中导入进行引用，使得代码更加简洁优雅
+
+
+
+## 课后作业
+
+### Quiz
+
+1. pickle的实质是什么？
+
+   pickle的实质就是利用一些算法将你的数据对象“腌制”成二进制文件，存储在磁盘上，当然也可以放在数据库或者通过网络传输到另一台计算机上。
+
+2. 使用pickle的什么方法存储数据？
+
+   pickle.dump(src_object, pickle_file_object); 第一个参数是待存储的数据对象，第二个参数是目标存储的文件对象，注意要先使用’wb’的模式open文件哦
+
+3. 使用pickle的什么方法读取数据？
+
+   pickle.load(pickle_file_object); 参数是目标存储的文件对象，注意要先使用’rb’的模式open文件哦
+
+4. 使用pickle能不能保存为”*.txt”类型的文件？
+
+   可以，不过打开后是乱码，因为是以二进制的模式写入的。
+
+### Practice
+
+1. 编写一个程序，这次要求使用pickle将文件（ record.txt (1.1 KB, 下载次数: 3561) ）里的对话按照以下要求腌制成不同文件（没错，是第29讲的内容小改，考考你自己能写出来吗？）：
+               ※小甲鱼的对话单独保存为boy_*.txt的文件（去掉“小甲鱼:”）
+               ※小客服的对话单独保存为girl_*.txt的文件（去掉“小客服:”）
+               ※文件中总共有三段对话，分别保存为boy_1.txt, girl_1.txt，boy_2.txt, girl_2.txt, boy_3.txt, gril_3.txt共6个文件（提示：文件中不同的对话间已经使用“==========”分割）
+
+   ```python
+   # 编写一个程序，这次要求使用pickle将文件（ record.txt (1.1 KB, 下载次数: 3561) ）里的对话按照以下要求腌制成不同文件（没错，是第29讲的内容小改，考考你自己能写出来吗？）：
+   #             ※小甲鱼的对话单独保存为boy_*.txt的文件（去掉“小甲鱼:”）
+   #             ※小客服的对话单独保存为girl_*.txt的文件（去掉“小客服:”）
+   #             ※文件中总共有三段对话，分别保存为boy_1.txt, girl_1.txt，boy_2.txt, girl_2.txt, boy_3.txt, gril_3.txt共6个文件
+   #             （提示：文件中不同的对话间已经使用“==========”分割）
+   
+   
+   import pickle
+   
+   
+   def extract(file_name):
+       count = 0
+       boy_list = []
+       girl_list = []
+       record_file = open(file_name, 'r')
+       for each_line in record_file:
+           temp_list = each_line.split(':')
+           if temp_list[0] == '小甲鱼':
+               boy_list.append(temp_list[1])
+           elif temp_list[0] == '小客服':
+               girl_list.append(temp_list[1])
+   
+           if '========' in each_line:
+               count += 1
+               pickle_file_boy = open('boy_%d.txt' % count, 'wb')
+               pickle_file_girl = open('girl_%d.txt' % count, 'wb')
+               pickle.dump(boy_list, pickle_file_boy)
+               pickle.dump(girl_list, pickle_file_girl)
+               pickle_file_boy.close()
+               pickle_file_girl.close()
+               boy_list = []
+               girl_list = []
+       count += 1
+       pickle_file_boy = open('boy_%d.txt' % count, 'wb')
+       pickle_file_girl = open('girl_%d.txt' % count, 'wb')
+       pickle.dump(boy_list, pickle_file_boy)
+       pickle.dump(girl_list, pickle_file_girl)
+       pickle_file_boy.close()
+       pickle_file_girl.close()
+   
+       record_file.close()
+   
+   
+   extract('record.txt')
+   ```
+
+   
+
