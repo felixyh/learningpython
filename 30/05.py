@@ -26,16 +26,18 @@ def search_keyword(path, keyword):
         row_keyword = {}
 
         for row_number in range(len(f_lines)):
-            f_keyword_index = []
-            start_flag = 0
-            f_keyword_number = f_lines[row_number].find(keyword, start_flag)
+            f_keyword_pos_dic = []
+            start_search_pointer = 0
+            f_keyword_pos = f_lines[row_number].find(keyword, start_search_pointer)
 
-            while f_keyword_number >= 0:
-                f_keyword_index.append(f_keyword_number)
-                start_flag = f_keyword_number + 1
-                f_keyword_number = f_lines[row_number].find(keyword, start_flag)
-                if f_keyword_number == -1:
-                    row_keyword.setdefault(row_number+1, f_keyword_index)
+            while f_keyword_pos >= 0:
+                f_keyword_pos_dic.append(f_keyword_pos)
+                start_search_pointer = f_keyword_pos + 1
+                f_keyword_pos = f_lines[row_number].find(keyword, start_search_pointer)
+
+                # 在一行中，关键字查找结束
+                if f_keyword_pos == -1:
+                    row_keyword.setdefault(row_number+1, f_keyword_pos_dic)
                     if file_name in file_row_keyword.keys():
                         file_row_keyword[file_name] = row_keyword
                     else:
