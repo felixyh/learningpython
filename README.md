@@ -5725,3 +5725,443 @@ if __name__ == '__main__':
 
    
 
+# 032. 异常处理：你不可能总是对的
+
+## 知识点
+
+### Python 标准异常总结
+
+| 异常                  | 描述                                                         |
+| --------------------- | ------------------------------------------------------------ |
+| AssertionError        | 断言语句（assert）失败                                       |
+| AttributeError        | 尝试访问未知的对象属性                                       |
+| EOFError              | 用户输入文件末尾标志EOF（Ctrl+d）                            |
+| FloatingPointError    | 浮点计算错误                                                 |
+| GeneratorExit         | generator.close()方法被调用的时候                            |
+| ImportError           | 导入模块失败的时候                                           |
+| IndexError            | 索引超出序列的范围                                           |
+| KeyError              | 字典中查找一个不存在的关键字                                 |
+| KeyboardInterrupt     | 用户输入中断键（Ctrl+c）                                     |
+| MemoryError           | 内存溢出（可通过删除对象释放内存）                           |
+| NameError             | 尝试访问一个不存在的变量                                     |
+| NotImplementedError   | 尚未实现的方法                                               |
+| OSError               | 操作系统产生的异常（例如打开一个不存在的文件）               |
+| OverflowError         | 数值运算超出最大限制                                         |
+| ReferenceError        | 弱引用（weak reference）试图访问一个已经被垃圾回收机制回收了的对象 |
+| RuntimeError          | 一般的运行时错误                                             |
+| StopIteration         | 迭代器没有更多的值                                           |
+| SyntaxError           | Python的语法错误                                             |
+| IndentationError      | 缩进错误                                                     |
+| TabError              | Tab和空格混合使用                                            |
+| SystemError           | Python编译器系统错误                                         |
+| SystemExit            | Python编译器进程被关闭                                       |
+| TypeError             | 不同类型间的无效操作                                         |
+| UnboundLocalError     | 访问一个未初始化的本地变量（NameError的子类）                |
+| UnicodeError          | Unicode相关的错误（ValueError的子类）                        |
+| UnicodeEncodeError    | Unicode编码时的错误（UnicodeError的子类）                    |
+| UnicodeDecodeError    | Unicode解码时的错误（UnicodeError的子类）                    |
+| UnicodeTranslateError | Unicode转换时的错误（UnicodeError的子类）                    |
+| ValueError            | 传入无效的参数                                               |
+| ZeroDivisionError     | 除数为零                                                     |
+
+
+
+### 常见异常
+
+- AssertionError
+- AttributeError
+- IndexError
+- KeyError
+- NameError
+- SyntaxError
+- TypeError
+- ZeroDivisionError
+
+```python
+>>> mylist = ['小甲鱼是帅哥']
+>>> assert len(mylist) > 0
+>>> mylist.pop()
+'小甲鱼是帅哥'
+>>> mylist
+[]
+>>>
+>>> assert len(mylist) > 0
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AssertionError
+
+>>> mylist.fishc
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'list' object has no attribute 'fishc'
+    
+>>> my_list = [1, 2, 3]
+>>>
+>>> my_list[3]
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+IndexError: list index out of range
+
+>>> my_dict = {'one':1, 'two':2}
+>>>
+>>> my_dict['one']
+1
+>>> my_dict['four']
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+KeyError: 'four'
+>>>
+>>>
+>>> my_dict.get('four')
+
+>>> mylist1
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'mylist1' is not defined
+    
+>>> print 'I love FishC'
+  File "<stdin>", line 1
+    print 'I love FishC'
+          ^
+SyntaxError: Missing parentheses in call to 'print'. Did you mean print('I love FishC')?
+    
+>>> 1 + '1'
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+        
+>>> 1/0
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ZeroDivisionError: division by zero
+```
+
+
+
+## 课后作业
+
+### Quiz
+
+1. 结合你自身的编程经验，总结下[异常处理机制](https://so.csdn.net/so/search?q=异常处理机制&spm=1001.2101.3001.7020)的重要性？
+
+   由于环境的不确定性和用户操作的不可以预知性都可能导致程序出现各种问题，因此异常机制最重要的无非就是：增强程序的健壮性和用户体验，尽可能的捕获所有预知的异常并写好处理的代码，当异常出现的时候，程序自动消化并恢复正常（不至于崩溃）。|
+
+2. 请问以下代码是否会产生异常，如果会的话，请写出异常的名称
+
+   ```python
+   >>> my_list = [1, 2, 3, 4,,]
+   ```
+
+   SyntaxError
+
+3. 请问以下代码是否会产生异常，如果会的话，请写出异常的名称
+
+   ```python
+   >>> my_list = [1, 2, 3, 4, 5]
+   >>> print(my_list[len(my_list)])
+   ```
+
+   IndexError
+
+4. 请问以下代码是否会产生异常，如果会的话，请写出异常的名称
+
+   ```python
+   >>> my_list = [3, 5, 1, 4, 2]
+   >>> my_list.sorted()
+   ```
+
+   列表的排序方法叫 list.sort()，sorted() 是BIF。因此会引发 AttributeError: ‘list’ object has no attribute ‘sorted’ 异常。
+
+5. 请问以下代码是否会产生异常，如果会的话，请写出异常的名称
+
+   ```python
+   >>> my_dict = {'host': 'http://bbs.fishc.com', 'port': '80'}
+   >>> print(my_dict['server'])
+   ```
+
+   KeyError
+
+6. 请问以下代码是否会产生异常，如果会的话，请写出异常的名称
+
+   ```python
+   def my_fun(x, y):
+           print(x, y)
+   
+   my_fun(x=1, 2)
+   ```
+
+   SyntaxError 如果使用关键字参数的话，需要两个参数均使用关键字参数 my_fun(x=1, y=2)
+
+7. 请问以下代码是否会产生异常，如果会的话，请写出异常的名称
+
+   ```python
+   f = open('C:\\test.txt', wb)
+   f.write('I love FishC.com!\n')
+   f.close()
+   ```
+
+   NameError
+
+   注意 open() 第二个参数是字符串，应该 f = open(‘C:\test.txt’, ‘wb’) 。wb不加双引号 Python 还以为是变量名呢，往上一找，艾玛没找着……引发 NameError 异常。由于打开文件失败，接着下边一连串与 f 相关的均会报同样异常。
+
+8. 请问以下代码是否会产生异常，如果会的话，请写出异常的名称：
+
+   ```python
+   def my_fun1():
+           x = 5
+           def my_fun2():
+                   x *= x
+                   return x
+           return my_fun2()
+   
+   my_fun1()
+   ```
+
+   
+
+   
+
+   闭包的知识大家还记得不？ Python 认为在内部函数的 x 是局部变量的时候，外部函数的 x 就被屏蔽了起来，所以执行 x *= x 的时候，在右边根本就找不到局部变量 x 的值，因此报错。
+   在 Python3 之前没有直接的解决方案，只能间接地通过容器类型来存放，因为容器类型不是放在栈里，所以不会被“屏蔽”掉。容器类型这个词儿大家是不是似曾相识？我们之前介绍的字符串、列表、元祖，这些啥都可以往里的扔的就是容器类型啦。
+
+   ```python
+   def my_fun1():
+           x = [5]
+           def my_fun2():
+                   x[0] *= x[0]
+                   return x[0]
+           return my_fun2()
+   
+   my_fun1()
+   
+   123456789
+   ```
+
+   但是到了 Python3 的世界里，又有了不少的改进，如果我们希望在内部函数里可以修改外部函数里的局部变量的值，那么也有一个关键字可以使用，就是 nonlocal：
+
+   ```python
+   def my_fun1():
+           x = 5
+           def my_fun2():
+                   nonlocal x
+                   x *= x
+                   return x
+           return my_fun2()
+   
+   my_fun1()
+   ```
+
+### 
+
+# 033. 异常处理：你不可能总是对的-2
+
+## 知识点
+
+
+
+
+
+
+
+## 课后作业
+
+### Quiz
+
+1. 我们使用什么方法来处理程序中出现的异常？
+
+2. 一个 try 语句可以和多个 except 语句搭配吗？为什么？
+
+3. 你知道如何统一处理多类异常吗？
+
+4. except 后边如果不带任何异常类，Python 会捕获所有（try 语句块内）的异常并统一处理，但小甲鱼却不建议这么做，你知道为什么吗？
+
+5. 请恢复以下代码中马赛克挡住的内容，使得程序执行后可以按要求输出。
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200728115630241.png)
+
+   
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200728115633801.png)
+
+   
+
+### Practice
+
+1. 还记得我们第一个小游戏吗？只要用户输入非整型数据，程序立刻就会蹦出不和谐的异常信息然后崩溃。请使用刚学的[异常处理](https://so.csdn.net/so/search?q=异常处理&spm=1001.2101.3001.7020)方法修改以下程序，提高用户体验。
+
+2. input() 函数有可能产生两类异常：EOFError（文件末尾endoffile，当用户按下组合键 Ctrl+d 产生）和 KeyboardInterrupt（取消输入，当用户按下组合键 Ctrl+c 产生），再次修改上边代码，捕获处理 input() 的两类异常，提高用户体验
+
+3. 尝试一个新的函数 int_input()，当用户输入整数的时候正常返回，否则提示出错并要求重新输入
+
+4. 把文件关闭放在 finally 语句块中执行还是会出现问题，像下边这个代码，当前文件夹中并不存在"My_File.txt"这个文件，那么程序执行起来会发生什么事情呢？你有办法解决这个问题吗？
+
+   ```python
+   try:
+       f = open('My_File.txt') # 当前文件夹中并不存在"My_File.txt"这个文件T_T
+       print(f.read())
+   except OSError as reason:
+       print('出错啦：' + str(reason))
+   finally:
+   f.close()
+   
+   ```
+
+   
+
+# 034. 丰富的else语句及简洁的with语句
+
+## 知识点
+
+
+
+
+
+## 课后作业
+
+### Quiz
+
+1. 在 Python 中，else 语句能跟哪些语句进行搭配？
+
+2. 请问以下例子中，循环中的 break 语句会跳过 else 语句吗？
+
+   ```python
+   def showMaxFactor(num):
+       count = num // 2
+       while count > 1:
+           if num % count == 0:
+               print('%d最大的约数是%d' % (num, count))
+               break
+           count -= 1
+       else:
+           print('%d是素数！' % num)
+   
+   num = int(input('请输入一个数：'))
+   showMaxFactor(num)
+   ```
+
+   
+
+3. 请目测以下代码会打印什么内容？
+
+   ```python
+   try:
+           print('ABC')
+   except:
+           print('DEF')
+   else:
+           print('GHI')
+   finally:
+           print('JKL')
+   
+   ```
+
+   
+
+4. 使用什么语句可以使你不比再担心文件打开后却忘了关闭的尴尬？
+
+   ```python
+   try:
+       with open('data.txt', 'w') as f:
+           for each_line in f:
+               print(each_line)
+   except OSError as reason:
+       print('出错啦：' + str(reason))
+   ```
+
+   
+
+5. 使用 with 语句固然方便，但如果出现异常的话，文件还会自动正常关闭吗？
+
+6. 你可以换一种形式写出下边的伪代码吗？
+
+   ```python
+   with A() as a:
+       with B() as b:
+           suite
+   ```
+
+   
+
+### Practice
+
+1. 使用 with 语句改写以下代码，让 Python 去关心文件的打开与关闭吧。
+
+   ```python
+   def file_compare(file1, file2):
+       f1 = open(file1)
+       f2 = open(file2)
+       count = 0 # 统计行数
+       differ = [] # 统计不一样的数量
+   
+       for line1 in f1:
+           line2 = f2.readline()
+           count += 1
+           if line1 != line2:
+               differ.append(count)
+   
+       f1.close()
+       f2.close()
+       return differ
+   
+   file1 = input('请输入需要比较的头一个文件名：')
+   file2 = input('请输入需要比较的另一个文件名：')
+   
+   differ = file_compare(file1, file2)
+   
+   if len(differ) == 0:
+       print('两个文件完全一样！')
+   else:
+       print('两个文件共有【%d】处不同：' % len(differ))
+       for each in differ:
+           print('第 %d 行不一样' % each)
+   ```
+
+   
+
+2. 你可以利用异常的原理，修改下面的代码使得更高效率的实现吗？
+
+   ```python
+   print('|--- 欢迎进入通讯录程序 ---|')
+   print('|--- 1：查询联系人资料  ---|')
+   print('|--- 2：插入新的联系人  ---|')
+   print('|--- 3：删除已有联系人  ---|')
+   print('|--- 4：退出通讯录程序  ---|')
+   
+   contacts = dict()
+   
+   while 1:
+       instr = int(input('\n请输入相关的指令代码：'))
+       
+       if instr == 1:
+           name = input('请输入联系人姓名：')
+           if name in contacts:
+               print(name + ' : ' + contacts[name])
+           else:
+               print('您输入的姓名不再通讯录中！')
+   
+       if instr == 2:
+           name = input('请输入联系人姓名：')
+           if name in contacts:
+               print('您输入的姓名在通讯录中已存在 -->> ', end='')
+               print(name + ' : ' + contacts[name])
+               if input('是否修改用户资料（YES/NO）：') == 'YES':
+                   contacts[name] = input('请输入用户联系电话：')
+           else:
+               contacts[name] = input('请输入用户联系电话：')
+   
+       if instr == 3:
+           name = input('请输入联系人姓名：')
+           if name in contacts:
+               del(contacts[name])         # 也可以使用dict.pop()
+           else:
+               print('您输入的联系人不存在。')
+               
+       if instr == 4:
+           break
+   
+   print('|--- 感谢使用通讯录程序 ---|')
+   ```
+
+   
+
+   
