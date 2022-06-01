@@ -5951,17 +5951,164 @@ ZeroDivisionError: division by zero
    my_fun1()
    ```
 
-### 
+
 
 # 033. 异常处理：你不可能总是对的-2
 
 ## 知识点
 
+- try-except 语句 ： Try 语句一旦检测到异常，剩下的语句不会被执行
 
+  ```
+  try:
+  	检测范围
+  except Exceptions[as reason]
+  	出现异常（exception）后的处理代码
+  ```
 
+  **Example-1:**
 
+  ```python
+  try:
+      # OSError，尝试打开一个不存在的文件
+      f = open('我为什么是个文件.txt')
+      print(f.read())
+      f.close()
+  except OSError:
+      print('文件出错啦@')
+  ```
 
+  output:
 
+  ```
+  文件出错啦@ 
+  ```
+
+  **Example-2:**
+
+  ```python
+  try:
+      # OSError，尝试打开一个不存在的文件
+      f = open('我为什么是个文件.txt')
+      print(f.read())
+      f.close()
+  except OSError as reason:
+      print('文件出错啦@ \n错误的原因是：' + str(reason))
+  ```
+
+  output:
+
+  ```
+  文件出错啦@ 
+  错误的原因是：[Errno 2] No such file or directory: '我为什么是个文件.txt'
+  ```
+
+  **Example-3:**
+
+  ```python
+  try:
+      #TypeError
+      sum_umber = 1 + '1'
+      
+      # OSError，尝试打开一个不存在的文件
+      f = open('我为什么是个文件.txt')
+      print(f.read())
+      f.close()
+  except OSError as reason:
+      print('文件出错啦@ \n错误的原因是：' + str(reason))
+  except TypeError as reason:
+      print('类型出错啦@ \n错误的原因是：' + str(reason))
+  ```
+
+  output:
+
+  ```
+  类型出错啦@ 
+  错误的原因是：unsupported operand type(s) for +: 'int' and 'str'
+  ```
+
+  **注意由于检测到`sum_umber = 1 + '1'` 异常，会直接跳到`except TypeError as reason`, 主程序的剩余代码不会被执行**
+
+  
+
+  **Example-4:** 直接用except，无论什么出错，都能cover到;  ***但是太笼统，实际中并不推荐*** ，比如如果用户用`ctrl+c`想中断关闭程序，会由于KeyboardInterrupt 异常被捕获而触发出错Error，反而导致程序不会中断关闭
+
+  ```python
+  try:
+      int('abc')
+      sum_umber = 1 + '1'
+      f = open('我为什么是个文件.txt')
+      print(f.read())
+      f.close()
+  except:
+      print('出错啦@')
+  ```
+
+   output:
+
+  ```
+  出错啦@
+  ```
+
+  **Example-5:** 
+
+  ```python
+  try:
+      sum_umber = 1 + '1'
+      f = open('我为什么是个文件.txt')
+      print(f.read())
+      f.close()
+  except (OSError, TypeError):
+      print('文件出错啦@')
+  ```
+
+  output:
+
+  ```
+  出错啦@
+  ```
+
+  
+
+- try-finally 语句:  做收尾工作
+
+  ```
+  try:
+  	检测范围
+  except Exceptions[as reason]:
+  	出现异常（Exception）后的处理代码
+  finally:
+  	无论如何都会被执行的代码
+  ```
+
+  ```python
+  try:
+      f = open('我为什么是个文件.txt', 'w')
+      f.write('我存在了！')
+      sum_umber = 1 + '1'
+  
+  except (OSError, TypeError):
+      print('文件出错啦@')
+  finally:
+      f.close()
+  ```
+
+  
+
+- raise 语句触发异常
+
+  ```python
+  >>> 1/0
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  ZeroDivisionError: division by zero
+  >>> raise ZeroDivisionError
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  ZeroDivisionError
+  ```
+
+  
 
 ## 课后作业
 
