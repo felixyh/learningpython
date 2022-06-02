@@ -6361,8 +6361,6 @@ ZeroDivisionError: division by zero
 
 - with 语句会monitor 打开的文件，会自动关闭，不需要再用`f.close()` 
 
-- 
-
 
 
 ## 课后作业
@@ -6370,6 +6368,8 @@ ZeroDivisionError: division by zero
 ### Quiz
 
 1. 在 Python 中，else 语句能跟哪些语句进行搭配？
+
+   if, while, for 和 try-except
 
 2. 请问以下例子中，循环中的 break 语句会跳过 else 语句吗？
 
@@ -6388,7 +6388,7 @@ ZeroDivisionError: division by zero
    showMaxFactor(num)
    ```
 
-   
+   会，因为如果将 else 语句与循环语句（while 和 for 语句）进行搭配，那么只有在循环正常执行完成后才会执行 else 语句块的内容。
 
 3. 请目测以下代码会打印什么内容？
 
@@ -6404,9 +6404,13 @@ ZeroDivisionError: division by zero
    
    ```
 
-   
+   ABC
 
-4. 使用什么语句可以使你不比再担心文件打开后却忘了关闭的尴尬？
+   GHI
+
+   JKL
+
+4. 使用什么语句可以使你不必再担心文件打开后却忘了关闭的尴尬？
 
    ```python
    try:
@@ -6417,9 +6421,11 @@ ZeroDivisionError: division by zero
        print('出错啦：' + str(reason))
    ```
 
-   
+   使用with语句
 
 5. 使用 with 语句固然方便，但如果出现异常的话，文件还会自动正常关闭吗？
+
+   with 语句会自动处理文件的打开和关闭，如果中途出现异常，会执行清理代码，然后确保文件自动关闭。g
 
 6. 你可以换一种形式写出下边的伪代码吗？
 
@@ -6429,6 +6435,11 @@ ZeroDivisionError: division by zero
            suite
    ```
 
+   ```python
+   with A() as a, B() as b:
+       suite
+   ```
+   
    
 
 ### Practice
@@ -6451,6 +6462,38 @@ ZeroDivisionError: division by zero
        f1.close()
        f2.close()
        return differ
+   
+   file1 = input('请输入需要比较的头一个文件名：')
+   file2 = input('请输入需要比较的另一个文件名：')
+   
+   differ = file_compare(file1, file2)
+   
+   if len(differ) == 0:
+       print('两个文件完全一样！')
+   else:
+       print('两个文件共有【%d】处不同：' % len(differ))
+       for each in differ:
+           print('第 %d 行不一样' % each)
+   ```
+
+   使用with 之后的代码：
+
+   ```python
+   def file_compare(file1, file2):
+       # f1 = open(file1)
+       # f2 = open(file2)
+       with open(file1) as f1, open(file2) as f2:
+           count = 0  # 统计行数
+           differ = []  # 统计不一样的数量
+       
+           for line1 in f1:
+               line2 = f2.readline()
+               count += 1
+               if line1 != line2:
+                   differ.append(count)
+                   
+           return differ
+   
    
    file1 = input('请输入需要比较的头一个文件名：')
    file2 = input('请输入需要比较的另一个文件名：')
@@ -6511,6 +6554,51 @@ ZeroDivisionError: division by zero
    print('|--- 感谢使用通讯录程序 ---|')
    ```
 
+   使用条件语句的代码非常直观明了，但是效率不高。因为程序会两次访问字典的键，一次判断是否存在（例如 `if name in contacts）`，一次获得值（例如 `print(name + ' : ' + contacts[name])`）
+
+   如果利用异常解决方案，我们可以简单避开每次需要使用 in 判断是否键存在字典中的操作。因为只要当键不存在字典中时，会触发 KeyError 异常，利用此特性我们可以修改代码如下：
+   
+   ```python
+   print('|--- 欢迎进入通讯录程序 ---|')
+   print('|--- 1：查询联系人资料  ---|')
+   print('|--- 2：插入新的联系人  ---|')
+   print('|--- 3：删除已有联系人  ---|')
+   print('|--- 4：退出通讯录程序  ---|')
+   
+   contacts = dict()
+   
+   while 1:
+       instr = int(input('\n请输入相关的指令代码：'))
+   
+       if instr == 1:
+           name = input('请输入联系人姓名：')
+           try:
+               print(name + ' : ' + contacts[name])
+           except KeyError:
+               print('您输入的姓名不再通讯录中！')
+   
+       if instr == 2:
+           name = input('请输入联系人姓名：')
+           try:
+               print('您输入的姓名在通讯录中已存在 -->> ', end='')
+               print(name + ' : ' + contacts[name])
+               if input('是否修改用户资料（YES/NO）：') == 'YES':
+                   contacts[name] = input('请输入用户联系电话：')
+           except KeyError:
+               contacts[name] = input('请输入用户联系电话：')
+   
+       if instr == 3:
+           name = input('请输入联系人姓名：')
+           try:
+               del (contacts[name])  # 也可以使用dict.pop()
+           except KeyError:
+               print('您输入的联系人不存在。')
+   
+       if instr == 4:
+           break
+   
+   print('|--- 感谢使用通讯录程序 ---|')
+   ```
+   
    
 
-   
