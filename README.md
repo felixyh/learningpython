@@ -6116,11 +6116,19 @@ ZeroDivisionError: division by zero
 
 1. 我们使用什么方法来处理程序中出现的异常？
 
+   try-except-finally
+
 2. 一个 try 语句可以和多个 except 语句搭配吗？为什么？
+
+   可以，针对不同的errortype 可以使用不同的except的语句
 
 3. 你知道如何统一处理多类异常吗？
 
+   使用元祖：`except (OSError, TypeError):`
+
 4. except 后边如果不带任何异常类，Python 会捕获所有（try 语句块内）的异常并统一处理，但小甲鱼却不建议这么做，你知道为什么吗？
+
+   **太笼统，实际中并不推荐*** ，比如如果用户用`ctrl+c`想中断关闭程序，会由于KeyboardInterrupt 异常被捕获而触发出错Error，反而导致程序不会中断关闭
 
 5. 请恢复以下代码中马赛克挡住的内容，使得程序执行后可以按要求输出。
 
@@ -6130,6 +6138,17 @@ ZeroDivisionError: division by zero
 
    ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200728115633801.png)
 
+   ```python
+   try:
+       for i in range(3):
+           for j in range(3):
+               if i == 2:
+                   raise KeyboardInterrupt
+               print(i, j)
+   except KeyboardInterrupt:
+       print('推出啦！')
+   ```
+   
    
 
 ### Practice
