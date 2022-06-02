@@ -6290,7 +6290,78 @@ ZeroDivisionError: division by zero
 
 ## 知识点
 
+### 丰富的else语句
 
+- 要么怎样，要么不怎样
+
+  - if-else
+
+- 干完了能怎样，干不完就别想怎样 ；
+
+  - 和for 语句或者while 语句搭配
+
+    ```python
+    def showMaxFactor(number):
+        count = number // 2
+        while count > 1:
+            if number % count == 0:
+                print('%d 的最大约数是 %d' %(number, count))
+                break
+            count -= 1
+        else:
+            print('%d 是一个素数' % number)
+    
+    
+    num = int(input('please input a number:'))
+    showMaxFactor(num)
+    ```
+
+    
+
+- 没有问题，那就干吧
+
+  - 和异常处理搭配
+
+    ```python
+    try:
+        a = int(input('input a number:'))
+    except ValueError:
+        print('出错啦！')
+    else:
+        print(a)
+    ```
+
+    
+
+### 间接的with语句
+
+- 一个例子
+
+  ```python
+  try:
+      f = open('test.txt', 'w')
+      for each_line in f:
+          print(each_line)
+  except OSError as reason:
+      print('出错啦！' + str(reason))
+  finally:
+      f.close()
+  ```
+
+  使用with 改进之后：
+
+  ```python
+  try:
+      with open('test.txt', 'w') as f:
+          for each_line in f:
+              print(each_line)
+  except OSError as reason:
+      print('出错啦！' + str(reason))
+  ```
+
+- with 语句会monitor 打开的文件，会自动关闭，不需要再用`f.close()` 
+
+- 
 
 
 
