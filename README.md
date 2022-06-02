@@ -6130,7 +6130,11 @@ ZeroDivisionError: division by zero
 
    **太笼统，实际中并不推荐*** ，比如如果用户用`ctrl+c`想中断关闭程序，会由于KeyboardInterrupt 异常被捕获而触发出错Error，反而导致程序不会中断关闭
 
-5. 请恢复以下代码中马赛克挡住的内容，使得程序执行后可以按要求输出。
+5. 如果异常发生在成功打开文件后，Python 跳到 except 语句执行，并没有执行关闭文件的命令（用户写入文件的数据就可能没有保存起来），因此我们需要确保无论如何（就算出了异常退出）文件也要被关闭，我们应该怎么做呢？
+
+   使用finally 保证代码块一定会被执行； 如果 try 语句块中没有出现任何运行时错误，会跳过 except 语句块执行 finally 语句块的内容。
+
+6. 请恢复以下代码中马赛克挡住的内容，使得程序执行后可以按要求输出。
 
    ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200728115630241.png)
 
@@ -6148,16 +6152,113 @@ ZeroDivisionError: division by zero
    except KeyboardInterrupt:
        print('推出啦！')
    ```
-   
+
    
 
 ### Practice
 
 1. 还记得我们第一个小游戏吗？只要用户输入非整型数据，程序立刻就会蹦出不和谐的异常信息然后崩溃。请使用刚学的[异常处理](https://so.csdn.net/so/search?q=异常处理&spm=1001.2101.3001.7020)方法修改以下程序，提高用户体验。
 
+   ```python
+   import random
+   
+   secret = random.randint(1, 10)
+   print('------------------我爱鱼C工作室------------------')
+   temp = input("不妨猜一下小甲鱼现在心里想的是哪个数字：")
+   try:
+       guess = int(temp)
+   except ValueError as reason:
+       print('输入类型出错啦@ \n出错类型： %s' % str(reason))
+       guess = secret
+   while guess != secret:
+       temp = input("哎呀，猜错了，请重新输入吧：")
+       guess = int(temp)
+       if guess == secret:
+           print("我草，你是小甲鱼心里的蛔虫吗？！")
+           print("哼，猜中了也没有奖励！")
+       else:
+           if guess > secret:
+               print("哥，大了大了~~~")
+           else:
+               print("嘿，小了，小了~~~")
+   print("游戏结束，不玩啦^_^")
+   ```
+
+   
+
 2. input() 函数有可能产生两类异常：EOFError（文件末尾endoffile，当用户按下组合键 Ctrl+d 产生）和 KeyboardInterrupt（取消输入，当用户按下组合键 Ctrl+c 产生），再次修改上边代码，捕获处理 input() 的两类异常，提高用户体验
 
+   ```python
+   import random
+   
+   secret = random.randint(1, 10)
+   print('------------------我爱鱼C工作室------------------')
+   try:
+       temp = input("不妨猜一下小甲鱼现在心里想的是哪个数字：")
+       guess = int(temp)
+   except (KeyboardInterrupt, EOFError) as reason:
+       print('用户中断 \n原因： %s' % str(reason))
+       guess = secret
+   except ValueError as reason:
+       print('输入类型出错啦@ \n出错类型： %s' % str(reason))
+       guess = secret
+   
+   while guess != secret:
+       temp = input("哎呀，猜错了，请重新输入吧：")
+       guess = int(temp)
+       if guess == secret:
+           print("我草，你是小甲鱼心里的蛔虫吗？！")
+           print("哼，猜中了也没有奖励！")
+       else:
+           if guess > secret:
+               print("哥，大了大了~~~")
+           else:
+               print("嘿，小了，小了~~~")
+   print("游戏结束，不玩啦^_^")
+   ```
+
+   
+
 3. 尝试一个新的函数 int_input()，当用户输入整数的时候正常返回，否则提示出错并要求重新输入
+
+   ```python
+   # 尝试一个新的函数 int_input()，当用户输入整数的时候正常返回，否则提示出错并要求重新输入
+   
+   def int_input(msg=''):
+       flag = True
+       try:
+           number = input(msg)
+           temp = int(number)
+       except ValueError as reason:
+           print('输入类型出错啦@ \n出错类型： %s' % str(reason))
+           flag = False
+       while flag:
+           if isinstance(temp, int):
+               return temp
+               break
+           else:
+               temp = input('error captured, please input again\n')
+   
+   
+   print(int_input())
+   ```
+
+   优化的程序：
+
+   ```python
+   def int_input(prompt=''):
+       while True:
+           try:
+               int(input(prompt))
+               break
+           except ValueError:
+               print('出错，您输入的不是整数！')
+   
+   
+   int_input('请输入一个整数：')
+   ```
+
+   
 
 4. 把文件关闭放在 finally 语句块中执行还是会出现问题，像下边这个代码，当前文件夹中并不存在"My_File.txt"这个文件，那么程序执行起来会发生什么事情呢？你有办法解决这个问题吗？
 
@@ -6168,10 +6269,21 @@ ZeroDivisionError: division by zero
    except OSError as reason:
        print('出错啦：' + str(reason))
    finally:
-   f.close()
+   		f.close()
    
    ```
 
+   ```python
+   try:
+       f = open('My_File.txt')  # 当前文件夹中并不存在"My_File.txt"这个文件T_T
+       print(f.read())
+   except OSError as reason:
+       print('出错啦：' + str(reason))
+   finally:
+       if 'f' in locals():  # 如果文件对象变量存在当前局部变量符号表的话，说明打开成功
+           f.close()
+   ```
+   
    
 
 # 034. 丰富的else语句及简洁的with语句
