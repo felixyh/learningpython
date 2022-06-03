@@ -6602,3 +6602,97 @@ ZeroDivisionError: division by zero
    
    
 
+# 035. 图形用户界面入门：EasyGui
+
+## 知识点
+
+- 导入easygui模块 - 3种方法； 推荐使用`import easygui as g`
+
+  ```python
+  >>> import easygui
+  >>> 
+  >>> easygui.msgbox('hi')
+  'OK'
+  >>> from easygui import *
+  >>> 
+  >>> msgbox('hi')
+  'OK'
+  >>> 
+  >>> import easygui as g
+  >>> g.msgbox('hi')
+  'OK'
+  ```
+
+  
+
+- 使用easygui
+
+  - 建议不要在IDLE上运行Easygui
+
+  - 一个简单的例子
+
+    ```python
+    import easygui as g
+    import sys
+    
+    while 1:
+        g.msgbox("嗨，欢迎进入第一个界面小游戏")
+        msg = "请问你但愿在鱼C工做室学习到什么知识呢"
+        title="小游戏互动"
+        choices=["谈恋爱","编程","OOXX","琴棋书画"]
+        choice=g.choicebox(msg,title,choices)
+    
+        #note that we convert choice to string,in case
+        #the user cancelled the choice,and we got None
+        g.msgbox("你的选择是:"+str(choice),"结果")
+        msg="你但愿从新开始小游戏吗?"
+        title=" 请选择"
+        if g.ccbox(msg,title):  #show a Contiue/Cancel dialog
+            pass #user chose Contonue
+        else:
+            sys.exit(0)  #user chose Cancel
+    ```
+
+    
+
+- 
+
+
+
+## 课后作业
+
+### Quiz
+
+
+
+
+
+### Practice
+
+1. 先练练手，把我们的刚开始的那个猜数字小游戏加上界面吧?
+
+   ![img](https://img2018.cnblogs.com/blog/1442115/201812/1442115-20181209223851175-1976371461.png)
+
+2. 实现一个用于登记用户账号信息的界面（如果是带*号的必填项，要求一定要有输入并且不能是空格）
+
+   ![img](https://img2018.cnblogs.com/blog/1442115/201812/1442115-20181209223900309-1800557256.png)
+
+3. 提供一个文件浏览框，让用户选择需要打开的文本文件，打开并显示文件内容
+
+   ![img](https://img2018.cnblogs.com/blog/1442115/201812/1442115-20181209223908751-1868690450.png)
+
+   
+
+4. 在上一题的基础上增强功能：当用户点击“OK”按钮的时候，比较当前文件是否修改过，如果修改过，则提示“覆盖保存”、“放弃保存”或“另存为…”并实现相应的功能。
+
+   ![img](https://img2018.cnblogs.com/blog/1442115/201812/1442115-20181209223915368-1198875933.png)
+
+   
+
+5. 写一个程序统计你当前代码量的总和，并显示离十万行代码量还有多远？ 
+
+   要求一：递归搜索各个文件夹 要求二：显示各个类型的源文件和源代码数量 要求三：显示总行数与百分比
+
+   ![img](https://img2018.cnblogs.com/blog/1442115/201812/1442115-20181209223924767-1833087716.png)
+
+   
