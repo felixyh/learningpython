@@ -6965,17 +6965,9 @@ ZeroDivisionError: division by zero
 
     - 例如当按下键盘上的 “g” 键，将会选中的第一个以 “g” 开头的选项。再次按下 “g” 键，则会选中下一个以 “g” 开头的选项。在选中最后一个以 “g” 开头的选项的时候，再次按下 “g” 键将重新回到在列表的开头的第一个以 “g” 开头的选项。
     - 如果选项中没有以 “g” 开头的，则会选中字符排序在 “g” 之前（“f”）的那个字符开头的选项
-    - 如果选项中没有字符的排序在 “g” 之前的，那么在列表中第一个元素将会被选中。
+    - 如果选项中没有字符的排序在 “g” 之前的，那么在列表中第一个元素将会被选中。 [![img](https://img2020.cnblogs.com/blog/2096605/202007/2096605-20200714201858460-688480039.png)](https://img2020.cnblogs.com/blog/2096605/202007/2096605-20200714201858460-688480039.png)
 
-
-    
-    结合我们之前学习的文件操作，举个高大上的例子（*源代码在第35讲的课后作业中^_^*）：
-
-    [![img](https://img2020.cnblogs.com/blog/2096605/202007/2096605-20200714201858460-688480039.png)](https://img2020.cnblogs.com/blog/2096605/202007/2096605-20200714201858460-688480039.png)
-
-     
-
-     10.2.	multchoicebox()
+    10.2.	multchoicebox()
 
     *multchoicebox(msg='Pick an item', title='', choices=[], preselect=0, callback=None, run=True)*
 
@@ -6985,9 +6977,9 @@ ZeroDivisionError: division by zero
 
     [![img](https://img2020.cnblogs.com/blog/2096605/202007/2096605-20200714202023050-15996395.png)](https://img2020.cnblogs.com/blog/2096605/202007/2096605-20200714202023050-15996395.png)
 
-     
+    ​    
 
-    
+​	
 
 11. 让用户输入消息
 
@@ -7024,12 +7016,13 @@ ZeroDivisionError: division by zero
     - 如果用户取消操作，则返回域中的列表的值或者 None 值。
 
 
-    
+​    
     实现如下图（*源代码在第35讲的课后作业中^_^*）：
-
+    
     [![img](https://img2020.cnblogs.com/blog/2096605/202007/2096605-20200714202836630-1172692665.png)](https://img2020.cnblogs.com/blog/2096605/202007/2096605-20200714202836630-1172692665.png)
 
-     
+
+​     
 
 12. 让用户输入密码
 
@@ -7233,6 +7226,43 @@ except:
 1. 先练练手，把我们的刚开始的那个猜数字小游戏加上界面吧?
 
    ![img](https://img2018.cnblogs.com/blog/1442115/201812/1442115-20181209223851175-1976371461.png)
+
+   ```python
+   # 先练练手，把我们的刚开始的那个猜数字小游戏加上界面吧?
+   
+   import random
+   import sys
+   
+   import easygui as g
+   
+   g.msgbox("嗨，欢迎进入第一个界面小游戏^_^")
+   secret = random.randint(1, 10)
+   msg = "不妨猜一下小甲鱼现在心里想的是哪个数字（1~10）："
+   title = "数字小游戏"
+   guess = g.integerbox(msg, title, lowerbound=1, upperbound=10)
+   
+   # 如果选择cancel，直接退出
+   if not guess:
+       sys.exit()
+       
+   while True:
+       if guess == secret:
+           g.msgbox("我草，你是小甲鱼心里的蛔虫吗？！")
+           g.msgbox("哼，猜中了也没有奖励！")
+           break
+       else:
+           if guess > secret:
+               g.msgbox("哥，大了大了~~~")
+           else:
+               g.msgbox("嘿，小了，小了~~~")
+           guess = g.integerbox(msg, title, lowerbound=1, upperbound=10)
+   
+   g.msgbox("游戏结束，不玩啦^_^")
+   
+   
+   ```
+
+   
 
 2. 实现一个用于登记用户账号信息的界面（如果是带*号的必填项，要求一定要有输入并且不能是空格）
 
