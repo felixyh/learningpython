@@ -7011,14 +7011,12 @@ ZeroDivisionError: division by zero
 
     multenterbox() 为用户提供多个简单的输入框，要注意以下几点：
 
-    - 如果用户输入的值比选项少的话，则返回列表中的值用空字符串填充用户为输入的选项。
+    - 如果用户输入的值比选项少的话，则返回列表中的值用空字符串填充用户未输入的选项。
     - 如果用户输入的值比选项多的话，则返回的列表中的值将截断为选项的数量。
     - 如果用户取消操作，则返回域中的列表的值或者 None 值。
 
-
-​    
     实现如下图（*源代码在第35讲的课后作业中^_^*）：
-    
+
     [![img](https://img2020.cnblogs.com/blog/2096605/202007/2096605-20200714202836630-1172692665.png)](https://img2020.cnblogs.com/blog/2096605/202007/2096605-20200714202836630-1172692665.png)
 
 
@@ -7267,6 +7265,35 @@ except:
 2. 实现一个用于登记用户账号信息的界面（如果是带*号的必填项，要求一定要有输入并且不能是空格）
 
    ![img](https://img2018.cnblogs.com/blog/1442115/201812/1442115-20181209223900309-1800557256.png)
+
+   ```python
+   # 实现一个用于登记用户账号信息的界面（如果是带*号的必填项，要求一定要有输入并且不能是空格）
+   
+   import easygui as g
+   import sys
+   
+   
+   message = "【真实姓名】为必填项 \n【手机号码】为必填项 \n【*E-mail地址】为必填项 "
+   title = "账号中心"
+   fields = ['*用户名', '*真实姓名', '固定电话', '*手机号码',  'QQ', '*E-mail']
+   result = g.multenterbox(msg=message, title=title, fields=fields, values=['小甲鱼'], callback=None, run=True)
+   while True:
+       if not result:
+           sys.exit()
+       elif result[1].isspace() or not result[1]:
+           g.msgbox('【真实姓名】为必填项, 一定要有输入并且不能是空格')
+       elif result[3].isspace() or not result[3]:
+           g.msgbox('【手机号码】为必填项, 一定要有输入并且不能是空格')
+       elif result[5].isspace() or not result[5]:
+           g.msgbox('【E-mail】为必填项, 一定要有输入并且不能是空格')
+       else:
+           break
+       result = g.multenterbox(msg=message, title=title, fields=fields, values=['小甲鱼'], callback=None, run=True)
+   
+   g.msgbox('登记成功@！')
+   ```
+
+   
 
 3. 提供一个文件浏览框，让用户选择需要打开的文本文件，打开并显示文件内容
 
