@@ -33,12 +33,21 @@ f_path = g.diropenbox(msg=None, title=None, default=None)
 
 if f_path:
     total_lines, ext_row_line = code_cal(f_path)
-    message = '您目前共累计编写了 %d 行代码，' % total_lines + '完成进度 {:.2%} \n'.format(total_lines/100000) + ' 离 %d 行代码还差 %d 行，请继续努力' % ( 100000, 100000-total_lines)
+    message = '您目前共累计编写了 {0} 行代码，完成进度 {1:.2%} \n 离 {2} 行代码还差 {3} 行，请继续努力'.format(
+        total_lines,
+        total_lines/100000,
+        100000,
+        100000-total_lines
+    )
     text_title = '统计结果'
     text_content = ''
     for each in ext_row_line.keys():
-        text_content += '[%s]源文件 %d 个，源代码 %d 行 \n' % (each, ext_row_line[each][0], ext_row_line[each][1])
-    g.textbox(msg=message, title=text_title, text=text_content, codebox='', callback=None, run=True)
+        text_content += '[{0}]源文件 {1} 个，源代码 {2} 行 \n'.format(
+            each,
+            ext_row_line[each][0],
+            ext_row_line[each][1]
+        )
+    g.textbox(msg=message, title=text_title, text=text_content)
 else:
     sys.exit()
 
