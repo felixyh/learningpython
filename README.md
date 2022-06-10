@@ -7483,10 +7483,195 @@ except:
   turtle_01.sleep()
   ```
 
+  ```python
+  >>> from example_1 import *
+  >>> 
+  >>> tt = Turtle()
+  >>> Turtle()
+  <example_1.Turtle object at 0x102adb370>
+  >>> tt.climb()
+  我正很努力的往前爬。。。
+  >>> tt.bite()
+  咬死你，咬死你。。。
+  >>> tt.sleep()
+  困了，睡了，晚安。Zzzz
   
+  ```
 
-- 封装
+- OO(object oriented) 面向对象的特征
 
-- 继承
+  - 封装
 
-- 多态
+    从表面上看对象封装了属性（变量）和方法（函数），封装更是一种信息隐蔽技术；
+
+    列表事实上就是一个对象，提供了若干种方法；但是我们不知道列表的方法是如何实现的，也不知道有多少变量，这就是封装
+
+    ```
+    >>> list1 = [2, 1, 7, 5, 3]
+    >>> list1.sort()
+    >>> list1
+    [1, 2, 3, 5, 7]
+    >>> list1.append(9)
+    >>> list1
+    [1, 2, 3, 5, 7, 9]
+    
+    ```
+
+    
+
+  - 继承
+
+    子类共享父类的数据和方法的机制;
+
+    下面这个例子就是定义一个子类：MyList 继承父类list 的所有数据和方法
+
+    ```
+    >>> class MyList(list):
+    ...     pass
+    ... 
+    >>> list2 = MyList()
+    >>> list2.append(3)
+    >>> list2.append(5)
+    >>> list2.append(7)
+    >>> list2
+    [3, 5, 7]
+    
+    >>> list2.reverse()
+    >>> list2
+    [7, 5, 3]
+    
+    ```
+
+    
+
+  - 多态
+
+    不同对象对同一方法响应不同的行动
+
+    下面这个例子，都调用同样一个名字为fun的方法，但是实现不一样
+
+    ```python
+    >>> class A:
+    ...     def fun(self):
+    ...             print('我是小A')
+    ... 
+    >>> class B:
+    ...     def fun(self):
+    ...             print('我是小B')
+    ... 
+    >>> a = A()
+    >>> b = B()
+    >>> 
+    >>> a.fun()
+    我是小A
+    >>> b.fun()
+    我是小B
+    
+    ```
+
+    
+
+## 课后作业
+
+### Quiz
+
+1. 对象中的属性和方法，在编程中实际是什么？
+
+   变量和函数
+
+2. 类和对象是什么关系呢？
+
+   类和对象的关系就如同模具和用这个模具制作出的物品之间的关系。一个类为它的全部对象给出了一个统一的定义，而他的对象则是符合这种定义的一个实体，因此类和对象的关系就是抽象和具体的关系。对象是类的实例化。
+
+3. 如果我们定义了一个猫类，那你能想象出由“猫”类实例化的对象有哪些？
+
+   叮当猫，Tom猫，Hello Kitty```````
+
+4. 类的定义有些时候或许不那么“拟物”，有时候会抽象一些，例如我们定义一个矩形类，那你会为此添加哪些属性和方法呢？
+
+   属性：长，宽
+
+   方法：计算周长，面积
+
+5. 类的属性定义应该尽可能抽象还是尽可能具体？
+
+   抽象
+
+6. 请用一句话概括面向对象的几个特征？
+
+   封装：对外部隐藏对象的工作细节；
+
+   继承：子类自动共享父类之间数据和方法的机制；
+
+   多态：可以对不同类的对象调用相同的方法，产生不同的结果。
+
+7. 函数和方法有什么区别？
+
+   函数和方法几乎一样。主要有一点区别在于方法默认有一个self参数。 
+
+### Practice
+
+1. 按照以下提示尝试定义一个Person类并生成类实例对象。
+
+   属性：姓名（默认姓名为“小甲鱼”）
+
+   方法：打印姓名
+
+   提示：方法中对属性的引用形式需加上self，如self.name
+
+   ```python
+   # 按照以下提示尝试定义一个Person类并生成类实例对象。
+   # 属性：姓名（默认姓名为“小甲鱼”）
+   # 方法：打印姓名
+   # 提示：方法中对属性的引用形式需加上self，如self.name
+   
+   class Person:
+       name = '小甲鱼'
+   
+       def printname(self):
+           print(self.name)
+   
+   
+   p1 = Person()
+   p1.name = 'FishC'
+   p1.printname()
+   ```
+
+   
+
+2. 按照以下提示尝试定义一个矩阵类并生成类实例对象。
+
+   属性：长和宽
+
+   方法：设置长和宽->setRect(self)，获得长和宽->getRect(self)，获得面积->getArea(self)
+
+   提示：方法中对属性的引用形式需加上self，如self.width
+
+   ![img](https://img2020.cnblogs.com/blog/1986620/202007/1986620-20200730235936219-1196502492.png)
+
+   ```python
+   class Rectangle:
+   
+       def __init__(self):
+           self.width = None
+           self.length = None
+   
+       def set_rect(self):
+           print('请输入矩形的长和宽...')
+           self.length = float(input('长：'))
+           self.width = float(input('宽：'))
+   
+       def get_rect(self):
+           print('这个矩形的长是：{0:.2f} 宽是：{1:.2f}'.format(self.length, self.width))
+   
+       def get_area(self):
+           return self.length * self.width
+   
+   
+   rect = Rectangle()
+   rect.set_rect()
+   rect.get_rect()
+   rect.get_area()
+   ```
+
+   
