@@ -5265,7 +5265,7 @@ if __name__ == '__main__':
   >>> os.listdir(os.pardir)
   ['03', '04', '05', '02', '20', '18', '29', '16', '28', '17', '10', '19', '26', 'test.py', 'README.md', '09', '30', '01', '06', '.git', '24', '23', '15', '14', '22', '.idea', '25']
   >>> os.listdir(os.pardir+ '/29')
-  ['05.py', 'task.py', 'example-2.py', '01-1.py', '04.py', 'boy_1.txt', 'boy_2.txt', 'boy_3.txt', '03.py', 'girl_1.txt', '02-1.py', 'girl_2.txt', '02.py', 'input_nonstop.py', 'girl_3.txt']
+  ['05.py', 'task.py', 'example_2.py', '01_1.py', '04.py', 'boy_1.txt', 'boy_2.txt', 'boy_3.txt', '03.py', 'girl_1.txt', '02_1.py', 'girl_2.txt', '02.py', 'input_nonstop.py', 'girl_3.txt']
   
   >>> os.name
   'posix'
@@ -7446,3 +7446,47 @@ except:
    
    
 
+# 036. 类和对象：给大家介绍对象
+
+## 知识点
+
+- 对象 = 属性 + 方法
+
+  ```python
+  class Turtle: # python中的类名约定以大写字母开头； 函数名以小写字母开头
+      """关于类的一个简单的例子"""
+      # 属性
+      color = 'green'
+      weight = 10
+      legs = 4
+      shell = True
+      mouth = '大嘴'
+  
+      # 方法
+      def climb(self):
+          print('我正很努力的往前爬。。。')
+  
+      def run(self):
+          print('我正飞快的向前跑。。。')
+  
+      def bite(self):
+          print('咬死你，咬死你。。。')
+  
+      def eat(self):
+          print('有的吃，真满足！')
+  
+      def sleep(self):
+          print('困了，睡了，晚安。Zzzz')
+          
+  # 类的实例化
+  turtle_01 = Turtle()
+  turtle_01.sleep()
+  ```
+
+  
+
+- 封装
+
+- 继承
+
+- 多态
