@@ -7675,3 +7675,20 @@ except:
    ```
 
    
+
+# 037. 类和对象：面向对象编程
+
+## 知识点
+
+### Self 是什么？
+
+- python的self 相当于C/C++ 的指针
+
+- 类是图纸，对象就是根据图纸建造出来的房子，self 相当于每个房子的门牌号
+
+  ![image-20220611154804660](/Users/felix/Library/Application Support/typora-user-images/image-20220611154804660.png)
+
+
+
+## 课后作业
+
