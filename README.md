@@ -7686,9 +7686,175 @@ except:
 
 - 类是图纸，对象就是根据图纸建造出来的房子，self 相当于每个房子的门牌号
 
-  ![image-20220611154804660](/Users/felix/Library/Application Support/typora-user-images/image-20220611154804660.png)
+- 当一个对象的方法被调用的时候，对象会将自身作为第一个参数传给self参数，接收到self的时候，python就知道是哪个对象在调用这个方法了
+
+  ```python
+  >>> class Ball:
+  ...     def setName(self, name):
+  ...             self.name = name
+  ...     def kick(self):
+  ...             print('my name is %s, fuck, who kick me#@#' % self.name)
+  ... 
+  >>> a = Ball()
+  >>> a.setName('球A')
+  >>> b = Ball()
+  >>> b.setName('球B')
+  >>> a.kick()
+  my name is 球A, fuck, who kick me#@#
+  >>> b.kick()
+  my name is 球B, fuck, who kick me#@#
+  ```
+
+### Python的魔法方法
+
+魔法方法都是被双下划线包围
+
+- `__init__(self, param1, param2...)` 
+
+  对象创建完后，在初始化实例对象时，该魔法方法会自动调用。可以根据需要自行改写该方法：
+
+  ```python
+  >>> class Ball:
+  ...     def __init__(self, name):
+  ...             self.name = name
+  ...     def kick(self):
+  ...             print('my name is %s, fuck, who kick me#@#' % self.name)
+  ... 
+  >>> c = Ball('土豆')
+  >>> c.kick()
+  my name is 土豆, fuck, who kick me#@#
+  ```
+
+### 公有和私有
+
+- 公有：
+
+  - 能直接被访问的属性和方法都是公有的。
+
+  - 默认对象的属性都是公有的
+
+    ```python
+    >>> class Person:
+    ...     name = 'FishC'
+    ... 
+    >>> p = Person()
+    >>> p.name
+    'FishC'
+    ```
+
+- 私有：
+
+  - name mangling - 名字改编/名字重整
+
+  - 在python中定义私有变量只需要在变量名或者函数名前加上“__” 两个下划线，那么这个函数或者变量就成为私有的了
+
+  - 要访问私有变量，可以定义一个方法，从内部self 访问隐藏的变量并返回
+
+    ```python
+    >>> p = Person()
+    >>> p.__name
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    AttributeError: 'Person' object has no attribute '__name'
+    >>> p.name
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    AttributeError: 'Person' object has no attribute 'name'
+    >>> 
+    >>> 
+    >>> class Person:
+    ...     __name = 'FishC'
+    ...     def getName(self):
+    ...             return self.__name
+    ... 
+    >>> p = Person()
+    >>> p.__name
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    AttributeError: 'Person' object has no attribute '__name'
+      
+      
+    >>> p.getName()
+    'FishC'
+    ```
+
+    
+
+  
+
+  - name mangling的背后原理是，python把双下划线的变量改成了`_类名__变量名` ，所以可以通过这种格式访问私有变量。所以python 类的私有变量其实是"伪私有"
+
+    ```python
+    >>> p._Person__name
+    'FishC'
+    ```
+
+    
 
 
 
 ## 课后作业
 
+### Quiz
+
+1. 以下代码体现了面向对象编程的什么特征？ =z;Hh
+
+   ```python
+   >>> "FishC.com".count('o')
+   1
+   >>> [1, 1, 2, 3, 5, 8].count(1)
+   2
+   >>> (0, 2, 4, 8, 12, 18).count(1)
+   0
+   ```
+
+
+
+2. 当程序员不想把同一段代码写几次，他们发明了函数解决了这种情况。当程序员已经有了一个类，而又想建立一个非常相近的新类，他们会怎么做呢？
+
+3. self参数的作用是什么？
+
+4. 如果我们不希望对象的属性或方法被外部直接引用，我们可以怎么做？
+
+5. 类在实例化后哪个方法会被自动调用？
+
+6. 请解释下边代码错误的原因： Powered by [bbs.fishc.com](http://bbs.fishc.com/)
+
+   ```python
+   class MyClass:
+           name = 'FishC'
+           def myFun(self):
+                   print("Hello FishC!")
+                   
+   >>> MyClass.name
+   'FishC'
+   >>> MyClass.myFun()
+   Traceback (most recent call last):
+     File "<pyshell#6>", line 1, in <module>
+       MyClass.myFun()
+   TypeError: myFun() missing 1 required positional argument: 'self'
+   >>>
+   ```
+
+
+
+### Practice
+
+1. 按照以下要求定义一个游乐园门票的类，并尝试计算2个成人+1个小孩平日票价。
+   - 平日票价100元
+   - 周末票价为平日的120%
+   - 儿童半票
+
+
+
+2. 游戏编程：按以下要求定义一个乌龟类和鱼类并尝试编写游戏。（初学者不一定可以完整实现，但请务必先自己动手，你会从中学习到很多知识的^_^）
+   - 假设游戏场景为范围（x, y）为0<=x<=10，0<=y<=10
+   - 游戏生成1只乌龟和10条鱼
+   - 它们的移动方向均随机
+   - 乌龟的最大移动能力是2（Ta可以随机选择1还是2移动），鱼儿的最大移动能力是1
+   - 当移动到场景边缘，自动向反方向移动
+   - 乌龟初始化体力为100（上限）
+   - 乌龟每移动一次，体力消耗1
+   - 当乌龟和鱼坐标重叠，乌龟吃掉鱼，乌龟体力增加20
+   - 鱼暂不计算体力
+   - 当乌龟体力值为0（挂掉）或者鱼儿的数量为0游戏结束
