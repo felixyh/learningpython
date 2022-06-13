@@ -7797,7 +7797,7 @@ except:
 
 ### Quiz
 
-1. 以下代码体现了面向对象编程的什么特征？ =z;Hh
+1. 以下代码体现了面向对象编程的什么特征？
 
    ```python
    >>> "FishC.com".count('o')
@@ -7808,17 +7808,25 @@ except:
    0
    ```
 
-
+​		多态
 
 2. 当程序员不想把同一段代码写几次，他们发明了函数解决了这种情况。当程序员已经有了一个类，而又想建立一个非常相近的新类，他们会怎么做呢？
 
+   可以采用集成的方法。 `class Newclass(Oldclass)`
+
 3. self参数的作用是什么？
+
+   当一个对象的方法被调用的时候，对象会将自身作为第一个参数传给self参数，接收到self的时候，python就知道是哪个对象在调用这个方法了
 
 4. 如果我们不希望对象的属性或方法被外部直接引用，我们可以怎么做？
 
+   在变量名或者函数名前加上“__” 两个下划线，那么这个函数或者变量就成为私有的了
+
 5. 类在实例化后哪个方法会被自动调用？
 
-6. 请解释下边代码错误的原因： Powered by [bbs.fishc.com](http://bbs.fishc.com/)
+   `__init__(self, param1, param2...)` 我们称之为魔法方法。你可以重写这个方法，为对象定制初始化方案
+
+6. 请解释下边代码错误的原因： 
 
    ```python
    class MyClass:
@@ -7836,7 +7844,11 @@ except:
    >>>
    ```
 
+   
 
+   首先你要明白类、类对象、实例对象是三个不同的名词
+   我们常说的类指的是类定义，由于“Python无处不对象”，所以当类定义完之后，自然就是类对象。在这个时候，你可以对类的属性（变量）进行直接访问（MyClass.name）。
+   一个类可以实例化出无数的对象（实例对象），Python 为了区分是哪个实例对象调用了方法，**于是要求方法必须绑定（通过 self 参数）才能调用**。而未实例化的类对象直接调用方法，因为缺少 self 参数，所以就会报错。
 
 ### Practice
 
@@ -7845,7 +7857,25 @@ except:
    - 周末票价为平日的120%
    - 儿童半票
 
+   ```python
+   class Ticket:
+       def __init__(self, day, adult_count, child_count):
+           self.day = day
+           self.adult_count = adult_count
+           self.child_count = child_count
+   
+       def price(self):
+           if self.day == "WD":
+               print('总票价为：{:.2f}'.format(100 * self.adult_count + 50 * self.child_count))
+           elif self.day == "WED":
+               print('总票价为：{:.2f}'.format((100 * self.adult_count + 50 * self.child_count) * 1.2))
+   
+   
+   ticket1 = Ticket('WD', 2, 1)
+   ticket1.price()
+   ```
 
+   
 
 2. 游戏编程：按以下要求定义一个乌龟类和鱼类并尝试编写游戏。（初学者不一定可以完整实现，但请务必先自己动手，你会从中学习到很多知识的^_^）
    - 假设游戏场景为范围（x, y）为0<=x<=10，0<=y<=10
@@ -7858,3 +7888,9 @@ except:
    - 当乌龟和鱼坐标重叠，乌龟吃掉鱼，乌龟体力增加20
    - 鱼暂不计算体力
    - 当乌龟体力值为0（挂掉）或者鱼儿的数量为0游戏结束
+
+   ```python
+   
+   ```
+
+   
