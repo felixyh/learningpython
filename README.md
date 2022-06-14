@@ -8041,3 +8041,53 @@ except:
    ```
 
    
+
+# 038. 类和对象：继承
+
+## 知识点
+
+- 继承语法：`class DerivedClassName(BaseClassName):`，被继承的类叫做父类，基类或超类，继承者叫做子类
+
+  ```python
+  >>> class Parent:
+  ...     def hello(self):
+  ...             print('正在调用父类的方法。。')
+  ... 
+  >>> class Child(Parent):
+  ...     pass
+  ... 
+  >>> p = Parent()
+  >>> p.hello()
+  正在调用父类的方法。。
+  >>> 
+  >>> c = Child()
+  >>> c.hello()
+  正在调用父类的方法。
+  ```
+
+  
+
+- 如果子类中定了和父类相同的属性或者方法，则会自动覆盖父类对应的属性或方法
+
+  ```python
+  >>> c = Child()
+  >>> c.hello()
+  正在调用父类的方法。。
+  >>> class Child(Parent):
+  ...     def hello(self):
+  ...             print('正在调用子类的方法。。')
+  ... 
+  >>> 
+  >>> c = Child()
+  >>> c.hello()
+  正在调用子类的方法。
+  ```
+
+  
+
+- 
+
+
+
+## 课后作业
+
