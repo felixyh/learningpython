@@ -8085,7 +8085,148 @@ except:
 
   
 
-- 
+- 一个例子：
+
+  ```python
+  import random as r
+  
+  
+  class Fish:
+      def __init__(self):
+          self.x = r.randint(0, 10)
+          self.y = r.randint(0, 10)
+  
+      def move(self):
+          self.x -= 1
+          print('我现在的位置是：', self.x, self.y)
+  
+  
+  class GlodFish(Fish):
+      pass
+  
+  
+  class Salmon(Fish):
+      pass
+  
+  
+  class Shark(Fish):
+      def __init__(self):
+          self.hungary = True
+      
+      def eat(self):
+          if self.hungary:
+              print('我好饿，吃，吃，吃')
+              self.hungary = False
+          else:
+              print('我已经吃饱啦！')
+  ```
+
+  输出：
+
+  ```python
+  >>> goldfish = GoldFish()
+  >>> goldfish.move()
+  我现在的位置是： 9 8
+  >>> goldfish.move()
+  我现在的位置是： 8 8
+  >>> goldfish.move()
+  我现在的位置是： 7 8
+  >>> goldfish.move()
+  我现在的位置是： 6 8
+  >>> 
+  >>> shark = Shark()
+  >>> shark.eat()
+  我好饿，吃，吃，吃
+  >>> shark.eat()
+  我已经吃饱啦！
+  >>> shark.move()
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+    File "/Users/felix_yang/PycharmProjects/learningpython/38/example_01.py", line 10, in move
+      self.x -= 1
+  AttributeError: 'Shark' object has no attribute 'x'
+  >>> 
+  
+  ```
+
+  上述例子中，shark 对象调用父类的move 方法时报错，是因为shark字类中重新定义了 `__init__(self)`方法，导致父类中的 `__init__(self)`方法被覆盖，造成找不到x 属性
+
+  要解决这个问题可以有如下两种方法：
+
+  - 调用未绑定的父类方法
+
+    ```python
+    class Shark(Fish):
+        def __init__(self):
+          	# 调用未绑定的父类方法
+            Fish.__init__(self)
+            self.hungary = True
+        
+        def eat(self):
+            if self.hungary:
+                print('我好饿，吃，吃，吃')
+                self.hungary = False
+            else:
+                print('我已经吃饱啦！')
+    ```
+
+    
+
+  - super()
+
+    推荐使用，super 函数会自动找到基类的方法，不用给定任何基类的名字，并且传入self 参数
+
+    ```python
+    class Shark(Fish):
+        def __init__(self):
+            # 使用super函数
+            super().__init__()
+            self.hungary = True
+    ```
+
+    
+
+  - 输出
+
+    ```
+    >>> shark = Shark()
+    >>> shark.move()
+    我现在的位置是： 3 9
+    ```
+
+- 多重继承
+
+  同时继承多个基类的属性和方法：`class DerivedClassName(Base1, Base2, Base3)`
+
+  ```python
+  class Base1:
+      def foo1(self):
+          print('我代表基类 base1')
+  
+  
+  class Base2:
+      def foo2(self):
+          print('我代表基类 base2')
+  
+  
+  class Child(Base1, Base2):
+      pass
+  ```
+
+  
+
+  ```python
+  >>> child = Child()
+  >>> child.foo1
+  <bound method Base1.foo1 of <example_02.Child object at 0x10a5a98e0>>
+  >>> child.foo1()
+  我代表基类 base1
+  >>> child.foo2()
+  我代表基类 base2
+  
+  ```
+
+  
 
 
 
