@@ -11,10 +11,63 @@
 # - 鱼暂不计算体力
 # - 当乌龟体力值为0（挂掉）或者鱼儿的数量为0, 游戏结束
 
+import random as r
+
 
 class Turtle:
-    pass
+    def __init__(self, energy, position):
+        self.XY_list = ['X', 'Y']
+        self.direction_list = ['forward', 'backward']
+        self.move_param = None
+        self.move_points = None
+        self.energy = 100
+        self.position = {self.XY_list[0]: r.randint(0, 10), self.XY_list[1]: r.randint(0, 10)}
+        print('Turtle initial position is [{:d}, {:d}]'.format(self.position['X'], self.position['Y']))
+
+    def move(self):
+        self.move_points = r.randint(1, 2)
+        self.move_param = (r.choice(self.XY_list), r.choice(self.direction_list))
+        if self.move_param[1] == 'forward':
+            self.position[self.move_param[0]] += self.move_points
+            if self.position[self.move_param[0]] > 10:
+                self.position[self.move_param[0]] = 20 - self.position[self.move_param[0]]
+        else:
+            self.position[self.move_param[0]] -= self.move_points
+            if self.position[self.move_param[0]] < 0:
+                self.position[self.move_param[0]] = 0 - self.position[self.move_param[0]]
+        return self.position
+        print('Turtle moved once, now new position is [{:d}, {:d}]'.format(self.position['X'], self.position['Y']))
 
 
 class Fish:
-    pass
+    def __init__(self):
+        self.XY_list = ['X', 'Y']
+        self.direction_list = ['forward', 'backward']
+        self.position = {self.XY_list[0]: r.randint(0, 10), self.XY_list[1]: r.randint(0, 10)}
+        self.move_param = None
+        self.move_points = 1
+
+    def move(self):
+        self.move_param = (r.choice(self.XY_list), r.choice(self.direction_list))
+        if self.move_param[1] == 'forward':
+            self.position[self.move_param[0]] += self.move_points
+            if self.position[self.move_param[0]] > 10:
+                self.position[self.move_param[0]] = 20 - self.position[self.move_param[0]]
+        else:
+            self.position[self.move_param[0]] -= self.move_points
+            if self.position[self.move_param[0]] < 0:
+                self.position[self.move_param[0]] = 0 - self.position[self.move_param[0]]
+        return self.position
+        print('Fish moved once, now new position is [{:d}, {:d}]'.format(self.position['X'], self.position['Y']))
+
+
+# 生成10条小鱼和1只乌龟
+turtle = Turtle()
+fish = []
+for i in range(0, 10):
+    fish[i] = Fish()
+
+
+
+
+
