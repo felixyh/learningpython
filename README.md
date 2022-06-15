@@ -5265,7 +5265,7 @@ if __name__ == '__main__':
   >>> os.listdir(os.pardir)
   ['03', '04', '05', '02', '20', '18', '29', '16', '28', '17', '10', '19', '26', 'test.py', 'README.md', '09', '30', '01', '06', '.git', '24', '23', '15', '14', '22', '.idea', '25']
   >>> os.listdir(os.pardir+ '/29')
-  ['05.py', 'task.py', 'example_2.py', '01_1.py', '04.py', 'boy_1.txt', 'boy_2.txt', 'boy_3.txt', '03.py', 'girl_1.txt', '02_1.py', 'girl_2.txt', '02.py', 'input_nonstop.py', 'girl_3.txt']
+  ['05.py', 'task.py', 'example_2.py', '01_1.py', '04.py', 'boy_1.txt', 'boy_2.txt', 'boy_3.txt', '03.py', 'girl_1.txt', '02_1.py', 'girl_2.txt', 'p_02.py', 'input_nonstop.py', 'girl_3.txt']
   
   >>> os.name
   'posix'
@@ -8366,9 +8366,287 @@ except:
    line = Line(point_a, point_b)
    print(line.getLen())
    ```
-   
-   
+
+
 
 2. 展示一个你的作品：你已经掌握了 Python 大部分的基础知识，要开始学会自食其力了！请花一个星期做一个你能做出来的最好的作品（可以是游戏、应用软件、脚本），使用上你学过的任何东西（类，函数，字典，列表……）来改进你的程序。
 
    
+
+# 039. 类和对象：拾遗
+
+## 知识点
+
+- 组合： 把类的实例化放到一个新类里面，这样也就不需要继承了。解决了没有继承关系，也需要组合使用的问题
+
+  python的继承很有用，但容易把代码复杂化以及依赖隐含继承。因此，可以用组合代替。直接在类定义中把需要的类放进去实例化就可以了
+
+  那什么时候用组合，什么时候用继承呢？
+
+  - 组合：“有一个”，例如，水池里有一个乌龟，天上有一个鸟。
+  - 继承：“是一个”，例如，青瓜是瓜，女人是人，鲨鱼是鱼。
+
+  例子：现在要定一个类，叫水池，水池里要有乌龟和鱼
+
+  ```python
+  class Turtle:
+      def __init__(self, x):
+          self.number = x
+  
+  
+  class Fish:
+      def __init__(self, x):
+          self.number = x
+  
+  
+  class Pool:
+      def __init__(self, x, y):
+          self.turtle = Turtle(x)
+          self.fish = Fish(y)
+  
+      def print_num(self):
+          print('水池里总共由%d只乌龟，%d只鱼' %(self.turtle.number, self.fish.number))
+  
+  
+  p1 = Pool(1, 2)
+  p1.print_num()
+  ```
+
+- 类，类对象和实例对象
+
+  ![在这里插入图片描述](http://img.5iqiqu.com/images11/1f/1f387407ff014d1267ec2361780beb32.png)
+
+  - 当类定义完的时候，类定义就变成了类对象，可以直接通过"类名.属性"或者"类名.方法名()"引用属性和方法
+
+    ```python
+    >>> class C:
+    ...     count = 0
+    ... 
+    >>> a = C()
+    >>> b = C()
+    >>> c = C()
+    >>> a.count
+    0
+    >>> b.count
+    0
+    >>> c.count
+    0
+    >>> c.count += 10
+    >>> c.count
+    10
+    >>> 
+    >>> 
+    >>> a.count
+    0
+    >>> b.count
+    0
+    >>> 
+    >>> C.count
+    0
+    >>> C.count += 100
+    >>> a.count
+    100
+    >>> b.count
+    100
+    >>> c.count
+    10
+    
+    ```
+
+    
+
+  - 如果属性和名字和方法相同，属性会把方法覆盖掉
+
+    ```python
+    >>> class C:
+    ...     def x(self):   #定义x方法
+    ...         print("X-man")
+    ...
+    >>> c = C()
+    >>> c.x()              #调用C类的x方法
+    X-man
+    >>> c.x = 1            #此时给实例对象c定义一个x属性并赋值1
+    >>> c.x                #调用c的x属性是正常的
+    1
+    >>> c.x()              #但此时再调用x方法就不可以了，因为重名的x属性覆盖了x方法
+    Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+    TypeError: 'int' object is not callable
+      
+    >>> 
+    >>> a = C()
+    >>> a.x
+    <bound method C.x of <__main__.C object at 0x109d21a00>>
+    >>> a.x()
+    X-man
+    >>> 
+    >>> c.x
+    1
+    ```
+
+    
+
+- 什么是绑定？
+
+  python严格要求方法需要有实例才能被调用，这种限制就是绑定
+
+  ```python
+  >>> class B:
+  ...     def printB(self):
+  ...             print("BB")
+  ... 
+  >>> B.printB()
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  TypeError: printB() missing 1 required positional argument: 'self'
+  >>> 
+  >>> b = B()
+  >>> b.printB()
+  BB
+  ```
+
+  
+
+
+
+## 课后作业
+
+### Quiz
+
+1. 什么是组合（组成）？
+
+   继承机制很有用，但容易把代码复杂化以及依赖隐含继承。因此，经常的时候，我们可以使用组合来代替。在Python里组合其实很简单，直接在类定义中把需要的类放进去实例化就可以了。
+
+2. 什么时候用组合，什么时候用继承？
+
+   根据实际应用场景确定。简单的说，组合用于“有一个”的场景中，继承用于“是一个”的场景中。例如，水池里有一个乌龟，天上有一个鸟，地上有一个小甲鱼，这些适合使用组合。青瓜是瓜，女人是人，鲨鱼是鱼，这些就应该使用继承啦。
+
+3. 类对象是在什么时候产生？
+
+   当你这个类 定义完的时候，类定义(类)就变成类对象，可以直接通过“类名.属性”或者“类名.方法名()”引用或使用相关的属性或方法。
+
+4. 如果对象的属性跟方法名字相同，会怎样？
+
+   如果对象的属性跟方法名相同，属性会覆盖方法。
+
+5. 请问以下类定义中哪些是类属性，哪些是实例属性？
+
+   ```python
+   class C:
+           num = 0
+           def __init__(self):
+                   self.x = 4
+                   self.y = 5
+                   C.count = 6
+   ```
+
+   ***num 和 count 是类属性（静态变量）->(类被删除了仍然存在)，x 和 y 是实例属性->(实例变量删除后不存在)。大多数情况下***，你应该考虑使用实例属性，而不是类属性（类属性通常仅用来跟踪与类相关的值）
+
+6. 请问以下代码中，bb 对象为什么调用 printBB() 方法失败？
+
+   ```python
+   class BB:
+           def printBB():
+                   print("no zuo no die")
+   
+   >>> bb = BB()
+   >>> bb.printBB()
+   Traceback (most recent call last):
+     File "<pyshell#8>", line 1, in <module>
+       bb.printBB()
+   TypeError: printBB() takes 0 positional arguments but 1 was given
+     
+   ```
+
+   因为 Python 严格要求方法需要有实例才能被调用，这种限制其实就是 Python 所谓的绑定概念。 (任意一个实例对象调用函数都会传入自己作为参数 当然是python帮我们传入 我们不用写出来)所以 Python 会自动把 bb 对象作为第一个参数传入，所以才会出现 TypeError：“需要 0 个参数，但实际传入了 1 个参数“。
+
+   ```python
+   class BB:
+           def printBB(self):
+                   print("no zuo no die")
+   
+   >>> bb = BB()
+   >>> bb.printBB()
+   no zuo no die
+   ```
+
+   
+
+
+
+### Practice
+
+1. 在类中定义一个变量，用来追踪有多少个实例被创建; 
+
+   实例化一个对象，变量+1；销毁一个对象，变量-1
+
+   ```python
+   # 在类中定义一个变量，用来追踪有多少个实例被创建;
+   #
+   # 实例化一个对象，变量+1；销毁一个对象，变量-1
+   
+   class InstanceCount:
+       count = 0
+   
+       def __init__(self):
+           InstanceCount.count += 1
+   
+       def __del__(self):
+           InstanceCount.count -= 1
+   
+   
+   instance1 = InstanceCount()
+   print('目前共计有%d个实例被创建' % InstanceCount.count)
+   instance2 = InstanceCount()
+   print('目前共计有%d个实例被创建' % InstanceCount.count)
+   del instance1
+   print('目前共计有%d个实例被创建' % InstanceCount.count)
+   del instance2
+   print('目前共计有%d个实例被创建' % InstanceCount.count)
+   ```
+
+2. 定义一个栈（Stack）类，用于模拟一种具有后进先出（LIFO）特性的数据结构
+
+   ![在这里插入图片描述](http://img.5iqiqu.com/images11/52/524e01c5292d03e0ef6807153b1aa395.png)
+
+   至少需要有以下方法：
+
+   - isEmpty():判断当前栈是否为空（返回True或Talse）
+
+   - push():往栈的顶部压入一个数据项
+   - pop():从栈顶弹出一个数据项（并在栈中删除）
+   - top():显示当前栈顶的一个数据项
+   - bottom():显示当前栈底的一个数据项
+
+   ```python
+   class Stack:
+       def __init__(self):
+           self.data = []
+   
+       def isEmpty(self):
+           if len(self.data) == 0:
+               return True
+           else:
+               return False
+   
+       def push(self, x):
+           self.data.append(x)
+   
+       def pop(self):
+           self.data.pop()
+   
+       def top(self):
+           try:
+               print(self.data[-1])
+           except IndexError:
+               print('no data in stack')
+   
+       def bottom(self):
+           try:
+               print(self.data[0])
+           except IndexError:
+               print('no data in stack')
+   ```
+   
+   
+
