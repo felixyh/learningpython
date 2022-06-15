@@ -8832,13 +8832,42 @@ except:
   >
   >   setattr(x, 'y', v) is equivalent to ``x.y = v''
 
+  ```python
+  >>> setattr(c1, 'y', 'Turtle')
+  >>> getattr(c1, 'y', '你所访问的属性不存在')
+  'Turtle'
   ```
+
+- `delattr(obj, name)` 
+
+  > \>>> help(delattr)
+  >
+  > 
+  >
+  > Help on built-in function delattr in module builtins:
+  >
+  > 
+  >
+  > **delattr**(obj, name, /)
+  >
+  >   Deletes the named attribute from the given object.
+  >
+  >    
+  >
+  >   delattr(x, 'y') is equivalent to ``del x.y''
+
+  ```python
+  >>> delattr(c1, 'y')
+  >>> getattr(c1, 'y', '你所访问的属性不存在')
+  '你所访问的属性不存在'
   
+  >>> delattr(c1, 'y')
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  AttributeError: y
   ```
 
   
-
-
 
 ## 课后作业
 
