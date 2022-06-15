@@ -16,7 +16,7 @@ class Point:
         self.y = y
 
 
-class Line(Point):
+class Line:
     def __init__(self, point_a, point_b):
         self.point_a = point_a
         self.point_b = point_b
@@ -26,6 +26,6 @@ class Line(Point):
 
 
 point_a = Point(1, 3)
-point_b = Point(1, 5)
+point_b = Point(2, 5)
 line = Line(point_a, point_b)
 print(line.getLen())
