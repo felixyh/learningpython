@@ -8236,6 +8236,8 @@ except:
 
 1. 继承机制给程序猿带来最明显的好处是？
 
+   不需要写多个类包含相同的属性和方法
+
 2. 如果按以下方式重写魔法方法 __ init __，结果会怎样？
 
    ```python
@@ -8245,13 +8247,27 @@ except:
    
    ```
 
+   实例化对象时会有如下错误，魔法方法应该返回none，不能return 其他的值
+
+   ```
+   Traceback (most recent call last):
+     File "<stdin>", line 1, in <module>
+   TypeError: __init__() should return None, not 'str'
+   ```
+
    
 
 3. 当子类定义了与相同名字的属性或方法时，Python 是否会自动删除父类的相关属性或方法？
 
+   不会，只会覆盖，当子类对象调用属性和方法时，会调用子类的属性和方法而已，而父类的属性和方法并未删除
+
 4. 假设已经有鸟类的定义，现在我要定义企鹅类继承于鸟类，但我们都知道企鹅是不会飞的，我们应该如何屏蔽父类（鸟类）中飞的方法？
 
+   重写一个相同的飞的方法，例如将函数体内容写 pass，这样调用 fly 方法就没有任何反应了。
+
 5. super 函数有什么“超级”的地方？
+
+   super 函数超级之处在于你不需要明确给出任何基类的名字，它会自动帮您找出所有基类以及对应的方法。由于你不用给出基类的名字，这就意味着你如果需要改变了类继承关系，你只要改变 class 语句里的父类即可，而不必在大量代码中去修改所有被继承的方法
 
 6. 多重继承使用不当会导致重复调用（也叫钻石继承、菱形继承）的问题，请分析以下代码在实际编程中有可能导致什么问题？
 
@@ -8283,10 +8299,37 @@ except:
    
    ```
 
-   
+   子类D重复调用了基类A的魔法方法：init
 
 7. 如何解决上一题中出现的问题？
 
+   采用super() 方法
+   
+   ```python
+   class A():
+       def __init__(self):
+           print("进入A…")
+           print("离开A…")
+   
+   class B(A):
+       def __init__(self):
+           print("进入B…")
+           super().__init__()
+           print("离开B…")
+           
+   class C(A):
+       def __init__(self):
+           print("进入C…")
+           super().__init__()
+           print("离开C…")
+   
+   class D(B, C):
+       def __init__(self):
+           print("进入D…")
+           super().__init__()
+           print("离开D…")
+   ```
+   
    
 
 ### Practice
@@ -8298,7 +8341,34 @@ except:
    - 设点 A(X1,Y1)、点 B(X2,Y2)，则两点构成的直线长度 |AB| = √((x1-x2)2+(y1-y2)2)
    - Python 中计算开根号可使用 math 模块中的 sqrt 函数
    - 直线需有两点构成，因此初始化时需有两个点（Point）对象作为参数
-
-
+   
+   ```python
+   import math as m
+   
+   
+   class Point:
+       def __init__(self, x, y):
+           self.x = x
+           self.y = y
+   
+   
+   class Line(Point):
+       def __init__(self, point_a, point_b):
+           self.point_a = point_a
+           self.point_b = point_b
+   
+       def getLen(self):
+           return m.sqrt((self.point_a.x-self.point_b.x)**2 + (self.point_a.y-self.point_b.y)**2)
+   
+   
+   point_a = Point(1, 3)
+   point_b = Point(1, 5)
+   line = Line(point_a, point_b)
+   print(line.getLen())
+   ```
+   
+   
 
 2. 展示一个你的作品：你已经掌握了 Python 大部分的基础知识，要开始学会自食其力了！请花一个星期做一个你能做出来的最好的作品（可以是游戏、应用软件、脚本），使用上你学过的任何东西（类，函数，字典，列表……）来改进你的程序。
+
+   
