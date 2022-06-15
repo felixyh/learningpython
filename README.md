@@ -8650,3 +8650,201 @@ except:
    
    
 
+# 040. 类和对象：一些相关的BIF
+
+##  知识点
+
+-  `issubclass(class, classinfo)`  判断子类
+
+  >\>>> help(issubclass)
+  >
+  >Help on built-in function issubclass in module builtins:
+  >
+  >
+  >
+  >**issubclass**(cls, class_or_tuple, /)
+  >
+  >  Return whether 'cls' is a derived from another class or is the same class.
+  >
+  >   
+  >
+  >  A tuple, as in ``issubclass(x, (A, B, ...))``, may be given as the target to
+  >
+  >  check against. This is equivalent to ``issubclass(x, A) or issubclass(x, B)
+  >
+  >  or ...`` etc.
+
+  - 一个类被认为是自身的子类
+
+  - classinfo可以是类对象组成的元组，只要class是其中任何一个候选类的子类，则返回True
+
+    ```python
+    >>> class A:
+    ...     pass
+    ... 
+    >>> class B(A):
+    ...     pass
+    ... 
+    >>> issubclass(B, A)
+    True
+    >>> issubclass(B, B)
+    True
+    >>> issubclass(B, object)   # object 是所有类的默认基类
+    True
+    >>> class C:
+    ...     pass
+    ... 
+    >>> issubclass(B, C)
+    False
+    ```
+
+    
+
+- `isinstance(object, classinfo)`
+
+  > \>>> help(isinstance)
+  >
+  > Help on built-in function isinstance in module builtins:
+  >
+  > 
+  >
+  > **isinstance**(obj, class_or_tuple, /)
+  >
+  >   Return whether an object is an instance of a class or of a subclass thereof.
+  >
+  >    
+  >
+  >   A tuple, as in ``isinstance(x, (A, B, ...))``, may be given as the target to
+  >
+  >   check against. This is equivalent to ``isinstance(x, A) or isinstance(x, B)
+  >
+  >   or ...`` etc.
+
+  - 如果第一个参数不是对象，则永远返回False
+
+  - 如果第二个参数不是类或者由类对象组成的元组，会抛出一个TypeError异常
+
+    ```
+    >>> b1 = B()
+    >>> isinstance(b1, B)
+    True
+    >>> isinstance(b1, A)
+    True
+    >>> isinstance(b1, C)
+    False
+    >>> isinstance(b1, (A, B, C))
+    True
+    ```
+
+    
+
+- `hasattr(object, name)`
+
+  >\>>> help(hasattr)
+  >
+  >Help on built-in function hasattr in module builtins:
+  >
+  >
+  >
+  >**hasattr**(obj, name, /)
+  >
+  >  Return whether the object has an attribute with the given name.
+  >
+  >   
+  >
+  >  This is done by calling getattr(obj, name) and catching AttributeError.
+
+  - Attractive = attribute: 属性
+
+    ```python
+    >>> class C:
+    ...     def __init__(self, x=0):
+    ...             self.x = x
+    ... 
+    >>> 
+    >>> c1 = C()
+       
+    >>> hasattr(c1, 'x')   # 注意此处x变量名需要加上引号变成字符串，不然会报错
+    True
+    >>> hasattr(c1, x) 
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    NameError: name 'x' is not defined
+    ```
+
+    
+
+- `getattr(object, name[, default])`
+
+  > \>>> help(getattr)
+  >
+  > 
+  >
+  > Help on built-in function getattr in module builtins:
+  >
+  > 
+  >
+  > **getattr**(...)
+  >
+  >   getattr(object, name[, default]) -> value
+  >
+  >    
+  >
+  >   Get a named attribute from an object; getattr(x, 'y') is equivalent to x.y.
+  >
+  >   When a default argument is given, it is returned when the attribute doesn't
+  >
+  >   exist; without it, an exception is raised in that case.
+
+  ```python
+  >>> getattr(c1, 'y')
+  
+  Traceback (most recent call last):
+  
+   File "<stdin>", line 1, in <module>
+  
+  AttributeError: 'C' object has no attribute 'y'
+  
+  >>> 
+  
+  >>> getattr(c1, 'y', '你所访问的属性不存在')
+  
+  '你所访问的属性不存在'
+  ```
+
+
+
+- `setattr(obj, name, value)`
+
+  > \>>> help(setattr)
+  >
+  > 
+  >
+  > Help on built-in function setattr in module builtins:
+  >
+  > 
+  >
+  > **setattr**(obj, name, value, /)
+  >
+  >   Sets the named attribute on the given object to the specified value.
+  >
+  >    
+  >
+  >   setattr(x, 'y', v) is equivalent to ``x.y = v''
+
+  ```
+  
+  ```
+
+  
+
+
+
+## 课后作业
+
+### Quiz
+
+
+
+### Practice
+
