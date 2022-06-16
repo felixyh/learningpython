@@ -9261,6 +9261,64 @@ Hello FishC
 
 
 
+## 扩展知识：**property 的详细使用方法**
+
+**property(fget=None, fset=None, fdel=None, doc=None)**
+
+俗话说条条大路通罗马，同样是完成一件事，Python 其实提供了好几个方式供你选择。
+
+property() 是一个比较奇葩的BIF，它的作用把方法当作属性来访问，从而提供更加友好访问方式。
+
+*官方帮助文档代码：*
+
+```python
+class C:
+    def __init__(self):
+        self._x = None
+
+    def getx(self):
+        return self._x
+    def setx(self, value):
+        self._x = value
+    def delx(self):
+        del self._x
+    x = property(getx, setx, delx, "I'm the 'x' property.")
+
+```
+
+property() 返回一个可以设置属性的属性，当然如何设置属性还是需要我们人为来写代码。第一个参数是获得属性的方法名（例子中是 getx），第二个参数是设置属性的方法名（例子中是 setx），第三个参数是删除属性的方法名（例子中是 delx）。
+
+property() 有什么作用呢？举个例子，在上边的例题中，我们为用户提供 setx 方法名来设置 _x 属性，提供 getx 方法名来获取属性。但是有一天你心血来潮，突然想对程序进行大改，可能你需要把 setx 和 getx 修改为 set_x 和 get_x，那你不得不修改用户调用的接口，这样子的体验就非常不好。
+
+有了 property() 所有问题就迎刃而解了，因为像上边一样，我们为用户访问 _x 属性只提供了 x 属性。无论我们内部怎么改动，只需要相应的修改 property() 的参数，用户仍然只需要去操作 x 属性即可，对他们来说没有任何影响。
+
+
+**使用属性修饰符创建描述符**
+
+使用属性修饰符创建描述符，也可以实现同样的功能（【扩展阅读】[Python 函数修饰符（装饰器）的使用](http://bbs.fishc.com/thread-51109-1-2.html)）：
+
+```python
+class C:
+    def __init__(self):
+        self._x = None
+
+    @property
+    def x(self):
+        """I'm the 'x' property."""
+        return self._x
+
+    @x.setter
+    def x(self, value):
+        self._x = value
+
+    @x.deleter
+    def x(self):
+        del self._x
+
+```
+
+注意：三个处理 _x 属性的方法名要相同（参数不同）
+
 
 
 ## 课后作业
@@ -9335,6 +9393,17 @@ Hello FishC
 
    
 
+   ```
+   class CodeA:
+   		@staticmethod
+       def foo():
+           print("调用静态方法 foo()")
+           
+           
+           # 将 foo() 方法设置为静态方法
+           # foo = staticmethod(foo)
+   ```
+   
    
 
    代码B：
@@ -9347,20 +9416,80 @@ Hello FishC
            # 将 foo() 方法设置为类方法
            foo = classmethod(foo)
    ```
-
    
-
+   ```
+   class CodeB:
+   		@classmethod
+       def foo(cls):
+           print("调用类方法 foo()")
+   
+           # 将 foo() 方法设置为类方法
+           # foo = classmethod(foo)
+   ```
+   
+   
+   
 7. 你真的理解了修饰符的用法吗？那请你写出以下代码没有用上修饰符的等同形式：
 
    ```
+   
    @something
    def f():
-   	print("I love FishC.com!")
+       print("I love FishC.com!")
+       
+   f = something(f)
+   
+   ```
+
+   返回的是函数的闭包
+
+   
+
+   ```
+   
+   
+   def something1(func):
+       def call():
+           print('---start----')
+           start = time.perf_counter()
+           func()
+           print('-------end------')
+           end = time.perf_counter()
+           print('used: %s ' % (end - start))
+       return call
+   @something1
+   def f():
+       print("I love FishC.com!")
+       
+   f()
+    
+   
    ```
 
    
 
 8. 通过自学【扩展阅读】[property 的详细使用方法](http://bbs.fishc.com/thread-51106-1-1.html)，将第 4 题的代码修改为“使用属性修饰符创建描述符”的方式实现。
+
+   ```python
+   class C:
+       def __init__(self, size=10):
+           self.size = size
+   
+       @property
+       def x(self):
+           """I'm the 'x' property."""
+           return self.size
+   
+       @x.setter
+       def x(self, value):
+           self.size = value
+   
+       @x.deleter
+       def x(self):
+           del self.size
+   ```
+
+   
 
 ### Practice
 
