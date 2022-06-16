@@ -8654,7 +8654,7 @@ except:
 
 ##  知识点
 
--  `issubclass(class, classinfo)`  判断子类
+-  `issubclass(cls, class_or_tuple)`  判断子类
 
   >\>>> help(issubclass)
   >
@@ -8700,7 +8700,7 @@ except:
 
     
 
-- `isinstance(object, classinfo)`
+- `isinstance(object, class_or_tuple)`
 
   > \>>> help(isinstance)
   >
@@ -8740,6 +8740,10 @@ except:
 
 - `hasattr(object, name)`
 
+  -  The arguments are an object and a string. The result is True if the string is the name of one of the object’s attributes, False if not. (This is implemented by calling getattr(object, name) and seeing whether it raises an AttributeError or not.)
+  -  作用就是测试一个对象里是否有指定的属性， 如果字符串是对象属性之一的命名，则返回True，否则False。
+  -  第一个参数(object)是对象，第二个参数(name)是属性名（属性的字符串名字）
+
   >\>>> help(hasattr)
   >
   >Help on built-in function hasattr in module builtins:
@@ -8775,6 +8779,8 @@ except:
     
 
 - `getattr(object, name[, default])`
+
+  -  返回对象指定的属性值，如果指定的属性不存在，则返回default（可选参数)的值；若没有设置default参数，则抛出ArttributeError异常。
 
   > \>>> help(getattr)
   >
@@ -8816,6 +8822,8 @@ except:
 
 - `setattr(obj, name, value)`
 
+  - 设置对象中指定属性的值，如果指定的属性不存在，则会新建属性并赋值
+
   > \>>> help(setattr)
   >
   > 
@@ -8839,6 +8847,8 @@ except:
   ```
 
 - `delattr(obj, name)` 
+
+  - 用于删除对象中指定的属性，如果属性不存在，则会抛出AttributeError异常
 
   > \>>> help(delattr)
   >
@@ -8867,13 +8877,490 @@ except:
   AttributeError: y
   ```
 
+- `property(fget=None, fset=None, fdel=None, doc=None)`
+
+  - 作用是通过属性来设置属性
+  - 第一个参数是获得属性的方法名，第二个参数是设置属性的方法名，第三个参数是删除属性的方法名
+
+  property 的用处。当有需要对程序进行重构的时候，不需要告知用户每个方法的接口的修改，因为所有的属性都包括在x 里面提供给用户，用户看到的只是property x
+
+  > \>>> help(property) 
+  > Help on class property in module builtins:
+  >
+  > class property(object)
+  >  |  property(fget=None, fset=None, fdel=None, doc=None)
+  >  |  
+  >  |  Property attribute.
+  >  |
+  >  |    fget
+  >  |      function to be used for getting an attribute value
+  >  |    fset
+  >  |      function to be used for setting an attribute value
+  >  |    fdel
+  >  |      function to be used for del'ing an attribute
+  >  |    doc
+  >  |      docstring
+  >  |
+  >  |  Typical use is to define a managed attribute x:
+  >  |
+  >  |  class C(object):
+  >  |      def getx(self): return self._x
+  >  |      def setx(self, value): self._x = value
+  >  |      def delx(self): del self._x
+  >  |      x = property(getx, setx, delx, "I'm the 'x' property.")
+  >  |
+  >  |  Decorators make defining new properties or modifying existing ones easy:
+  >  |
+  >  |  class C(object):
+  >  |      @property
+  >  |      def x(self):
+  >  |          "I am the 'x' property."
+  >  |          return self._x
+  >  |      @x.setter
+  >  |      def x(self, value):
+  >  |          self._x = value
+  >  |      @x.deleter
+  >  |      def x(self):
+  >  |          del self._x
+  >  |
+  >  |  Methods defined here:
+  >  |
+  >  |  __delete__(self, instance, /)
+  >  |      Delete an attribute of instance.
+  >  |
+  >  |  __get__(self, instance, owner, /)
+  >  |      Return an attribute of instance, which is of type owner.
+  >  |
+  >  |  __getattribute__(self, name, /)
+  >  |      Return getattr(self, name).
+  >  |
+  >  |  __init__(self, /, *args, **kwargs)
+  >  |      Initialize self.  See help(type(self)) for accurate signature.
+  >  |
+  >  |  __set__(self, instance, value, /)
+  >  |      Set an attribute of instance to value.
+  >  |
+  >  |  deleter(...)
+  >  |      Descriptor to obtain a copy of the property with a different deleter.
+  >  |
+  >  |  getter(...)
+  >  |      Descriptor to obtain a copy of the property with a different getter.
+  >  |
+  >  |  setter(...)
+  >  |      Descriptor to obtain a copy of the property with a different setter.
+  >  |
+  >  |  ----------------------------------------------------------------------
+  >  |  Static methods defined here:
+  >  |
+  >  |  __new__(*args, **kwargs) from builtins.type
+  >  |      Create and return a new object.  See help(type) for accurate signature.
+  >  |
+  >  |  ----------------------------------------------------------------------
+  >  |  Data descriptors defined here:
+  >  |
+  >  |  __isabstractmethod__
+  >  |
+  >  |  fdel
+  >  |
+  >  |  fget
+  >  |
+  >  |  fset
+
+  ```python
+  class C:
+      def __init__(self, size=10):
+          self.size = size
   
+      def getSize(self):
+          return self.size
+  
+      def setSize(self, value):
+          self.size = value
+  
+      def delSize(self):
+          del self.size
+  
+      x = property(getSize(), setSize(), delSize())
+  ```
+
+  ```
+  >>> c = C()
+  >>> c.getSize()
+  10
+  >>>
+  >>> c.x 
+  10
+  >>>
+  >>> c.x = 18
+  >>> c.x
+  18
+  >>> c.getSize()
+  18
+  >>> del c.x
+  >>> c.x
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+    File "C:\Users\felix_yang\PycharmProjects\learningpython\40\example_property.py", line 6, in getSize
+      return self.size
+  AttributeError: 'C' object has no attribute 'size'
+  ```
+
+
+
+## 扩展知识：[Python 函数修饰符（装饰器）的使用](https://fishc.com.cn/thread-51109-1-1.html)
+
+**1. 修饰符的来源**
+
+借用一个博客上的一段叙述：修饰符是一个很著名的设计模式，经常被用于有切面需求的场景，较为经典的有插入日志、性能测试、事务处理等。
+
+修饰符是解决这类问题的绝佳设计，有了修饰符，我们就可以抽离出大量函数中与函数功能本身无关的雷同代码并继续重用。
+
+概括的讲，修饰符的作用就是为已经存在的对象添加额外的功能。
+
+如下：
+
+```python
+import time
+ 
+def timeslong(func):
+    start = time.time()
+    print("It's time starting ! ")
+    func()
+    print("It's time ending ! ")
+    end = time.time()
+    return "It's used : %s." % (end - start)
+
+def myfunc():
+    print("Hello FishC.")
+
+t = timeslong(myfunc)
+print(t)
+```
+
+
+实现结果：
+
+
+
+```
+It's time starting ! 
+Hello FishC.
+It's time ending ! 
+It's used : 0.02497720718383789.
+```
+
+
+上面的程序中，定义了一个函数（timeslong()），对一个对象（代码中是 myfunc()）的运行时间进行计算。
+
+通常情况下，如果我们需要计算另外一个函数的运算时间，那么我们就需要修改 timeslong() 函数在调用时候的实参。
+
+比如我需要统计 myfunc2 这个函数的运行时间，就需要调用 timeslong(myfunc2) 酱紫。
+
+那么为了优化这种操作，Python 便提出了修饰符这个概念。
+
+我们看下它是怎么实现的：
+
+```python
+import time
+ 
+def timeslong(func):
+    def call():
+        start = time.time()
+        print("It's time starting ! ")
+        func()
+        print("It's time ending ! ")
+        end = time.time()
+        return "It's used : %s." % (end - start)
+    return call
+
+@timeslong
+def myfunc():
+    print("Hello FishC.")
+
+print(myfunc())
+```
+
+
+实现的结果是一样的：
+
+
+
+```python
+It's time starting ! 
+Hello FishC.
+It's time ending ! 
+It's used : 0.022337913513183594.
+```
+
+
+但是大家有没有发现，这一次我们不需要再去调用 timeslong() 函数了。
+
+如果我有多个函数需要统计，那么使用起修饰符来就更优雅了：
+
+```python
+import time
+ 
+def timeslong(func):
+    def call():
+        start = time.time()
+        print("It's time starting ! ")
+        func()
+        print("It's time ending ! ")
+        end = time.time()
+        return "It's used : %s." % (end - start)
+    return call
+
+@timeslong
+def myfuna():
+    print("Hello World.")
+
+@timeslong
+def myfunb():
+    print("Hello Python.")
+
+@timeslong
+def myfunc():
+    print("Hello FishC.")
+
+print(myfuna())
+print("========================================")
+print(myfunb())
+print("========================================")
+print(myfunc())
+```
+
+
+实现结果：
+
+
+
+```
+It's time starting ! 
+Hello World.
+It's time ending ! 
+It's used : 0.023639202117919922.
+========================================
+It's time starting ! 
+Hello Python.
+It's time ending ! 
+It's used : 0.01770305633544922.
+========================================
+It's time starting ! 
+Hello FishC.
+It's time ending ! 
+It's used : 0.014674186706542969.
+```
+
+
+通过修饰符主要达到的目标是使得整个代码看起来更加美观，仅此而已。
+
+另外，我们还可以进一步“优雅”，
+
+那就是把它封装成类：
+
+```python
+import time
+ 
+class timeslong(object):
+    def __init__(self, func):
+        self.func = func
+
+    def __call__(self):
+        start = time.time()
+        print("It's time starting ! ")
+        self.func()
+        print("It's time ending ! ")
+        end = time.time()
+        return "It's used : %s." % (end - start)
+
+@timeslong
+def myfuna():
+    print("Hello World.")
+
+@timeslong
+def myfunb():
+    print("Hello Python.")
+
+@timeslong
+def myfunc():
+    print("Hello FishC.")
+
+print(myfuna())
+print("========================================")
+print(myfunb())
+print("========================================")
+print(myfunc())
+```
+
+
+实现的结果是一样的：
+
+```
+It's time starting ! 
+Hello World.
+It's time ending ! 
+It's used : 0.03470897674560547.
+========================================
+It's time starting ! 
+Hello Python.
+It's time ending ! 
+It's used : 0.01266622543334961.
+========================================
+It's time starting ! 
+Hello FishC.
+It's time ending ! 
+It's used : 0.014008522033691406.
+```
+
+
+其实呀，Python 也有内置的修饰符，它们分别是 staticmethod、classmethod 和 property，作用分别是把类中定义的实例方法变成静态方法、类方法和类属性。
+
+简单地举个例子，如果我们将类这么写：
+
+```python
+>>> class Hello(object):
+...     def print_hello(cls):
+...         print("Hello FishC")
+```
+
+
+那么直接使用 类名.函数() 的方式调用就会报错：
+
+
+
+```python
+>>> Hello.print_hello()
+Traceback (most recent call last):
+  File "<pyshell#2>", line 1, in <module>
+    Hello.print_hello()
+TypeError: print_hello() missing 1 required positional argument: 'cls'
+```
+
+
+但是，只需要在类里面的函数名上方加上一个 @classmethod 修饰符：
+
+
+
+```python
+>>> class Hello(object):
+...     @classmethod
+...     def print_hello(cls):
+...         print("Hello FishC")
+```
+
+
+那么问题就迎刃而解了：
+
+```python
+>>> Hello.print_hello()
+Hello FishC
+```
+
+
+因为给 @classmethod 修饰过后，print_hello() 就变成了类方法，可以直接通过 Hello.print_hello() 调用，而无需绑定实例对象了。
+
+
+
+
 
 ## 课后作业
 
 ### Quiz
 
+1. 如何判断一个类是否为另一个类的子类？
 
+   issubclass(cls, class)
+
+2. 如何判断对象 a 是否为 类 A 的实例对象？
+
+   isinstance(a, A)
+
+3. 如何优雅地避免访问对象不存在的属性（不产生异常）？
+
+   使用`hasattr(object, name)` 查看是否有这个属性
+
+   使用 `getattr(object, name[, default])`， 设置defaul message
+
+4. Python 的一些 BIF 很奇怪，但却十分有用。请问 property() 函数的作用是什么？
+
+   property() 函数允许编程人员轻松、有效地管理属性访问。
+
+   
+
+5. 请补充以下代码，使程序可以正常运行：
+
+   ```python
+   class C:
+   def __init__(self, size=10):
+   self.size = size
+   
+   def getXSize(self):
+   return self.size
+   
+   def setXSize(self, value):
+   self.size = value
+   
+   def delXSize(self):
+   del self.size
+   
+   # 此处应该补充一句代码，程序才能正常运行
+   
+   >>> c.x
+   10
+   >>> c.x = 12
+   >>> c.x
+   12
+   ```
+
+   答案：
+
+   ```
+   x = property(getXSize, setXSize, delXSize)
+   ```
+
+   
+
+6. 通过自学【扩展阅读】[Python 函数修饰符（装饰器）的使用](http://bbs.fishc.com/thread-51109-1-1.html)，使用修饰符修改以下代码。
+   代码A：
+
+   ```
+   class CodeA:
+       def foo():
+           print("调用静态方法 foo()")
+   
+           # 将 foo() 方法设置为静态方法
+           foo = staticmethod(foo)
+   
+   ```
+
+   
+
+   
+
+   代码B：
+
+   ```
+   class CodeB:
+       def foo(cls):
+           print("调用类方法 foo()")
+   
+           # 将 foo() 方法设置为类方法
+           foo = classmethod(foo)
+   ```
+
+   
+
+7. 你真的理解了修饰符的用法吗？那请你写出以下代码没有用上修饰符的等同形式：
+
+   ```
+   @something
+   def f():
+   	print("I love FishC.com!")
+   ```
+
+   
+
+8. 通过自学【扩展阅读】[property 的详细使用方法](http://bbs.fishc.com/thread-51106-1-1.html)，将第 4 题的代码修改为“使用属性修饰符创建描述符”的方式实现。
 
 ### Practice
 
