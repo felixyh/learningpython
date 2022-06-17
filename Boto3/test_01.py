@@ -30,4 +30,3 @@ for r in response['Reservations']:
         print(i['InstanceId'], i['Hypervisor'])
         for b in i['BlockDeviceMappings']:
             print(b['Ebs']['DeleteOnTermination'])
-
