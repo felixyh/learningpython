@@ -9540,3 +9540,223 @@ class C:
 
 # 041. 魔法方法：构造和析构
 
+## 知识点
+
+### 魔法方法
+
+- 魔法方法总是被双下划线所包围，例如：`__init__`
+
+- 魔法方法是面向对象的python的一切，如果你不知道魔法方法，说明你还没能意识到面向对象的python的强大
+
+- 魔法方法的“魔力”体现在他们总是能够在适当的时候被调用
+
+- `__init__(self[, ...])` 必须返回none，不要试图用init 返回任何值
+
+  ```python
+  >>> class Rectangle:
+  	def __init__(self, x, y):
+  		self.x = x
+  		self.y = y
+  	def getPeri(self):
+  		return (self.x + self.y) * 2
+  	def getArea(self):
+  		return self.x * self.y
+  
+  	
+  >>> rect = Rectangle(3, 4)
+  >>> rect.getPeri()
+  14
+  >>> 
+  >>> rect.getArea()
+  12
+  
+  >>> class A:
+  	def __init__(self):
+  		return "A fo init"
+  
+  	
+  >>> a = A()
+  Traceback (most recent call last):
+    File "<pyshell#31>", line 1, in <module>
+      a = A()
+  TypeError: __init__() should return None, not 'str'
+  ```
+
+  
+
+- `__new__(cls[, ...])` 才是实例化对象第一个被调用的魔法方法，`__init__(self[, ...])` 并不是第一个被调用的
+
+  - 构造器，第一个参数是这个类
+
+  - 后面的参数都会原封不动的传递给init 方法
+
+  - new 方法需要返回一个实例对象，通常是返回第一个参数 这个类的实例对象，当然也可以重写返回其他类的实例对象
+
+  - 一般极少重写new 方法。有一种情况需要重写new 方法，就是当继承一种不可变类型有需要修改的时候
+
+    ```python
+    >>> class CapStr(str):
+    	def __new__(cls, string):
+    		string = string.upper()
+    		return str.__new__(cls, string)
+    
+    	
+    >>> a = CapStr('I love FishC.com!')
+    >>> a
+    'I LOVE FISHC.COM!'
+    ```
+
+    
+
+- `__del__(self)`
+
+  - 析构器，当对象将要被销毁的时候，这个魔法方法就会被自动调用
+
+  - 注意： `del x` 不等于 `x.__del__()`， 当对象没有任何引用时，会触发垃圾回收机制，这个时候才会调用del 魔法方法
+
+    ```python
+    >>> class C:
+    	def __init__(self):
+    		print('我是__init__方法，我被调用了。。。')
+    	def __del__(self):
+    		print('我是__del__方法，我被调用了。。。')
+    
+    		
+    >>> 
+    >>> c1 = C()
+    我是__init__方法，我被调用了。。。
+    >>> 
+    >>> c2 = c1  # c2标签也指向实例
+    >>> c3 = c2  # c3标签也指向实例
+    >>> del c3
+    >>> del c2
+    >>> del c1   # 没有任何标签也指向实例，启动垃圾回收机制，这时候自动调用`__del__(self)`
+    我是__del__方法，我被调用了。。。
+    ```
+
+    
+
+## 课后作业
+
+### Quiz
+
+1. 是哪个特征让我们一眼就能认出这货是魔法方法？
+
+   双下划线
+
+2. 什么时候我们需要在类中明确写出 __ init __ 方法？
+
+   当我们的实例对象需要有明确的初始化步骤的时候，你可以在 **init** 方法中部署初始化的代码。
+
+3.  请问下边代码存在什么问题？
+
+   ```python
+   class Test:
+           def __init__(self, x, y):
+                   return x + y
+   ```
+
+   init 方法只能返回none，不能是其他
+
+4. 请问 __ new __ 方法是负责什么任务？
+
+   **new** 方法主要任务是返回一个实例对象，通常是参数 cls 这个类的实例化对象，当然你也可以返回其他对象。
+
+5. __ del __ 魔法方法什么时候会被自动调用？
+
+   如果说 __ init __ 和 __ new __ 方法是对象的构造器的话，那么 Python 也提供了一个析构器，叫做 __ del __ 方法。当对象将要被销毁的时候，这个方法就会被调用。
+   但一定要注意的是，并非 del x 就相当于自动调用 x.__ del **()，** del __ 方法是当垃圾回收机制回收这个对象的时候调用的。
+
+   
+
+### Practice
+
+1. 小李做事常常丢三落四的，写代码也一样，常常打开了文件又忘记关闭。你能不能写一个 FileObject 类，给文件对象进行包装，从而确认在删除对象时文件能自动关闭？
+
+   
+
+
+
+2. 按照以下要求，定义一个类实现摄氏度到华氏度的转换（转换公式：华氏度 = 摄氏度*1.8+32）
+
+   要求：我们希望这个类尽量简练地实现功能，如下
+
+   ```python
+   >>> print(C2F(32))
+   89.6
+   ```
+
+   ```python
+   # 代码：
+   
+   class C2F(float):
+       def __new__(cls, c_number):
+           c_number = c_number * 1.8 + 32
+           return float.__new__(cls, c_number)
+   
+   
+   print(C2F(32))
+   ```
+
+   
+
+3. 定义一个类继承于 int 类型，并实现一个特殊功能：当传入的参数是字符串的时候，返回该字符串中所有字符的 ASCII 码的和（使用 ord() 获得一个字符的 ASCII 码值）。
+
+   实现如下：
+
+   ```python
+   >>> print(Nint(123))
+   123
+   >>> print(Nint(1.5))
+   1
+   >>> print(Nint('A'))
+   65
+   >>> print(Nint('FishC'))
+   461
+   ```
+
+   ```python
+   # 代码：
+   class Nint(int):
+       def __new__(cls, arg):
+           if isinstance(arg, str):
+               sum_number = 0
+               for each in arg:
+                   sum_number += ord(each)
+               return int.__new__(cls, sum_number)
+           else:
+               return int.__new__(cls, arg)
+   
+   
+   print(Nint(123))
+   print(Nint(1.5))
+   print(Nint('A'))
+   print(Nint('FishC'))
+   ```
+
+   
+
+
+
+
+
+
+
+
+
+# 042. 魔法方法： 算术运算
+
+## 知识点
+
+
+
+
+
+## 课后作业
+
+### Quiz
+
+
+
+### Practice
+
