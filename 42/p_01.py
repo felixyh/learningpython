@@ -4,7 +4,7 @@
 
 class Nstr(str):
     def __sub__(self, other):
-        return self.replace()
+        return self.replace(other, '')
 
 
 s1 = Nstr('felixyangfelixyang')

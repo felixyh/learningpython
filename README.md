@@ -9960,6 +9960,21 @@ class C:
 
 1. 我们都知道在 Python 中，两个字符串相加会自动拼接字符串，但遗憾的是两个字符串相减却抛出异常。因此，现在我们要求定义一个 Nstr 类，支持字符串的相减操作：A – B，从 A 中去除所有 B 的子字符串。
 
+   ```python
+   # 我们都知道在 Python 中，两个字符串相加会自动拼接字符串，
+   # 但遗憾的是两个字符串相减却抛出异常。
+   # 因此，现在我们要求定义一个 Nstr 类，支持字符串的相减操作：A – B，从 A 中去除所有 B 的子字符串。
+   
+   class Nstr(str):
+       def __sub__(self, other):
+           return self.replace(other, '')
+   
+   
+   s1 = Nstr('felixyangfelixyang')
+   s2 = Nstr('felix')
+   print(s1 - s2)
+   ```
+
    
 
 2. 移位操作符是应用于二进制操作数的，现在需要你定义一个新的类 Nstr，也支持移位操作符的运算：
@@ -9971,6 +9986,20 @@ class C:
    >>> a >> 3
    'om!I love FishC.c'
    
+   ```
+
+   ```python
+   class Nstr(str):
+       def __lshift__(self, other):
+           return self[other:] + self[:other]
+   
+       def __rshift__(self, other):
+           return self[-other:] + self[: -other]
+   
+   
+   a = Nstr('I love FishC.com!')
+   print(a << 3)
+   print(a >> 3)
    ```
 
    
@@ -9994,4 +10023,20 @@ class C:
    
    ```
 
+   ```python
+   class Nstr(int):
+       def __new__(cls, arg):
+           sum_number = 0
+           for each in arg:
+               sum_number += ord(each)
+           return int.__new__(cls, sum_number)
+   
+   a = Nstr('FishC')
+   b = Nstr('love')
+   print(a + b)
+   print(a - b)
+   print(a * b)
+   print(a / b, a // b)
+   ```
+   
    
