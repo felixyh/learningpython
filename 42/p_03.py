@@ -19,6 +19,7 @@ class Nstr(int):
             sum_number += ord(each)
         return int.__new__(cls, sum_number)
 
+
 a = Nstr('FishC')
 b = Nstr('love')
 print(a + b)
