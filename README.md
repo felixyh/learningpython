@@ -9760,11 +9760,108 @@ class C:
 
 
 
-# 042. 魔法方法： 算术运算
+# 042. 魔法方法：算术运算
 
 ## 知识点
 
+### 工厂函数
 
+- python2.2 之后，将类和类型进行了统一，做法就是将如下的类型 *内置函数* 转换成 *工厂函数*
+
+  ```python
+  int(),float(), bool(), str(), list(),tuple(), type(), dict(), set(), frozenset()
+  ```
+
+  
+
+- 工厂函数，就是能够产生类实例的**内置函数**
+
+  ```python
+  # 普通的内置函数
+  >> type(len)
+  >> <class 'builtin_function_or_method'>
+  >> type(open)
+  >> <class 'builtin_function_or_method'>
+  
+  # 工厂函数，就是能够产生类实例的**内置函数**
+  >> type(int)
+  >> <class 'type'>
+  >> type(list)
+  >> <class 'type'>
+  ```
+
+  
+
+- 工厂函数看上去有点像函数，实质上他们是类，当你调用它们时，实际上是生成了该类型的一个实例，就像工厂生产货物一样.
+
+  ```python
+  
+  >>> type(int)
+  <class 'type'>
+  >>> type(list)
+  <class 'type'>
+  >>> 
+  >>> class C:
+  ...     pass
+  ... 
+  >>> type(C)
+  <class 'type'>
+  ```
+
+  
+
+- 一个类定义完成就变成了类对象，所以工厂函数其实就是类对象
+
+  ```python
+  # 实例化int 对象，传入相应的参数
+  >>> a = int('123')
+  >>> b = int('456')
+  
+  # 对象还可以计算
+  >>> a + b
+  579
+  ```
+
+  
+
+- python的魔法方法还可以自定义对象的数值处理，通过对魔法方法的重写，可以自定义任何对象间的算术运算
+
+  | add(self, other)           | 定义加法的行为：+                                            |
+  | -------------------------- | ------------------------------------------------------------ |
+  | sub(self, other)           | 定义减法的行为：-                                            |
+  | mul(self, other)           | 定义乘法的行为：*                                            |
+  | truediv(self, other)       | 定义真除法的行为：/                                          |
+  | floordiv(self, other)      | 定义整数除法的行为：//                                       |
+  | mod(self, other)           | 定义取模算法的行为：%                                        |
+  | divmod(self, other)        | 定义当被 divmod() 调用时的行为，divmod(a, b)返回一个元组：（a//b, a%b) |
+  | pow(self, other[, modulo]) | 定义当被 power() 调用或 ** 运算时的行为                      |
+  | lshift(self, other)        | 定义按位左移位的行为：<<                                     |
+  | rshift(self, other)        | 定义按位右移位的行为：>>                                     |
+  | and(self, other)           | 定义按位与操作的行为：&                                      |
+  | xor(self, other)           | 定义按位异或操作的行为：^                                    |
+  | or(self, other)            | 定义按位或操作的行为：｜                                     |
+
+  
+
+  ```python
+  
+  >>> class New_int(int):
+  	def __add__(self, other):
+  		return int.__sub__(self, other)
+  	def __sub__(self, other):
+  		return int.__add__(self, other)
+   
+  	
+  >>> a = New_int(3)
+  >>> b = New_int(5)
+  >>> a + b
+  -2
+  >>> a - b
+  8
+  
+  ```
+
+  
 
 
 
@@ -9772,7 +9869,129 @@ class C:
 
 ### Quiz
 
+1. 自 Python2.2 以后，对类和类型进行了统一，做法就是将 int()、float()、str()、list()、tuple() 这些 BIF 转换为工厂函数。请问所谓的工厂函数，其实是什么原理？
+
+   工厂函数，其实就是一个类对象。当你调用他们的时候，事实上就是创建一个相应的实例对象。
+
+2. 当实例对象进行加法操作时，会自动调用什么魔法方法？
+
+   对象 a 和 b 相加时（a + b），Python 会自动根据对象 a 的 **add** 魔法方法进行加法操作， add(self, other)
+
+3. 下边代码有问题吗？（运行起来似乎没出错的说_）
+
+   ```python
+   class Foo:
+           def foo(self):
+                   self.foo = "I love FishC.com!"
+                   return self.foo
+   
+    
+   >>> foo = Foo()
+   >>> foo.foo()
+   'I love FishC.com!'
+   
+   ```
+
+   这绝对是一个温柔的陷阱，这种BUG比较难以排查，所以一定要注意：类的属性名和方法名绝对不能相同！如果代码这么写，就会有一个难以排查的BUG出现了：
+
+   ```python
+   class Foo:
+           def __init__(self):
+                   self.foo = "I love FishC.com!"
+           def foo(self):
+                   return self.foo
+    
+   >>> foo = Foo()
+   >>> foo.foo()
+   Traceback (most recent call last):
+     File "<pyshell#21>", line 1, in <module>
+       foo.foo()
+   TypeError: 'str' object is not callable
+   
+   ```
+
+   
+
+4. 写出下列算术运算符对应的魔法方法：
+
+   | 运算符       | 对应的魔法方法             |
+   | ------------ | -------------------------- |
+   | +            | add(self, other)           |
+   | -            | sub(self, other)           |
+   | *            | **__mul__**(self, value)   |
+   | /            | truediv(self, other)       |
+   | //           | floordiv(self, other)      |
+   | %            | mod(self, other)           |
+   | divmod(a, b) | divmod(self, other)        |
+   | **           | pow(self, other[, modulo]) |
+   | <<           | lshift(self, other)        |
+   | >>           | rshift(self, other)        |
+   | &            | and(self, other)           |
+   | ^            | xor(self, other)           |
+   | \|           | or(self, other)            |
+
+   
+
+5. 以下代码说明 Python 支持什么风格？
+
+   ```python
+   def calc(a, b, c):
+           return (a + b) * c
+   
+    
+   >>> a = calc(1, 2, 3)
+   >>> b = calc([1, 2, 3], [4, 5, 6], 2)
+   >>> c = calc('love', 'FishC', 3)
+   >>> print(a)
+   9
+   >>> print(b)
+   [1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6]
+   >>> print(c)
+   loveFishCloveFishCloveFishC
+   
+   ```
+
+   说明 Python 支持鸭子类型（duck typing）风格。
+   [鸭子风格](https://blog.csdn.net/qq_41556318/article/details/84640823)
+
 
 
 ### Practice
 
+1. 我们都知道在 Python 中，两个字符串相加会自动拼接字符串，但遗憾的是两个字符串相减却抛出异常。因此，现在我们要求定义一个 Nstr 类，支持字符串的相减操作：A – B，从 A 中去除所有 B 的子字符串。
+
+   
+
+2. 移位操作符是应用于二进制操作数的，现在需要你定义一个新的类 Nstr，也支持移位操作符的运算：
+
+   ```python
+   >>> a = Nstr('I love FishC.com!')
+   >>> a << 3
+   'ove FishC.com!I l'
+   >>> a >> 3
+   'om!I love FishC.c'
+   
+   ```
+
+   
+
+3. 定义一个类 Nstr，当该类的实例对象间发生的加、减、乘、除运算时，将该对象的所有字符串的 ASCII 码之和进行计算：
+
+   ```python
+   
+   >>> a = Nstr('FishC')
+   >>> b = Nstr('love')
+   >>> a + b
+   899
+   >>> a - b
+   23
+   >>> a * b
+   201918
+   >>> a / b
+   1.052511415525114
+   >>> a // b
+   1
+   
+   ```
+
+   
