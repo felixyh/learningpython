@@ -1,17 +1,14 @@
-# 定义一个单词（Word）类继承自字符串，重写比较操作符，当两个 Word 类对象进行比较时，根据单词的长度来进行比较大小。
-# >>> help(str.__lt__)
-#
-# >>> help(str.__gt__)
-#
-# >>> help(str.__eq__)
-#
-# >>> help(str.__ne__)
-#
-# >>> help(str.__le__)
-#
-# >>> help(str.__ge__)
+# 加分项：实例化时如果传入的是带空格的字符串，则去第一个空格前的单词作为参数
 
 class Word(str):
+    def __new__(cls, word):
+        # 注意必须要使用__new__方法，因为str 是不可变类型
+        # 必须在创建的时候将他初始化
+        if ' ' in word:
+            print('Value contains the spaces, truncating to first space.')
+            word = word[: word.index(' ')]
+        return str.__new__(cls, word)
+
     def __lt__(self, other):
         return len(self) < len(other)
 
@@ -31,14 +28,11 @@ class Word(str):
         return len(self) >= len(other)
 
 
-w1 = Word('123')
-w2 = Word('3456')
+w1 = Word('I love you')
+w2 = Word('felix')
 print(w1 > w2)
 print(w1 < w2)
 print(w1 != w2)
 print(w1 == w2)
 print(w1 >= w2)
 print(w1 <= w2)
-
-
-

@@ -9596,9 +9596,9 @@ class C:
 
     ```python
     >>> class CapStr(str):
-    	def __new__(cls, string):
-    		string = string.upper()
-    		return str.__new__(cls, string)
+    			def __new__(cls, string):
+    				string = string.upper()
+    				return str.__new__(cls, string)
     
     	
     >>> a = CapStr('I love FishC.com!')
@@ -10141,17 +10141,207 @@ class C:
 
 5. 尝试自己举一个例子说明如何使用类的静态属性。（一定要自己先动手再看答案哦_）
 
+   在类中直接定义的属性叫做静态属性（没有self.），需要调用的时候直接用 `类名.属性名`进行调用
+
+   ```
+   class C:
+       number = 0
+   
+       def show(self):
+           return C.number
+   
+   
+   c = C()
+   print(c.show())
+   print(C.number)
+   ```
+
+   答案：
+
+   ```python
+   class A(object):
+       count = 0
+   
+       def __init__(self):
+           A.count += 1
+   
+       def getcount(self):
+           return A.count
+   
+   
+   a = A()
+   a1 = A()
+   b = A()
+   
+   print(a.getcount())
+   ```
+
    
 
 6. 尝试自己举例说明如何使用类的静态方法，并指出使用类的静态方法有何要点和需要注意的地方？（一定要自己先动手再看答案哦_）
+
+   ```
+   class C:
+       @staticmethod
+       def show(name='felix'):
+           print(name)
+   
+   
+   C.show('yang')
+   C.show()
+   c = C()
+   c.show()
+   ```
+
+   答案：
+
+   ```python
+   class C:
+       @staticmethod   #该修饰符表示static()是静态方法
+       def static (arg1 , arg2 , arg3 ) :
+           print (arg1 , arg2 , arg3 , arg1 + arg2 + arg3)
+   
+       def nostatic (self) :
+           print ("I'm the fucking normal method")
+   
+   
+   c1 = C()
+   c2 = C()
+   
+   
+   # 静态方法只在内存中生成一个，节省开销
+   print(c1.static is C.static)
+   print(c1.nostatic is C.nostatic)
+   print(c1.static)
+   print(c2.static)
+   print(C.static)
+   
+   
+   # 普通方法每个实例对象都有独立的一个，开销较大
+   print(c1.nostatic)
+   print(c2.nostatic)
+   print(C.nostatic)
+   
+   ```
+
+   
 
 ### Practice
 
 1. 定义一个类，当实例化该类的时候，自动判断传入了多少个参数，并显示出来：
 
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/201903032129217.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4OTcwNzgz,size_16,color_FFFFFF,t_70)
+
+   ```python
+   # 定义一个类，当实例化该类的时候，自动判断传入了多少个参数，并显示出来：
+   
+   class C:
+       def __init__ (self, *args):  # *arg表示不确定个数的参数
+           if not args:
+               print("并没有传入参数")
+           else:
+               print("传入了%d个参数，分别是：" % len(args), end=' ')
+               for each in args:
+                   print(each, end=' ')
+   
+   
+   c = C()
+   c = C(1, 2, 3)
+   ```
+
+   
+
 2. 定义一个单词（Word）类继承自字符串，重写比较操作符，当两个 Word 类对象进行比较时，根据单词的长度来进行比较大小。
 
-   ```
+   ```python
+   class Word(str):
+       def __lt__(self, other):
+           return len(self) < len(other)
    
+       def __gt__(self, other):
+           return len(self) > len(other)
+   
+       def __eq__(self, other):
+           return len(self) == len(other)
+   
+       def __ne__(self, other):
+           return len(self) != len(other)
+   
+       def __le__(self, other):
+           return len(self) <= len(other)
+   
+       def __ge__(self, other):
+           return len(self) >= len(other)
+   
+   
+   w1 = Word('123')
+   w2 = Word('3456')
+   print(w1 > w2)
+   print(w1 < w2)
+   print(w1 != w2)
+   print(w1 == w2)
+   print(w1 >= w2)
+   print(w1 <= w2)
    ```
+
+   
+
+   **加分项：实例化时如果传入的是带空格的字符串，则去第一个空格前的单词作为参数**
+
+   ```
+   # 加分项：实例化时如果传入的是带空格的字符串，则去第一个空格前的单词作为参数
+   
+   class Word(str):
+       def __new__(cls, word):
+           # 注意必须要使用__new__方法，因为str 是不可变类型
+           # 必须在创建的时候将他初始化
+           if ' ' in word:
+               print('Value contains the spaces, truncating to first space.')
+               word = word[: word.index(' ')]
+           return str.__new__(cls, word)
+   
+       def __lt__(self, other):
+           return len(self) < len(other)
+   
+       def __gt__(self, other):
+           return len(self) > len(other)
+   
+       def __eq__(self, other):
+           return len(self) == len(other)
+   
+       def __ne__(self, other):
+           return len(self) != len(other)
+   
+       def __le__(self, other):
+           return len(self) <= len(other)
+   
+       def __ge__(self, other):
+           return len(self) >= len(other)
+   
+   
+   w1 = Word('I love you')
+   w2 = Word('felix')
+   print(w1 > w2)
+   print(w1 < w2)
+   print(w1 != w2)
+   print(w1 == w2)
+   print(w1 >= w2)
+   print(w1 <= w2)
+   ```
+
+   
+
+# 044. 魔法方法：简单定制
+
+## 知识点
+
+
+
+## 课后作业
+
+### Quiz
+
+
+
+### Practice
 
