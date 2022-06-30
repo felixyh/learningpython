@@ -12,7 +12,7 @@ class MyTimer:
         return float(self) + float(other)
 
     def start(self):
-
+        pass
 
     def stop(self):
         pass
