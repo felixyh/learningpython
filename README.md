@@ -10335,7 +10335,65 @@ class C:
 
 ## 知识点
 
+- 前情提要
 
+  - 使用time模块的localtime方法获取时间
+
+    - [扩展阅读：time模块详解（时间获取和转换）](https://blog.csdn.net/qq_41556318/article/details/84670804)
+
+  - time.localtime返回structure_time的时间格式
+
+    gmtime()，localtime() 和 strptime() 以时间元组（struct_time）的形式返回。
+
+    索引值（Index）	属性（Attribute）	值（Values）
+    0	tm_year（年）	（例如：2015）
+    1	tm_mon（月）	1 ~ 12
+    2	tm_mday（日）	1 ~ 31
+    3	tm_hour（时）	0 ~ 23
+    4	tm_min（分）	0 ~ 59
+    5	tm_sec（秒）	0 ~ 61（见下方注1）
+    6	tm_wday（星期几）	0 ~ 6（0 表示星期一）
+    7	tm_yday（一年中的第几天）	1 ~ 366
+    8	tm_isdst（是否为夏令时）	0， 1， -1（-1 代表夏令时）
+    注1：范围真的是 0 ~ 61（你没有看错哦^_^）；60 代表闰秒，61 是基于历史原因保留。
+
+  - 表现你的类：`__str__`和`__repr__`
+
+    ```python
+    >>> class C:
+    ...     def __str__(self):
+    ...             return "felix is my name"
+    ... 
+    >>> c1 = C()
+    >>> c1
+    <__main__.C object at 0x100de3fa0>
+    >>> print(c1)
+    felix is my name
+    >>> 
+    >>> 
+    >>> class C:
+    ...     def __repr__(self):
+    ...             return "this is for __repr__"
+    ... 
+    >>> c2 = C()
+    >>> c2
+    this is for __repr__
+    >>> print(c2)
+    this is for __repr__
+    ```
+
+    
+
+- 案例
+
+  - 定制一个计时器的类
+  - start和stop 方法代表启动计时器和停止计时器
+  - 假设计时器对象t1，print(t1) 和直接调用t1均显示结果
+  - 当计时器未启动或已经停止计时，调用stop方法会给予温馨的提示
+  - 两个计时器对象可以进行相加：t1+t2
+  - 只能使用提供的有限资源完成
+
+- 
 
 ## 课后作业
 
