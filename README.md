@@ -10541,29 +10541,7 @@ class C:
 
     
 
-  - 按照课中的程序，如果开始计时的时间是（2022年2月22日16：30：30）停止时间是（2025年1月23日15：30：30）,那按照我们用停止时间减开始时间的计算方式就会出现负数，你应该对此做一些转换
-
-    ```
     
-    ```
-
-    
-
-  - 相信大家已经意识到不对劲了：为毛一个月一定要31天？不知道又可能也是30天或者29天吗?（上一题我们的答案是假设一个月31天）
-
-    没错，如果要正确得到月份的天数，我们还需要考虑是否闰年，还有每月的最大天数，所以太麻烦了......如果我们不及时纠正，我们会在错误的道理上越走越远.......
-
-    所以，这一次，小甲鱼提出来了更加优秀的解决方案：用time模块的perf_counter()和process_time()来计算，其中perf_counter()返回计时器的精准时间（系统的运行时间）;process_time()返回当前进程执行CPU的时间总和
-
-    题目：改进我们课堂中的例子，这次试用perf_counter（）和process_time()作为计时器。另外增加一个set_timer()方法，用于设置默认计时器（默认是perf_counter()，可以通过此方法修改为process_time()
-
-  - 既然咱都做到这一步，那不如深入一下，再次改进我们的代码，让它能够统计一个函数运行若干次的时间
-
-    要求一：函数调用的次数可以设置（默认是1000000次）
-
-    要求二：新增一个 timeing()方法，用于启动计时器
-
-  - 
 
   
 
@@ -10577,3 +10555,303 @@ class C:
 
 ### Practice
 
+1. 按照课堂中的程序，如果开始计时的时间为（2022年2月22日16:30:30），停止时间是（2025年1月23日15:30:30），那按照我们用停止时间减去开始时间的计算方式就会出现负数，你应该对此做一些转换
+
+   ```PYTHON
+   #!/usr/bin/python
+   # -*- coding:utf-8 -*-
+   import time as t
+   
+   
+   class MyTimer:
+       def __init__(self):
+           self.unit = ['年', '月', '天', '小时', '分钟', '秒']
+           self.borrow = [1, 12, 31, 24, 60, 60]
+           self.prompt = "未开始计时！"
+           self.lasted = []
+           self.begin = 0
+           self.end = 0
+   
+       # 开始计时
+       def start(self):
+           self.begin = t.localtime()
+           self.prompt = "提示：请先调用stop()结束计时！"
+           print("计时开始……")
+   
+       # 停止计时
+       def stop(self):
+           if not self.begin:
+               print("提示：请先调用start()开始计时！")
+           else:
+               self.end = t.localtime()
+               self._calc()
+               print("计时结束！")
+   
+       # 内部方法，计算运行时间
+       def _calc(self):
+           self.lasted = []
+           self.prompt = "总共运行了"
+           for index in range(6):
+               temp = self.end[index] - self.begin[index]
+               # 低位不够减，需要向高位借位
+               if temp < 0:
+                   # 测试高位是否有得借，没得借的话再向高位借……
+                   i = 1
+                   while self.lasted[index-i] < 1:
+                       self.lasted[index-i] += self.borrow[index-i] - 1
+                       self.lasted[index-i-1] -= 1
+                       i += 1
+                   self.lasted.append(self.borrow[index] + temp)
+                   self.lasted[index-1] -= 1
+               else:
+                   self.lasted.append(temp)
+   
+           # 由于高位随时会被借位，所以打印要放在最后
+           for index in range(6):
+               if self.lasted[index]:
+                   self.prompt += str(self.lasted[index]) + self.unit[index]
+   
+           # 为下一轮计算初始化变量
+           self.begin = 0
+           self.end = 0
+           print(self.prompt)
+   
+       # 调用实例直接显示结果
+       def __str__(self):
+           return self.prompt
+       __repr__ = __str__
+   
+       # 计算两次计时器对象之和
+       def __add__(self, other):
+           prompt = "总共运行了"
+           result = []
+           for index in range(6):
+               result.append(self.lasted[index] + other.lasted[index])
+               if result[index]:
+                   prompt += (str(result[index]) + self.unit[index])
+           return prompt
+   
+   
+   t1 = MyTimer()
+   t2 = MyTimer()
+   t1.start()
+   t.sleep(65)
+   t1.stop()
+   t2.start()
+   t.sleep(15)
+   t2.stop()
+   print(t1 + t2)
+   ```
+
+
+
+2. 相信大家已经意识到不对劲了：为毛一个月一定要31天？不知道又可能也是30天或者29天吗?（上一题我们的答案是假设一个月31天）
+
+   没错，如果要正确得到月份的天数，我们还需要考虑是否闰年，还有每月的最大天数，所以太麻烦了......如果我们不及时纠正，我们会在错误的道理上越走越远.......
+
+   所以，这一次，小甲鱼提出来了更加优秀的解决方案：用time模块的perf_counter()和process_time()来计算，其中perf_counter()返回计时器的精准时间（系统的运行时间）;process_time()返回当前进程执行CPU的时间总和
+
+   题目：改进我们课堂中的例子，这次试用perf_counter（）和process_time()作为计时器。另外增加一个set_timer()方法，用于设置默认计时器（默认是perf_counter()，可以通过此方法修改为process_time()
+
+   ```PYTHON
+   # 用time模块的perf_counter()和process_time()计算，其中perf_counter()返回计时器的精准时间（系统的运行时间）；
+   # process_time()返回当前进程执行CPU的时间总和。
+   
+   # 题目：改进我们课堂中的例子，这次使用perf_counter()和process_time()作为计时器，
+   # 另外新增一个set_time()方法，用于设置默认计时器（默认是perf_counter()，可以通过此方法修改为process_time() ）
+   
+   
+   #!/usr/bin/python
+   # -*- coding:utf-8 -*-
+   
+   import time as t
+   
+   
+   class MyTimer:
+       def __init__(self):
+           self.prompt = "未开始计时"
+           self.lasted = 0.0
+           self.begin = 0
+           self.end = 0
+           self.default_timer = t.perf_counter
+   
+       def __str__(self):
+           return self.prompt
+   
+       __repr__ = __str__
+   
+       def __add__(self, other):
+           result = self.lasted + other.lasted
+           prompt = "总共运行了%0.2f秒" % result
+           return prompt
+   
+       def start(self):
+           self.begin = self.default_timer()
+           self.prompt = "提示：请先调用stop()停止计时！"
+           print("计时开始！")
+   
+       def stop(self):
+           if not self.begin:
+               print("提示：请先调用start()运行计时！")
+           else:
+               self.end = self.default_timer()
+               self._calc()
+               print("计时结束")
+   
+       def _calc(self):
+           self.lasted = self.end - self.begin
+           self.prompt = "总共运行了%0.2f秒" % self.lasted
+           print(self.prompt)
+           self.begin = 0
+           self.end = 0
+   
+       def set_timer(self, timer):
+           if timer == 'process_time':
+               self.default_timer = t.process_time
+           elif timer == 'perf_counter':
+               self.default_timer = t.perf_counter
+           else:
+               print("输入无效")
+   
+   
+   t1 = MyTimer()
+   t1.set_timer('perf_counter')
+   t1.start()
+   t.sleep(5.2)
+   t1.stop()
+   t2 = MyTimer()
+   t2.set_timer('perf_counter')
+   t2.start()
+   t.sleep(5.2)
+   t2.stop()
+   print(t1 + t2)
+   
+   ```
+
+   
+
+
+
+3. 既然咱都做到这一步，那不如深入一下，再次改进我们的代码，让它能够统计一个函数运行若干次的时间
+
+   要求一：函数调用的次数可以设置（默认是1000000次）
+
+   要求二：新增一个 timeing()方法，用于启动计时器
+
+   ```PYTHON
+   # 既然咱都做到这一步，那不如深入一下，再次改进我们的代码，让它能够统计一个函数运行若干次的时间
+   #
+   # 要求一：函数调用的次数可以设置（默认是1000000次）
+   #
+   # 要求二：新增一个 timeing()方法，用于启动计时器
+   
+   # !/usr/bin/python
+   # -*- coding:utf-8 -*-
+   
+   import time as t
+   
+   
+   class MyTimer:
+       def __init__(self, func, number=1000000):
+           self.prompt = "未开始计时"
+           self.lasted = 0.0
+           self.begin = 0
+           self.end = 0
+           self.default_timer = t.perf_counter
+           self.number = number
+           self.func = func
+   
+       def __str__(self):
+           return self.prompt
+   
+       __repr__ = __str__
+   
+       def __add__(self, other):
+           result = self.lasted + other.lasted
+           prompt = "总共运行了%0.2f秒" % result
+           return prompt
+   
+       # 内置方法，计算运行时间
+       def timing(self):
+           self.begin = self.default_timer()
+           for i in range(self.number):
+               self.func()
+           self.end = self.default_timer()
+           self.lasted = self.end - self.begin
+           self.prompt = "总共运行了 %0.2f 秒" % self.lasted
+   
+       def set_timer(self, timer):
+           if timer == 'process_time':
+               self.default_timer = t.process_time
+           elif timer == 'perf_counter':
+               self.default_timer = t.perf_counter
+           else:
+               print("输入无效")
+   
+   
+   def test():
+       text = "I love FishC.com!"
+       char = 'o'
+       if char in text:
+           pass
+   
+   
+   t1 = MyTimer(test)
+   t1.timing()
+   print(t1)
+   t2 = MyTimer(test, 10000000)
+   t2.timing()
+   print(t2)
+   t3 = MyTimer(test, 100000000)
+   t3.timing()
+   print(t3)
+   ```
+
+   
+
+
+
+
+
+4. 回忆复习
+
+   通常在一段程序的前后都用上time.time(),然后进行相减就可以得到一段程序的运行时间，不过python提供了更强大的计时库：timeit
+
+   ```python
+   #导入timeit.timeit
+   from timeit import timeit  
+   
+   #看执行1000000次x=1的时间：
+   timeit('x=1')
+   
+   #看x=1的执行时间，执行1次(number可以省略，默认值为1000000)：
+   timeit('x=1', number=1)
+   
+   #看一个列表生成器的执行时间,执行1次：
+   timeit('[i for i in range(10000)]', number=1)
+   
+   #看一个列表生成器的执行时间,执行10000次：
+   timeit('[i for i in range(100) if i%2==0]', number=10000)
+   ```
+
+   
+
+   测试一个函数的执行时间：
+
+   ```swift
+   from timeit import timeit
+   
+   def func():
+       s = 0
+       for i in range(1000):
+           s += i
+       print(s)
+   
+   # timeit(函数名_字符串，运行环境_字符串，number=运行次数)
+   t = timeit('func()', 'from __main__ import func', number=1000)
+   print(t)
+   ```
+
+   此程序测试函数运行1000次的执行时间。
+
+   

@@ -61,6 +61,6 @@ class MyTimer:
             if self.lasted[index]:  # 当lasted为0时就不会执行if内的语句，而是执行下一轮的循环
                 self.prompt += str(self.lasted[index]) + self.unit[index]  # 运行时间+单位
 
-                # 为下一轮计时初始化变量
-                self.begin = 0
-                self.end = 0
+        # 为下一轮计时初始化变量
+        self.begin = 0
+        self.end = 0
