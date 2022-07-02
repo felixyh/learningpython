@@ -10389,7 +10389,7 @@ class C:
 
     
 
-- 案例
+- 案例要求
 
   - 定制一个计时器的类
   - start和stop 方法代表启动计时器和停止计时器
@@ -10450,9 +10450,122 @@ class C:
 
 - 答案程序
 
-  ```
+  - 初始程序
+
+    ```python
+    import time as t
+    
+    class Mytimer():
+        def __init__(self):
+            #定义一个列表存放时间的单位，以便程序运行后输出的结果直接是带单位的结果：如：总共运行了：3秒
+            self.unit = ['年','月','天','小时','分钟','秒']
+            self.prompt = '未开始计时！'
+            self.lasted = []
+            #self.start = 0
+            self.begin = 0
+            #self.stop = 0
+            self.end = 0
+            #这里特别需要注意，方法名和属性名不能定义成同一个名字，否则属性会覆盖方法
+        
+        #实现直接调用对象来输出内容
+        def __str__(self):
+            return self.prompt
+    
+        #__str__ 赋值给 __repr__
+        __repr__ = __str__
+    
+        #两个对象相加
+        def __add__(self,other):
+            prompt = "总共运行了"
+            result = []
+            for index in range(6):
+                result.append(self.lasted[index]+other.lasted[index])
+                if result[index]:#如果result是空的话执行
+                    prompt += (str(result[index])+self.unit[index])
+            return prompt
+       
+        #开始计时
+        def start(self):#self表示对象的引用
+            self.begin = t.localtime()
+            self.prompt = '提示：请先调用stop()停止计时'
+            print('计时开始...')
+    
+        #停止计时
+        def stop(self):
+            if not self.begin:
+                print("提示：请先调用start()进行计时！")
+            else:
+                self.end = t.localtime()
+                #结束计时时并进行计算，即对象.内部方法
+                self._clac()
+                print('计时结束！')
+        
+        #内部方法(_方法名)，计算运行时间
+        def _clac(self):
+            #计算的结果放在一个列表里面
+            self.lasted = []
+            #定义一个提示的变量
+            self.prompt = '总共运行了'
+            #依次遍历localtime的索引
+            for index in range(6):
+                #用结束时间减去开始时间得到运行的时间，并把结果放到lasted[]列表内
+                self.lasted.append(self.end[index]-self.begin[index])
+                #把每一次计算的结果进行一次追加
+                if self.lasted[index]: #当lasted为0时就不会执行if内的语句，而是执行下一轮的循环
+                    self.prompt += str(self.lasted[index])+self.unit[index] #运行时间+单位
+    
+            #为下一轮计时初始化变量
+                    self.begin = 0
+                    self.end = 0
+                    
+            
+      执行结果：
+    >>> t1 = Mytimer()
+    >>> t1.start()
+    计时开始...
+    >>> t1.stop()
+    计时结束！
+    >>> t1
+    总共运行了9秒
+    >>> t2 = Mytimer()
+    >>> t2.start()
+    计时开始...
+    >>> t2.stop()
+    计时结束！
+    >>> t2
+    总共运行了5秒
+    >>> t1+t2
+    '总共运行了14秒'
+    >>>  
+    ```
+
+    
+
+  - 按照课中的程序，如果开始计时的时间是（2022年2月22日16：30：30）停止时间是（2025年1月23日15：30：30）,那按照我们用停止时间减开始时间的计算方式就会出现负数，你应该对此做一些转换
+
+    ```
+    
+    ```
+
+    
+
+  - 相信大家已经意识到不对劲了：为毛一个月一定要31天？不知道又可能也是30天或者29天吗?（上一题我们的答案是假设一个月31天）
+
+    没错，如果要正确得到月份的天数，我们还需要考虑是否闰年，还有每月的最大天数，所以太麻烦了......如果我们不及时纠正，我们会在错误的道理上越走越远.......
+
+    所以，这一次，小甲鱼提出来了更加优秀的解决方案：用time模块的perf_counter()和process_time()来计算，其中perf_counter()返回计时器的精准时间（系统的运行时间）;process_time()返回当前进程执行CPU的时间总和
+
+    题目：改进我们课堂中的例子，这次试用perf_counter（）和process_time()作为计时器。另外增加一个set_timer()方法，用于设置默认计时器（默认是perf_counter()，可以通过此方法修改为process_time()
+
+  - 既然咱都做到这一步，那不如深入一下，再次改进我们的代码，让它能够统计一个函数运行若干次的时间
+
+    要求一：函数调用的次数可以设置（默认是1000000次）
+
+    要求二：新增一个 timeing()方法，用于启动计时器
+
+  - 
+
   
-  ```
 
   
 
