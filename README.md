@@ -10855,3 +10855,272 @@ class C:
    此程序测试函数运行1000次的执行时间。
 
    
+
+# 045. 魔法方法：属性访问
+
+## 知识点
+
+- 前情提要
+
+  - 访问属性的方法有2种
+
+    - 通过`.`的方式，实例`.`属性访问
+
+      ```python
+      >>> class C:
+      ...     def __init__(self):
+      ...             self.name = 'x-man'
+      ... 
+      >>> c = C()
+      >>> c.name
+      'x-man'
+      ```
+
+      
+
+    - 通过BIF，geattr() 优雅的访问
+
+      ```python
+      >>> getattr(c, 'name', '木有这个属性')
+      'x-man'
+      >>> 
+      >>> getattr(c, 'size', '木有这个属性')
+      '木有这个属性'
+      ```
+
+      
+
+  - 可以通过设置property 属性，绑定操作其他属性
+
+    ```python
+    >>> class C:
+    ...     def __init__(self, size):
+    ...             self.size = size
+    ...     def getSize(self):
+    ...             return self.size
+    ...     def setSize(self,value):
+    ...             self.size = value
+    ...     def delSize(self):
+    ...             del self.size
+    ...     x = property(getSize, setSize, delSize)
+    
+    >>> c = C(10)
+    >>> c.size
+    10
+    >>> c.x = 1
+    
+    >>> c.size
+    1
+    >>> del c.x
+    >>> c.size
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    AttributeError: 'C' object has no attribute 'size'
+    >>> c.x
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "<stdin>", line 5, in getSize
+    AttributeError: 'C' object has no attribute 'size'
+    >>> c.x = 1
+    >>> c.size
+    1
+    >>> c.x
+    1
+    ```
+
+    
+
+- 魔法方法 - 操作属性
+
+  通过重写这几个魔法方法可以控制对属性的访问
+
+  | `__getattr__(self, name)`      | 定义当用户试图获取一个不存在的属性时的行为 |
+  | ------------------------------ | ------------------------------------------ |
+  | `__getattribute__(self, name)` | 定义当该类的属性被访问时的行为             |
+  | `__setattr__(self, name)`      | 定义当一个属性被设置时的行为               |
+  | `__delattr__(self, name)`      | 定义当一个属性被删除时的行为               |
+
+  ```python
+  # 4个魔法方法操作属性
+  
+  class C:
+      # 定义当该类的属性被访问时的行为
+      def __getattribute__(self, name):
+          print('getattribute')
+          # 仅仅测试用途，通过super函数继承默认基类的同样魔法方法，不改变魔法方法本身
+          return super().__getattribute__(name)
+  
+      # 当用户试图获取一个不存在的属性的行为，如果属性存在就不会调用了; 默认行为是会报错
+      def __getattr__(self, name):
+          print('getattr')
+  
+      # 定义当一个属性被设置时的行为
+      def __setattr__(self, name, value):
+          print('setattr')
+          # 仅仅测试用途，通过super函数继承默认基类的同样魔法方法，不改变魔法方法本身
+          super().__setattr__(name, value)
+  
+      # 定义当一个属性被删除时的行为
+      def __delattr__(self, name):
+          print('delattr')
+          # 仅仅测试用途，通过super函数继承默认基类的同样魔法方法，不改变魔法方法本身
+          super().__delattr__(name)
+  
+  
+  c = C()
+  c.size
+  c.size = 1
+  c.size
+  del c.size
+  ```
+
+  output
+
+  ```python
+  getattribute          # c.size 访问属性时，调用getattribute
+  getattr               # c.size 不存在，触发调用getattr
+  setattr               # c.size = 1， 触发调用setattr
+  getattribute          # c.size 访问属性时，调用getattribute；由于c.size 存在，不会触发调用getattr
+  delattr               # del c.size 删除属性时，调用delattr
+  ```
+
+  
+
+- 课堂练习
+
+  - 写一个矩形类，默认有宽和高两个属性
+
+  - 如果为一个叫square的属性赋值，那么说明是一个正方形，值就是正方形的边长，此时宽和高都应该等于边长
+
+    
+
+
+
+
+
+## 课后作业
+
+### Quiz
+
+1. 请问以下代码的作用是什么？这样写正确吗？（如果不正确，请改正）
+
+   ```python
+   def __setattr__(self, name, value):
+           self.name = value + 1
+   
+   ```
+
+   
+
+2. 自定义该类的属性被访问的行为，你应该重写哪个魔法方法？
+
+3. 在不上机验证的情况下，你能推断以下代码分别会显示什么吗？
+
+   ```python
+   >>> class C:
+           def __getattr__(self, name):
+                   print(1)
+           def __getattribute__(self, name):
+                   print(2)
+           def __setattr__(self, name, value):
+                   print(3)
+           def __delattr__(self, name):
+                   print(4)
+    
+                   
+   >>> c = C()
+   >>> c.x = 1
+   # 位置一，请问这里会显示什么？
+   >>> print(c.x)
+   # 位置二，请问这里会显示什么？
+   
+   ```
+
+   
+
+4. 在不上机验证的情况下，你能推断以下代码分别会显示什么吗？
+
+   ```python
+   >>> class C:
+           def __getattr__(self, name):
+                   print(1)
+                   return super().__getattr__(name)
+           def __getattribute__(self, name):
+                   print(2)
+                   return super().__getattribute__(name)
+           def __setattr__(self, name, value):
+                   print(3)
+                   super().__setattr__(name, value)
+           def __delattr__(self, name):
+                   print(4)
+                   super().__delattr__(name)
+    
+                   
+   >>> c = C()
+   >>> c.x
+   
+   ```
+
+   
+
+5. 请指出以下代码的问题所在：
+
+   ```python
+   class Counter:
+           def __init__(self):
+                   self.counter = 0
+           def __setattr__(self, name, value):
+                   self.counter += 1
+                   super().__setattr__(name, value)
+           def __delattr__(self, name):
+                   self.counter -= 1
+                   super().__delattr__(name)
+   
+   ```
+
+   
+
+   
+
+### Practice
+
+1. 按要求重写魔法方法：当访问一个不存在的属性时，不报错且提示“该属性不存在！”
+
+   
+
+2. 编写 Demo 类，使得下边代码可以正常执行：
+
+   ```python
+   >>> demo = Demo()
+   >>> demo.x
+   'FishC'
+   >>> demo.x = "X-man"
+   >>> demo.x
+   'X-man'
+   
+   ```
+
+   
+
+3. 修改上边【测试题】第 4 题，使之可以正常运行：编写一个 Counter 类，用于实时检测对象有多少个属性。、
+
+   程序实现如下：
+
+   ```python
+   >>> c = Counter()
+   >>> c.x = 1
+   >>> c.counter
+   1
+   >>> c.y = 1
+   >>> c.z = 1
+   >>> c.counter
+   3
+   >>> del c.x
+   >>> c.counter
+   2
+   
+   ```
+
+   
+
+   
