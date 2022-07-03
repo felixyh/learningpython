@@ -11205,7 +11205,16 @@ class C:
    ```
 
    ```python
+   class Demo:
+       def __getattr__(self, name):
+           self.name = 'FishC'
+           return self.name
    
+   
+   demo = Demo()
+   demo.x
+   demo.x = "X-man"
+   demo.x
    ```
 
    
@@ -11269,3 +11278,276 @@ class C:
    ```
 
    
+
+
+
+# 046. 魔法方法：描述符（Property的原理）
+
+## 知识点
+
+- 描述符就是将某种特殊类型的类的实例指派给另一个类的属性。大家对于这个定义可能还不是很理解，等会会举例说明。首先，什么是特殊类型呢？特殊类型的要求是至少要实现以下三个方法其中一个或全部实现。
+
+  - `__get(self, instance, owner)__`       用于访问属性，它返回属性的值
+  - `__set(self, instance, value)__`   将在属性分配操作中调用，不返回任何内容
+  - `__delete(self, instance)__`   控制删除操作，不返回任何内容
+
+- 一个例子
+
+  ```python
+  >>> class MyDescriptor:
+  ...     def __get__(self, instance, owner):
+  ...             print('getting...', self, instance, owner)
+  ...     def __set__(self, instance, value):
+  ...             print('setting...', self, instance, value)
+  ...     def __delete__(self, instance):
+  ...             print('deleting...', self, instance)
+  ... 
+  >>> class Test:
+  ...     x = MyDescriptor()
+  ... 
+  
+  
+  # 先来写一个描述符 MyDescriptor，并且把所有方法的参数给打印出来。
+  
+  # 再来一个真正的Test类来测试一下，就给一个属性 x ，把 MyDescriptor() 的实例指派给Test类的属性 x。我们就说
+  # MyDescriptor 类就是 x 的描述符。（是不是一下子感觉到了 property 的影子）。
+  
+  # 我们下面实例化 Test 类，对 x 属性进行各种操作，看看描述符类 MyDescriptor 会有怎样的响应。
+  
+  >>> test = Test()
+  >>> test.x
+  getting... <__main__.MyDescriptor object at 0x104b398e0> <__main__.Test object at 0x1044d79a0> <class '__main__.Test'>
+  >>> 
+  >>> test
+  <__main__.Test object at 0x1044d79a0>
+  >>> Test
+  <class '__main__.Test'>
+  >>> test.x = 'x-man'
+  setting... <__main__.MyDescriptor object at 0x104b398e0> <__main__.Test object at 0x1044d79a0> x-man
+  >>> del test.x
+  deleting... <__main__.MyDescriptor object at 0x104b398e0> <__main__.Test object at 0x1044d79a0>
+  >>> 
+  ```
+
+- > 我们尝试直接打印 test.x ，我们看到会调用描述符的 get，并且参数的意义也很明确， self 是描述符类本身的实例，instance 参数是 它的拥有者 Test 的实例 test，我们直接打印 test，就和 instance 的内容一样，然后 owner 就是它的拥有者 Test 类本身，我们直接打印 Test，就和 owner 的内容一样。
+  > 然后赋值（test.x = “x-man”）的时候，就会调用描述符的 set，删除（del test.x）的时候也是一样，调用__delete__。
+
+- property 就是一个描述符类
+
+  - 自定义一个 property（MyProperty），来实现property的所有功能
+
+  - 我们这里定义的MyProperty只是把 property的功能进行照搬，大家可以加入自己的创意
+
+    ```python
+    >>> class MyProperty:
+    	def __init__(self, fget = None, fset = None, fdel = None):
+    		self.fget = fget
+    		self.fset = fset
+    		self.fdel = fdel
+    	def __get__(self, instance, owner):
+    		return self.fget(instance)
+    	def __set__(self, instance, value):
+    		self.fset(instance, value)
+    	def __delete__(self, instance):
+    		self.fdel(instance)
+     
+    		
+    >>> class C:
+    	def __init__(self):
+    		self._x = None
+    	def getx(self):
+    		return self._x
+    	def setx(self, value):
+    		self._x = value
+    	def delx(self):
+    		del self._x
+    	x = MyProperty(getx, setx, delx)
+     
+    >>> c = C()
+    >>> c.x = "x-man"
+    >>> c._x
+    'x-man'
+    >>> del c.x
+    >>> c._x
+    Traceback (most recent call last):
+      File "<pyshell#62>", line 1, in <module>
+        c._x
+    AttributeError: 'C' object has no attribute '_x'
+    
+    ```
+
+- 第二个例子：课堂练习
+
+  - 先定义一个温度类，然后定义两个描述符类用于描述摄氏度和华氏度两个属性。
+
+  - 要求两个属性会自动进行转换，也就是说你可以给摄氏度这个属性赋值，然后打印的华氏度属性是自动转换后的结果。 公式：摄氏度 * 1.8 + 32 = 华氏度
+
+    ```python
+    
+    ```
+
+    
+
+## 课后作业
+
+### Quiz
+
+1. 请尽量用自己的语言来解释什么是描述符（不要搜索来的答案，用自己的话解释）？
+
+2. 描述符类中，分别通过哪些魔法方法来实现对属性的 get、set 和 delete 操作的？
+
+3. 请问以下代码，分别调用 test.a 和 test.x，哪个会打印“getting…”?
+
+   ```python
+   
+   >>> class MyDes:
+           def __get__(self, instance, owner):
+                   print("getting...")
+    
+   >>> class Test:
+           a = MyDes()
+           x = a
+    
+   >>> test = Test()
+   
+   ```
+
+4. 请问以下代码会打印什么内容？
+
+   ```python
+   class MyDes:
+       def __init__(self, value = None):
+           self.val = value
+    
+       def __get__(self, instance, owner):
+           return self.val - 20
+    
+       def __set__(self, instance, value):
+           self.val = value + 10
+           print(self.val)
+    
+   class C:
+       x = MyDes()
+    
+   if __name__ == '__main__':  # 该模块被执行的话，执行下边语句。
+       c = C()
+       c.x = 10
+       print(c.x)
+   
+   
+   ```
+
+   
+
+5. 请问以下代码会打印什么内容？
+
+   ```python
+   
+   >>> class MyDes:
+           def __init__(self, value = None):
+                   self.val = value
+           def __get__(self, instance, owner):
+                   return self.val ** 2
+    
+   >>> class Test:
+           def __init__(self):
+                   self.x = MyDes(3)
+    
+   >>> test = Test()
+   >>> test.x
+   
+   
+   ```
+
+   
+
+### Practice
+
+1. 按要求编写描述符 MyDes：当类的属性被访问、修改或设置的时候，分别做出提醒。
+
+   ```python
+   >>> class Test:
+           x = MyDes(10, 'x')
+    
+   >>> test = Test()
+   >>> y = test.x
+   正在获取变量： x
+   >>> y
+   10
+   >>> test.x = 8
+   正在修改变量： x
+   >>> del test.x
+   正在删除变量： x
+   噢~这个变量没法删除~
+   >>> test.x
+   正在获取变量： x
+   8
+   
+   ```
+
+   ```python
+   
+   ```
+
+   
+
+2. 按要求编写描述符 Record：记录指定变量的读取和写入操作，并将记录以及触发时间保存到文件：record.txt
+
+   ```python
+   >>> class Test:
+           x = Record(10, 'x')
+           y = Record(8.8, 'y')
+    
+   >>> test = Test()
+   >>> test.x
+   10
+   >>> test.y
+   8.8
+   >>> test.x = 123
+   >>> test.x = 1.23
+   >>> test.y = "I love FishC.com!"
+   >>>
+   
+   ```
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200731180156540.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NhdHJ0ZWVz,size_16,color_FFFFFF,t_70)
+
+   ```python
+   
+   ```
+
+   
+
+3. 再来一个有趣的案例：编写描述符 MyDes，使用文件来存储属性，属性的值会直接存储到对应的pickle（腌菜，还记得吗？）的文件中。如果属性被删除了，文件也会同时被删除，属性的名字也会被注销。
+
+   举个栗子：
+
+   ```python
+   >>> class Test:
+           x = MyDes('x')
+           y = MyDes('y')
+           
+   >>> test = Test()
+   >>> test.x = 123
+   >>> test.y = "I love FishC.com!"
+   >>> test.x
+   123
+   >>> test.y
+   'I love FishC.com!'
+   
+   ```
+
+   产生对应的文件存储变量的值：
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200731181640821.png)
+
+   ```python
+   >>> del test.x
+   >>>
+   
+   ```
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200731181650271.png)
+
+   
+
