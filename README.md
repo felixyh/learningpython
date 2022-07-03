@@ -11097,7 +11097,6 @@ class C:
 
    因为 x 是属于实例对象 c 的属性，所以 c.x 是访问一个存在的属性，因此会访问 __getattribute__() 魔法方法，但我们重写了这个方法，使得它不能按照正常的逻辑返回属性值，而是打印一个 2 代替，由于我们没有写返回值，所以紧接着返回 None 并被 print() 打印出来。
    
-
 4. 在不上机验证的情况下，你能推断以下代码分别会显示什么吗？
 
    ```python
@@ -11383,9 +11382,25 @@ class C:
   - 要求两个属性会自动进行转换，也就是说你可以给摄氏度这个属性赋值，然后打印的华氏度属性是自动转换后的结果。 公式：摄氏度 * 1.8 + 32 = 华氏度
 
     ```python
-    
+    class Celsius:
+            def __init__(self, value = 26.0):
+                    self.value = float(value)
+            def __get__(self, instance, owner):
+                    return self.value
+            def __set__(self, instance, value):
+                    self.value = float(value)
+                    
+    class Fahrenheit:
+            def __get__(self, instance, owner):
+                    return instance.cel * 1.8 +32
+            def __set__(self, instance, value):
+                    instance.cel = (float(value) - 32) / 1.8
+     
+    class Temperature:
+            cel = Celsius()
+            fah = Fahrenheit()
     ```
-
+    
     
 
 ## 课后作业
@@ -11394,7 +11409,16 @@ class C:
 
 1. 请尽量用自己的语言来解释什么是描述符（不要搜索来的答案，用自己的话解释）？
 
+   描述符其实就是个特殊的类，实例化之后赋值给目标类的属性， 描述符类有3个特殊的魔法函数，自动实现 (a). get 目标类实例的属性值，(b). set 目标类实例的属性值和 (c). 删除目标类实例的属性；
+
+   > 答：有时候，某个应用程序可能会有一个相当微妙的需求，需要你设计一些更为复杂的操作来响应（例如每当属性被访问时，你也许想创建一个日志记录）。最好的解决方案就是编写一个用于执行这些“更复杂的操作”的特殊函数，然后指定它在属性被访问时运行。那么一个具有这种函数的对象被称之为描述符。
+   > 往再简单了说，描述符就是一个类，一个至少实现 get()、set() 或 delete() 三个特殊方法中的任意一个的类。
+
 2. 描述符类中，分别通过哪些魔法方法来实现对属性的 get、set 和 delete 操作的？
+
+   - `__get(self, instance, owner)__`       用于访问属性，它返回属性的值
+   - `__set(self, instance, value)__`   将在属性分配操作中调用，不返回任何内容
+   - `__delete(self, instance)__`   控制删除操作，不返回任何内容
 
 3. 请问以下代码，分别调用 test.a 和 test.x，哪个会打印“getting…”?
 
@@ -11411,6 +11435,13 @@ class C:
    >>> test = Test()
    
    ```
+
+   test.a
+
+   test.x
+
+   test.a 会调用MyDes的 __get__方法
+   由于x=a x相当于a的复制品，当然也能调用MyDes的__get__方法
 
 4. 请问以下代码会打印什么内容？
 
@@ -11437,7 +11468,13 @@ class C:
    
    ```
 
-   
+   20
+
+   0
+
+   > c.x=10触发了__set__方法 所以c.x修改为10+10=20
+   > print(c.x)打印出20 并触发了__get__方法，c.x的值修改为20-20=0
+   > 然后在get里面打印出来0
 
 5. 请问以下代码会打印什么内容？
 
@@ -11459,7 +11496,7 @@ class C:
    
    ```
 
-   
+   访问实例层次上的描述符 x，只会返回描述符本身。为了让描述符能够正常工作，***它们必须定义在类的层次上***。如果你不这么做，那么 Python无法自动为你调用 **get** 和 **set** 方法。
 
 ### Practice
 
