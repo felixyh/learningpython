@@ -11513,7 +11513,7 @@ class C:
    10
    >>> test.x = 8
    正在修改变量： x
-   >>> del test.x
+   >>> del test.x 
    正在删除变量： x
    噢~这个变量没法删除~
    >>> test.x
@@ -11523,7 +11523,26 @@ class C:
    ```
 
    ```python
+   class MyDes:
+       def __init__(self, initval=0, attr=None):
+           self.Value = initval
+           self.attr = attr
    
+       def __get__(self, instance, owner):
+           print('正在获取变量： ' + self.attr)
+           return self.Value
+   
+       def __set__(self, instance, value):
+           print('正在修改变量： ' + self.attr)
+           self.Value = value
+   
+       def __delete__(self, instance):
+           print('正在删除变量：' + self.attr)
+           del self
+   
+   
+   class Test:
+       x = MyDes(10, 'x')
    ```
 
    
@@ -11550,6 +11569,77 @@ class C:
    ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200731180156540.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NhdHJ0ZWVz,size_16,color_FFFFFF,t_70)
 
    ```python
+   # 按要求编写描述符 Record：记录指定变量的读取和写入操作，并将记录以及触发时间保存到文件：record.txt
+   import time as t
+   
+   
+   class Record:
+       def __init__(self, initval, name):
+           self.log_file = '/Users/felix_yang/PycharmProjects/learningpython/46/record.txt'
+           self.Value = initval
+           self.name = name
+           self.action = None
+           self.atime = None
+   
+       def __get__(self, instance, owner):
+           self.action = '读取'
+           self.atime = t.strftime("%a %b %d %H:%M:%S %Y %z", t.gmtime())
+           self.event = '{} 变量于北京时间 {} 被 {}, {}={}'.format(self.name,
+                                                           self.atime,
+                                                           self.action,
+                                                           self.name,
+                                                           self.Value
+                                                           )
+           self._logging(self.event)
+           return self.Value
+   
+       def __set__(self, instance, value):
+           self.Value = value
+           self.action = '修改'
+           self.atime = t.strftime("%a %b %d %H:%M:%S %Y %z", t.gmtime())
+           self.event = '{} 变量于北京时间 {} 被 {}, {}={}'.format(self.name,
+                                                           self.atime,
+                                                           self.action,
+                                                           self.name,
+                                                           self.Value
+                                                           )
+           self._logging(self.event)
+   
+       def _logging(self, event):
+           with open(self.log_file, 'a') as f:
+               f.write(event)
+               f.write('\n')
+   
+   
+   
+   ```
+
+   课后答案：
+
+   ```python
+   import time
+   class Record:
+       def __init__(self, initval=None, name=None):
+           self.name=name
+           self.Value=initval
+       def __get__(self,instance,owner):
+           f=open('record.txt','a')
+           f.write("%s 变量于北京时间%s被访问，%s = %s\n" % (self.name, time.ctime(), self.name,str(self.Value)))
+           f.close()
+           return self.Value
+       def __set__(self,instance,Value):
+           f=open('record.txt','a')
+           f.write("%s 变量于北京时间%s被修改，%s = %s\n" % (self.name, time.ctime(), self.name,str(self.Value)))
+           f.close()
+           self.Value=Value
+       def __delete__(self,instance):
+           del self
+   
+           
+   class Test:
+           x = Record(10, 'x')
+           y = Record(8.8, 'y')
+   
    
    ```
 
@@ -11586,5 +11676,96 @@ class C:
 
    ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200731181650271.png)
 
+   ```python
+   # 再来一个有趣的案例：编写描述符 MyDes，使用文件来存储属性，属性的值会直接存储到对应的pickle
+   # （腌菜，还记得吗？）的文件中。如果属性被删除了，文件也会同时被删除，属性的名字也会被注销。
+   import os
+   import pickle
    
+   
+   class MyDes:
+       def __init__(self, name):
+           self.attr_file = None
+           self.name = name
+           self.Value = None
+   
+       def __get__(self, instance, owner):
+           return self.Value
+   
+       def __set__(self, instance, value):
+           self.attr_file = '/Users/felix_yang/PycharmProjects/learningpython/46/ %s.pkl' % self.name
+           self.Value = value
+           self._storeattr(self.Value)
+   
+       def __delete__(self, instance):
+           self.attr_file = '/Users/felix_yang/PycharmProjects/learningpython/46/ %s.pkl' % self.name
+           os.remove(self.attr_file)
+           del self
+   
+       def _storeattr(self, attr):
+           with open(self.attr_file, 'wb') as pickle_file:
+               pickle.dump(attr, pickle_file)
+   
+   ```
+   
+   课后答案：
+   
+   ```python
+   import os
+   import pickle
+   
+   class MyDes:
+       
+       def __init__(self,name=None):
+           self.name=name
+           self.filePath=self.name+'.txt'
+           self.saved=[]
+       def __get__(self,instance,owner):
+           if self.name in self.saved:
+               return self.Value
+           else:
+               print("属性尚未赋值")
+       
+       def __set__(self,instance,Value):
+           self.Value=Value
+           f=open(self.filePath,'wb')
+           pickle.dump( str("%s修改值为%s" %(self.name,self.Value)),f)
+           f.close()
+           self.saved.append(self.name)
+           
+       def __delete__(self,instance):
+           os.remove(self.filePath)
+           del self
+           
+   class Test:
+           x = MyDes('x')
+           y = MyDes('y')
+   
+   
+   test=Test()
+   test.x
+   test.x=10
+   
+   
+   ```
+   
+   
+
+# 047. 魔法方法：定制序列
+
+## 知识点
+
+
+
+
+
+
+
+## 课后作业
+
+### Quiz
+
+
+
+### Practice
 
