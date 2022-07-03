@@ -10992,11 +10992,37 @@ class C:
 
   - 如果为一个叫square的属性赋值，那么说明是一个正方形，值就是正方形的边长，此时宽和高都应该等于边长
 
+    ```python 
+    # 课堂练习
+    #
+    # - 写一个矩形类，默认有宽和高两个属性
+    # - 如果为一个叫square的属性赋值，那么说明是一个正方形，值就是正方形的边长，此时宽和高都应该等于边长
     
+    class Rectangle:
+        def __init__(self):
+            self.width = 5
+            self.height = 8
+    
+        def __setattr__(self, name, value):
+            if name == 'square':
+                print('it is a square!!')
+                self.width = value
+                self.height = value
+            # 继承默认基类的方法，给属性赋值；如果不写，会出现死循环
+            super().__setattr__(name, value)
+            
+            # 还可以通过默认属性字典的方式，直接给属性赋值
+            # self.__dict__[name] = value
+    
+    
+    rec = Rectangle()
+    print(rec.width, rec.height)
+    
+    rec.square = 10
+    print(rec.square, rec.width, rec.height)
+    ```
 
-
-
-
+    
 
 ## 课后作业
 
@@ -11010,9 +11036,32 @@ class C:
    
    ```
 
-   
+   代码的作用是自动为属性的赋值加1，代码不正确，因为会有死循环，`self.name = value + 1` 本身也是赋值语句，需要不断调用`__setattr__`
+
+   有2种方法改正：
+
+   - 使用super()函数继承默认object 基类
+
+     ```python
+     def __setattr__(self, name, value):
+          		super().__setattr__(name, value+1)
+     ```
+
+     
+
+   - 采用对默认属性字典直接赋值的方法
+
+     ```python
+     def __setattr__(self, name, value):
+             # self.name = value + 1
+         		self.__dict__[name] = value + 1
+     ```
+
+     
 
 2. 自定义该类的属性被访问的行为，你应该重写哪个魔法方法？
+
+   `__getattribute__()`
 
 3. 在不上机验证的情况下，你能推断以下代码分别会显示什么吗？
 
@@ -11036,6 +11085,17 @@ class C:
    
    ```
 
+   位置一：
+
+   3
+
+   位置二：
+
+   2
+
+   None
+
+   因为 x 是属于实例对象 c 的属性，所以 c.x 是访问一个存在的属性，因此会访问 __getattribute__() 魔法方法，但我们重写了这个方法，使得它不能按照正常的逻辑返回属性值，而是打印一个 2 代替，由于我们没有写返回值，所以紧接着返回 None 并被 print() 打印出来。
    
 
 4. 在不上机验证的情况下，你能推断以下代码分别会显示什么吗？
@@ -11061,6 +11121,28 @@ class C:
    
    ```
 
+   ```
+   >>> c = C()
+   >>> c.x
+   2
+   1
+   Traceback (most recent call last):
+     File "<pyshell#31>", line 1, in <module>
+       c.x
+     File "<pyshell#29>", line 4, in __getattr__
+       return super().__getattr__(name)
+   AttributeError: 'super' object has no attribute '__getattr__'
+   
+   ```
+
+   为什么会如此显示呢？我们来分析下：首先 c.x 会先调用 __getattribute__() 魔法方法，打印 2；然后调用 super().__getattribute__()，找不到属性名 x，因此会紧接着调用 __getattr__() ，于是打印 1；但是你猜到了开头没猜到结局……当你希望最后以 super().__getattr__() 终了的时候，Python 竟然告诉你 AttributeError，super 对象木有 __getattr__ ！！
+
+   ```
+   >>> dir(super)
+   ['__class__', '__delattr__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__get__', '__getattribute__', '__gt__', '__hash__', '__init__', '__le__', '__lt__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__self__', '__self_class__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__thisclass__']
+   
+   ```
+
    
 
 5. 请指出以下代码的问题所在：
@@ -11078,6 +11160,22 @@ class C:
    
    ```
 
+   ```python
+   以下注释：
+   
+   class Counter:
+           def __init__(self):
+                   self.counter = 0 # 这里会触发 __setattr__ 调用
+           def __setattr__(self, name, value):
+                   self.counter += 1
+   “””既然需要 __setattr__ 调用后才能真正设置 self.counter 的值，所以这时候 self.counter 还没有定义，所以没法 += 1，错误的根源。”””
+                   super().__setattr__(name, value)
+           def __delattr__(self, name):
+                   self.counter -= 1
+                   super().__delattr__(name)
+   
+   ```
+
    
 
    
@@ -11085,6 +11183,12 @@ class C:
 ### Practice
 
 1. 按要求重写魔法方法：当访问一个不存在的属性时，不报错且提示“该属性不存在！”
+
+   ```python
+   class C:
+       def __getattr__(self, item):
+           print('该属性不存在！')
+   ```
 
    
 
@@ -11097,6 +11201,10 @@ class C:
    >>> demo.x = "X-man"
    >>> demo.x
    'X-man'
+   
+   ```
+
+   ```python
    
    ```
 
@@ -11121,6 +11229,43 @@ class C:
    
    ```
 
+   **方法一：此方法有一个bug，其实不是检测的某个对象的属性数量，而是检测整个类的所有对象的属性数量。。。**
+
+   ```python
+   class Counter:
+       counter = 0
    
+       def __setattr__(self, name, value):
+           Counter.counter += 1
+           super().__setattr__(name, value)
+   
+       def __delattr__(self, name):
+           Counter.counter -= 1
+           super().__delattr__(name)
+   
+   c = Counter()
+   c.x = 1
+   print(c.counter)
+   c.y = 1
+   c.z = 1
+   print(c.counter)
+   del c.x
+   print(c.counter)
+   ```
+
+   方法二：方法二满足题目要求
+
+   ```python
+   class Counter:
+           def __init__(self):
+                   super().__setattr__('counter', 0)
+           def __setattr__(self, name, value):
+                   super().__setattr__('counter', self.counter + 1)
+                   super().__setattr__(name, value)
+           def __delattr__(self, name):
+                   super().__setattr__('counter', self.counter - 1)
+                   super().__delattr__(name)
+   
+   ```
 
    
