@@ -5,58 +5,41 @@
 #   公式：摄氏度 * 1.8 + 32 = 华氏度
 
 class Cproperty:
-    def __init__(self, c_convert, c_set, c_del):
-        self.c_convert = c_convert
+    def __init__(self, c_get, c_set, c_del):
+        self.c_get = c_get
         self.c_set = c_set
         self.c_del = c_del
 
     def __get__(self, instance, owner):
-        self.c_convert(instance)
+        return self.c_get(instance)
 
     def __set__(self, instance, value):
-        self.c_convert(instance, value)
-
-    def __delete__(self, instance):
-        pass
+        self.c_set(instance, value * 1.8 + 32)
 
 
 class Fproperty:
-    def __init__(self, f_convert, f_set, f_del):
-        self.f_convert = f_convert
+    def __init__(self, f_get, f_set, f_del):
+        self.f_get = f_get
         self.f_set = f_set
         self.f_del = f_del
 
     def __get__(self, instance, owner):
-        return self.f_convert(instance)
+        return self.f_get(instance)
 
     def __set__(self, instance, value):
-        self.f_convert(instance, value)
+        self.f_set(instance, (value - 32)//1.8)
 
-    def __delete__(self, instance):
-        pass
 
 
 class Temperature:
     def __init__(self, temperature=0):
-        self.temperature = temperature
+        self.temperature = float(temperature)
 
-    def celsius_get(self):
+    def gettemperature(self):
         return self.temperature
 
-    def celsius_set(self, value):
-        self.temperature = value
+    def settemperature(self, value):
+        self.temperature = float(value)
 
-    def celsius_del(self):
-        del self.temperature
-
-    def fahrenheit_get(self):
-        return self.temperature
-
-    def fahrenheit_set(self, value):
-        self.temperature = value
-
-    def fahrenheit_del(self):
-        del self.temperature
-
-    c = Cproperty(celsius_get, celsius_set, celsius_del)
-    f = Fproperty(fahrenheit_get, fahrenheit_set, fahrenheit_del)
+    c = Cproperty(gettemperature, settemperature, deltemperature)
+    f = Fproperty(gettemperature, settemperature, deltemperature)
