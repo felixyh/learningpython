@@ -11755,17 +11755,158 @@ class C:
 
 ## 知识点
 
+- 协议（Protocols）与其他编程语言中的接口很相似，它规定你哪些方法必须要定义。然而，在Python中的协议就显得不那么正式。事实上，在Python中，协议更像是一种指南。
 
+- 定制容器的协议
 
+  - 如果你希望定制的容器是不可变的话，你只需要定义`__len__()和__getitem__()`方法　　   　                （str、tuple）
+  - 如果你希望定制的容器是可变的话，你需要定义`__len__()、__getitem__()、__setitem__()和__delitem__()`方法     （list）
 
+- 下表列举了定制容器类型相关的魔法方法及定义
 
+  ```python
+  __len__(self)    　　　　　　            定义当被 len() 调用时的行为（返回容器中元素的个数）
+  __getitem__(self, key)                 定义获取容器中指定元素的行为，相当于 self[key]
+  __setitem__(self, key, value)          定义设置容器中指定元素的行为，相当于 self[key] = value
+  __delitem__(self, key)                 定义删除容器中指定元素的行为，相当于 del self[key]
+  __iter__(self)                         定义当迭代容器中的元素的行为
+  __reversed__(self)                     定义当被 reversed() 调用时的行为
+  __contains__(self, item)               定义当使用成员测试运算符（in 或 not in）时的行为
+  ```
 
+- 一个例子
+
+  - 定义一个不可改变的列表，且可以记录每个元素的访问次数
+
+    ```python
+    In [22]: class MyList:
+        ...:     # python中很有趣的两个小东西，先介绍：
+        ...:     # 1、*args保存多余变量，保存方式为元组。
+        ...:     # 2、**args保存带有变量名的多余变量，保存方式为字典。
+        ...:     def __init__(self, *args):
+        ...:         self.values = [x for x in args]
+        ...:         self.count = {}.fromkeys(range(len(self.values)), 0)
+          					#这里使用列表的下标作为字典的键，注意不能用元素作为字典的键
+            				#因为列表的不同下标可能有值一样的元素，但字典不能有两个相同的键
+        ...: 
+        ...:     def __len__(self):
+        ...:         return len(self.count)
+        ...: 
+        ...:     def __getitem__(self, item):
+        ...:         self.count[item] += 1
+        ...:         return self.values[item]
+        ...: 
+    
+    In [23]: 
+    
+    In [23]: list1 = MyList(1, 3, 4)
+    
+    In [24]: list1[0]
+    Out[24]: 1
+    
+    In [25]: list1[1]
+    Out[25]: 3
+    
+    In [26]: list1.count
+    Out[26]: {0: 1, 1: 1, 2: 0}
+    ```
+
+    
 
 ## 课后作业
 
 ### Quiz
 
+1. 你知道 Python 基于序列的三大容器类指的是什么吗？
 
+   List, Turple, String
+
+2. Python 允许我们自己定制容器，如果你想要定制一个不可变的容器（像 String），你就不能定义什么方法？
+
+   如果你想要定制一个不可变的容器（像 String），你就不能定义像 __ setitem __() 和 __ delitem __() 这些会修改容器中的数据的方法。
+
+3. 如果希望定制的容器支持 reversed() 内置函数，那么你应该定义什么方法？
+
+   `__reversed__(self)  `
+
+4. 既然是容器，必然要提供能够查询“容量”的方法，那么请问需要定义什么方法呢？
+
+   在 Python 中，我们通过 len() 内置函数来查询容器的“容量”，所以容器应该定义 __ len __() 方法。
+
+5. 通过定义哪些方法使得容器支持读、写和删除的操作？
+
+   `读 —— __ getitem __()，写 —— __ setitem __()，删除 —— __ delitem __(),`
+
+6. 为什么小甲鱼说“在 Python 中的协议就显得不那么正式”？
+
+   在 Python 中，协议更像是一种指南。这有点像我们之前在课后作业中提到的“鸭子类型”（忘了的朋友请戳：http://bbs.fishc.com/thread-51471-1-1.html） —— 当看到一只鸟走起来像鸭子、游泳起来像鸭子、叫起来也像鸭子，那么这只鸟就可以被称为鸭子。Python就是这样，并不会严格地要求你一定要怎样去做，而是让你靠着自觉和经验把事情做好！
 
 ### Practice
+
+1. 根据上面的例子，定制一个列表，同样要求记录列表中每个元素被访问的次数。并且支持append()、pop()、extand()原生列表所拥有的方法。
+
+   要求：
+
+   - 实现获取、设置和删除一个元素的行为(删除一个元素的时候对应的计数器也会被删除)
+
+   - 增加counter(index)方法，返回index参数所指定的元素记录的访问次数
+
+   - 实现append()、pop()、remove()、insert()、clear()和reverse()方法(重写这些方法时要注意考虑计数器的对应改变)
+
+     ```python
+     
+     class CountList(list):
+         def __init__(self, *args):
+             super().__init__(args)
+             self.count = []
+             for i in args:
+                 self.count.append(0)
+     
+         def __len__(self):
+             return len(self.count)
+     
+         def __getitem__(self, key):
+             self.count[key] += 1
+             return super().__getitem__(key)
+     
+         def __setitem__(self, key, value):
+             self.count[key] += 1
+             super().__setitem__(key, value)
+     
+         def __delitem__(self, key):
+             del self.count[key]
+             super().__delitem__(key)
+     
+         def counter(self, key):
+             return self.count[key]
+     
+         def append(self, value):
+             self.count.append(0)
+             super().append(value)
+     
+         def pop(self, key=-1):
+             del self.count[key]
+             return super().pop(key)
+     
+         def remove(self, value):
+             key = super().index(value)
+             del self.count[key]
+             super().remove(value)
+     
+         def insert(self, key, value):
+             self.count.insert(key, 0)
+             super().insert(key, value)
+     
+         def clear(self):
+             self.count.clear()
+             super().clear()
+     
+         def reverse(self):
+             self.count.reverse()
+             super().reverse()
+     
+     
+     ```
+
+     
 
