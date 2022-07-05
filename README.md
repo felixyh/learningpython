@@ -12236,3 +12236,232 @@ class C:
 
    
 
+# 049. 乱入：生成器
+
+## 知识点
+
+- 协同程序就是可以运行的独立函数调用，函数可以暂停或者挂起，并在需要的时候在程序离开的地方继续或者重新开始
+
+- 生成器是迭代器的一种，是一种特殊的函数，调用可以中断，可以暂停; 
+
+- 生成器实现方式一： 在普通函数中加入yield 语句
+
+  ```python
+  In [1]: def myGen():
+     ...:     print('生成器被执行！')
+     ...:     yield 1
+     ...:     yield 2
+     ...: 
+  
+  In [3]: myG = myGen()
+  
+  In [4]: next(myG)
+  生成器被执行！
+  Out[4]: 1
+  
+  In [5]: next(myG)
+  Out[5]: 2
+  
+  In [6]: next(myG)
+  ---------------------------------------------------------------------------
+  StopIteration                             Traceback (most recent call last)
+  Input In [6], in <cell line: 1>()
+  ----> 1 next(myG)
+  
+  StopIteration:
+  ```
+
+  ```python
+  In [8]: def myGen():
+     ...:     print('生成器被执行！')
+     ...:     yield 1
+     ...:     yield 2
+  
+  In [10]: myG = myGen()
+  
+  In [11]: for i in myG:
+      ...:     print(i)
+      ...: 
+  生成器被执行！
+  1
+  2
+  ```
+
+  
+
+  - fibonacci 数列通过生成器来实现
+
+  ```python
+  def fiboGen(m):
+      a, b = 0, 1
+      while b < m:
+          yield b
+          a, b = b, a + b
+      return 'done'
+  
+  
+  f = fiboGen(10)
+  for i in f:
+      print(i)
+  ```
+
+  ```python
+  In [12]: def fiboGen(m):
+      ...:     a, b = 0, 1
+      ...:     while b < m:
+      ...:         yield b
+      ...:         a, b = b, a + b
+      ...:     return 'done'
+      ...: 
+  
+  In [13]: f = fiboGen(10)
+  
+  In [14]: next(f)
+  Out[14]: 1
+  
+  In [15]: for i in f:
+      ...:     print(i)
+      ...: 
+  1
+  2
+  3
+  5
+  8
+  
+  ```
+
+  
+
+- 生成器实现方式二：
+
+  - 推导式:  列表推导式，字典推导式，集合推导式
+
+  ```python
+  In [16]: a = [i for i in range(100) if not (i % 2) and i % 3]
+  
+  In [17]: a
+  Out[17]: 
+  [2,
+   4,
+   8,
+   10,
+   14,
+   16,
+   20,
+   22,
+   26,
+   28,
+   32,
+   34,
+   38,
+   40,
+   44,
+   46,
+   50,
+   52,
+   56,
+   58,
+   62,
+   64,
+   68,
+   70,
+   74,
+   76,
+   80,
+   82,
+   86,
+   88,
+   92,
+   94,
+   98]
+  
+  In [18]: b = {i:i % 2 == 0 for i in range(10)}
+  
+  In [19]: b
+  Out[19]: 
+  {0: True,
+   1: False,
+   2: True,
+   3: False,
+   4: True,
+   5: False,
+   6: True,
+   7: False,
+   8: True,
+   9: False}
+  
+  In [20]: c = {i for i in [1,1, 2, 3, 4, 4, 5, 6]}
+  
+  In [21]: c
+  Out[21]: {1, 2, 3, 4, 5, 6}
+  ```
+
+  
+
+  - 那有没有元组推导式呢？
+
+  ```python
+  In [22]: e = (i for i in range(0))
+  
+  In [23]: e
+  Out[23]: <generator object <genexpr> at 0x106a87120>
+  ```
+
+  其实用（）括起来的推导式，其实就是生成器 “<generator object>”
+
+  
+
+  ```
+  In [24]: sum((i for i in range(100) if i % 2))
+  Out[24]: 2500
+  
+  In [25]: sum(i for i in range(100) if i % 2)
+  Out[25]: 2500
+  ```
+
+  
+
+## 课后作业
+
+### Quiz
+
+1. 通常，一般的函数从第一行代码开始执行，并在什么情况下结束？
+
+2. 什么是协同程序？
+
+3. 生成器所能实现的任何操作都可以由迭代器来代替吗，为什么？
+
+4. 将一个函数改造为生成器，说白了就是把什么语句改为 yield 语句？
+
+5. 说到底，生成器的最大作用是什么？
+
+6. 如下，get_prime() 是一个获得素数的生成器，请问第 2 行代码 while True 有何作用？
+
+   ```python
+   def get_primes(number):
+       while True:
+           if is_prime(number):
+               yield number
+           number += 1
+   
+   ```
+
+   
+
+### Practice
+
+1. 要求实现一个功能与 reversed() 相同（内置函数 reversed(seq) 是返回一个迭代器，是序列 seq 的逆序显示）的生成器。例如：
+
+   ```
+   >>> for i in myRev("FishC"):
+       print(i, end='')
+   
+   ChsiF
+   
+   ```
+
+
+
+
+
+2. 10 以内的素数之和是：2 + 3 + 5 + 7 = 17，那么请编写程序，计算 2000000 以内的素数之和？
