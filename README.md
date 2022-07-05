@@ -11914,15 +11914,325 @@ class C:
 
 ## 知识点
 
+- 迭代： 类似于循环，每一个重复的过程被称为一次迭代，而每一次迭代的结果将被用来作为下一次迭代的初始值；
 
+  - 提供迭代方法的容器，被称为迭代器
 
+  - 序列：元组，列表，字符串都是迭代器，字典和文件也是迭代器; 注意字典迭代的是键
 
+    ```python
+    In [33]: links = {'name':'felix_yang',\
+        ...:         'age':12
+        ...:         }
+    
+    In [35]: for each in links:
+        ...:     print(('{}->{}').format(each, links[each]))
+        ...: 
+    name->felix_yang
+    age->12
+    ```
+
+    
+
+- Python 提供了2个BIF 函数处理迭代器
+
+  - iter()
+
+    - 对于一个容器对象，iter() 返回一个迭代器
+
+  - next()
+
+    - 返回迭代器的下一个元素; 如果迭代器没有值可以返回了，python会抛出一个异常：***StopIteration***
+
+    ```python
+    In [36]: string = 'FishC'
+    
+    In [37]: it = iter(string)
+    
+    In [38]: next(it)
+    Out[38]: 'F'
+    
+    In [40]: next(it)
+    Out[40]: 'i'
+    
+    In [41]: next(it)
+    Out[41]: 's'
+    
+    In [42]: next(it)
+    Out[42]: 'h'
+    
+    In [43]: next(it)
+    Out[43]: 'C'
+    
+    In [44]: next(it)
+    ---------------------------------------------------------------------------
+    StopIteration                             Traceback (most recent call last)
+    Input In [44], in <cell line: 1>()
+    ----> 1 next(it)
+    
+    StopIteration:
+    ```
+
+  - for 语句是怎么工作的呢？
+
+    ```python
+    In [45]: string = 'FishC'
+    
+    In [46]: it = iter(string)
+    
+    
+    In [49]: while True:
+        ...:     try:
+        ...:         each = next(it)
+        ...:     except StopIteration:
+        ...:         break
+        ...:     print(each)
+        ...: 
+    F
+    i
+    s
+    h
+    C
+    ```
+
+- 迭代器的魔法方法
+
+  - `__iter()__`  返回迭代器本身
+
+  - `__next()__`  决定了迭代的规则
+
+    ```python
+    In [54]: class fibonacci:
+        ...:     def __init__(self, n=10):
+        ...:         self.a = 0
+        ...:         self.b = 1
+        ...:         self.n = n
+        ...: 
+        ...:     def __iter__(self):
+        ...:         return self
+        ...: 
+        ...:     def __next__(self):
+        ...:         if self.b < self.n:
+        ...:             self.a, self.b = self.b, self.a + self.b
+        ...:         else:
+        ...:             raise StopIteration
+        ...:         return self.a
+        ...: 
+    
+    In [55]: for each in fib:
+        ...:     print(each)
+        ...: 
+    
+    In [56]: fib  = fibonacci(20)
+    
+    In [57]: for each in fib:
+        ...:     print(each)
+        ...: 
+    1
+    1
+    2
+    3
+    5
+    8
+    13
+    ```
+
+    
 
 ## 课后作业
 
 ### Quiz
 
+1. 请用你的话解释一下“迭代”的概念？
 
+   类似于循环，每一个重复的过程被称为一次迭代，而每一次迭代的结果将被用来作为下一次迭代的初始值
+
+2. 迭代器是一个容器吗？
+
+   不是。因为我们耳熟能详的容器像列表，字典，元组都是可以存放数据的，而迭代器就是实现了__next__()方法的对象（用于[遍历](https://so.csdn.net/so/search?q=遍历&spm=1001.2101.3001.7020)容器中的数据）
+
+3. 迭代器可以回退（获取上一个值）吗？
+
+   迭代器性质决定没有办法回退，只能往前进行迭代。但这并不是什么很大的缺点，因为我们几乎不需要在迭代途中进行回退操作。
+
+   
+
+4. 如何快速判断一个容器是否具有迭代功能？
+
+   判断该容器是否拥有` __ iter__() 和 __ next__()` 魔法方法。
+
+5. for 语句如何判断迭代器里边已经取空了？
+
+   迭代器通过 __ next__() 方法每次返回一个元素，并指向下一个元素。如果当前位置已无元素，通过抛出 StopIteration 异常表示。
+
+6. 在 Python 原生支持的数据结构中，你知道哪一个是只能用迭代器访问的吗？
+
+   set。对于原生支持随机访问的数据结构（如tuple、list），可以使用迭代器或者下标索引的形式访问，但对于无法随机访问的数据结构 set 而言，迭代器是唯一的访问元素的方式。
+
+   
+
+   注意，集合的元素是无序的，无法通过索引操作元素； 
+
+   ```
+   >>> set1 = set([1, 2, 3, 4, 5, 5])
+   >>> set1
+   {1, 2, 3, 4, 5}
+   ```
+
+   
 
 ### Practice
+
+1. 用 while 语句实现与以下 for 语句相同的功能：
+
+   ```python
+   for each in range(5):
+       print(each)
+   
+   ```
+
+   程序：
+
+   ```python
+   it = iter(range(5))
+   while True:
+       try:
+           each = next(it)
+       except StopIteration:
+         	break
+   		print(each)
+   ```
+
+   
+
+2. 写一个迭代器，要求输出至今为止的所有闰年。如：
+
+   ```python
+   >>> leapYears = LeapYear()
+   >>> for i in leapYears:
+           if i >=2000:
+                   print(i)
+           else:
+                   break
+   
+   2012
+   2008
+   2004
+   2000
+   
+   ```
+
+   程序：
+
+   ```python
+   import datetime as dt
+   
+   
+   class LeapYear:
+       def __init__(self):
+           self.now = dt.date.today().year
+   
+       def isLeapYear(self, year):
+           if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
+               return True
+           else:
+               return False
+   
+       def __iter__(self):
+           return self
+   
+       def __next__(self):
+           while not self.isLeapYear(self.now):
+               self.now -= 1
+   
+           temp = self.now
+           self.now -= 1
+   
+           return temp
+   ```
+
+   ```python
+   In [114]: import datetime as dt
+        ...: 
+        ...: 
+        ...: class LeapYear:
+        ...:     def __init__(self):
+        ...:         self.now = dt.date.today().year
+        ...: 
+        ...:     def isLeapYear(self, year):
+        ...:         if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
+        ...:             return True
+        ...:         else:
+        ...:             return False
+        ...: 
+        ...:     def __iter__(self):
+        ...:         return self
+        ...: 
+        ...:     def __next__(self):
+        ...:         while not self.isLeapYear(self.now):
+        ...:             self.now -= 1
+        ...: 
+        ...:         temp = self.now
+        ...:         self.now -= 1
+        ...: 
+        ...:         return temp
+        ...: 
+   
+   In [115]: leapYears = LeapYear()
+        ...: for i in leapYears:
+        ...:     if i >= 2000:
+        ...:         print(i)
+        ...:     else:
+        ...:         break
+        ...: 
+   2020
+   2016
+   2012
+   2008
+   2004
+   2000
+   ```
+
+   
+
+3. 要求自己写一个 MyRev 类，功能与 reversed() 相同（内置函数 reversed(seq) 是返回一个迭代器，是序列 seq 的逆序显示）。例如：
+
+   ```
+   >>> myRev = MyRev("FishC")
+   >>> for i in myRev:
+       print(i, end='')
+   
+   ChsiF
+   ```
+
+   程序：
+
+   ```python
+   class MyRev:
+       def __init__(self, item):
+           self.item = item
+           self.index = -1
+   
+       def __iter__(self):
+           return self
+   
+       def __next__(self):
+           try:
+               temp = self.item[self.index]
+               self.index -= 1
+           except IndexError:
+               raise StopIteration
+           return temp
+   
+   In [130]: myRev = MyRev("FishC")
+   
+   In [131]: 
+   
+   In [131]: for i in myRev:
+        ...:     print(i, end='')
+        ...: 
+   ChsiF
+   ```
+
+   
 
