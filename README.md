@@ -6316,8 +6316,6 @@ ZeroDivisionError: division by zero
     showMaxFactor(num)
     ```
 
-    
-
 - 没有问题，那就干吧
 
   - 和异常处理搭配
@@ -12427,13 +12425,24 @@ class C:
 
 1. 通常，一般的函数从第一行代码开始执行，并在什么情况下结束？
 
+   对于调用一个普通的 Python 函数，一般是从函数的第一行代码开始执行，结束于 return 语句、异常或者函数所有语句执行完毕。一旦函数将控制权交还给调用者，就意味着全部结束。函数中做的所有工作以及保存在局部变量中的数据都将丢失。如果再次调用这个函数时，一切都将重新开始。
+
 2. 什么是协同程序？
+
+   所谓的协同程序就是可以运行的独立函数调用，函数可以暂停或者[挂起](https://so.csdn.net/so/search?q=挂起&spm=1001.2101.3001.7020)，并在需要的时候从程序离开的地方继续或者重新开始。
+   Python 是通过生成器来实现类似于协同程序的概念：生成器可以暂时挂起函数，并保留函数的局部变量等数据，然后在再次调用它的时候，从上次暂停的位置继续执行下去。
 
 3. 生成器所能实现的任何操作都可以由迭代器来代替吗，为什么？
 
+   是的，都可以。因为生成器事实上就是基于迭代器来实现的，生成器只需要一个 yield 语句即可，但它内部会自动创建 __ iter__() 和 __ next__() 方法。
+
 4. 将一个函数改造为生成器，说白了就是把什么语句改为 yield 语句？
 
+   Return 语句
+
 5. 说到底，生成器的最大作用是什么？
+
+   使得函数可以“保留现场”，当下一次执行该函数是从上一次结束的地方开始，而不是重头再来。
 
 6. 如下，get_prime() 是一个获得素数的生成器，请问第 2 行代码 while True 有何作用？
 
@@ -12446,7 +12455,7 @@ class C:
    
    ```
 
-   
+   ***这个 while True 循环是用来确保生成器函数永远也不会执行到函数末尾的***。只要调用 next() 这个生成器就会生成一个值。这是一个处理无穷序列的常见方法（这类生成器也是很常见的）。
 
 ### Practice
 
@@ -12460,8 +12469,59 @@ class C:
    
    ```
 
+   ```python
+   def myRev(seq):
+       seq_len = len(seq)
+       index = -1
+       
+       # seq[0] == seq[-seq_len]
+       while index >= -seq_len:
+           temp = seq[index]
+           yield temp
+           index -= 1
+   
+   
+   for i in myRev("FishC"):
+       print(i, end='')
+   ```
 
-
-
+   
 
 2. 10 以内的素数之和是：2 + 3 + 5 + 7 = 17，那么请编写程序，计算 2000000 以内的素数之和？
+
+   ```python
+   import math
+   
+   def is_prime(number):
+       if number > 1:
+           if number == 2:
+               return True
+           if number % 2 == 0:
+               return False
+           for current in range(3, int(math.sqrt(number) + 1), 2):
+               if number % current == 0:
+                   return False
+           return True
+       return False
+   
+   def get_primes(number):
+       while True:
+           if is_prime(number):
+               yield number
+           number += 1
+   
+   def solve():
+       total = 2
+       for next_prime in get_primes(3):
+           if next_prime < 2000000:
+               total += next_prime
+           else:
+               print(total)
+               return
+   
+   if __name__ == '__main__':
+       solve()
+   
+   ```
+
+   
