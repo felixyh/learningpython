@@ -12525,3 +12525,157 @@ class C:
    ```
 
    
+
+
+
+# 050. 模块就是程序
+
+## 知识点
+
+- 什么是模块，简单来说，模块就是程序，保存为.py 的文件
+  - 容器： 数据的分装
+  - 函数： 语句的封装
+  - 类： 方法和属性的封装
+- 命名空间
+- 导入模块： 
+  - import moduleName
+  - From moduleName import functionName
+  - import moduleName as newName
+
+
+
+## 课后作业
+
+### Quiz
+
+1. 说到底，Python 的模块是什么？
+
+   
+
+2. 请问我如何在另外一个源文件 test.py 里边使用 hello.py 的 hi() 函数呢？
+
+   ```python
+   def hi():
+       print("Hi everyone, I love FishC.com!")
+   12
+   ```
+
+   
+
+3. 你知道的总共有几种导入模块的方法
+
+4. 曾经我们讲过有办法阻止 from…import * 导入你的“私隐”属性，你还记得是怎么做的吗？
+
+5. 倘若有 a.py 和 b.py 两个文件，内容如下：
+
+   ```python
+   # a.py
+   def sayHi():
+       print("嗨，我是 A 模块~")
+   
+   # b.py
+   def sayHi():
+       print("嗨，我是 B 模块~")
+   1234567
+   ```
+
+   那么我在 test.py 文件中执行以下操作，会打印什么结果？
+
+   ```python
+   # test.py
+   from a import sayHi
+   from b import sayHi
+   
+   sayHi()
+   
+   12345
+   ```
+
+   
+
+6. 执行下边 a.py 或 b.py 任何一个文件，都会报错，请尝试解释一下此现象。
+
+   ```python
+   # a.py
+   from b import y
+   def x():
+       print('x')
+   
+   # b.py
+   from a import x
+   def y():
+       print('y')
+   
+   >>>
+   Traceback (most recent call last):
+     File "/Users/FishC/Desktop/a.py", line 1, in <module>
+       from b import x
+     File "/Users/FishC/Desktop/b.py", line 1, in <module>
+       import a
+     File "/Users/FishC/Desktop/a.py", line 1, in <module>
+       from b import x
+   ImportError: cannot import name 'x'
+   
+   12345678910111213141516171819
+   ```
+
+
+
+### Practice
+
+1. 问大家一个问题：Python 支持常量吗？相信很多鱼油的答案都是否定的，但实际上 Python 内建的命名空间是支持一小部分常量的，比如我们熟悉的 True，False，None 等，只是 Python 没有提供定义常量的直接方式而已。那么这一题的要求是创建一个 const 模块，功能是让 Python 支持常量。
+
+   说到这里大家可能还是一头雾水，没关系，我们举个栗子。
+
+   test.py 是我们的测试代码，内容如下：
+
+   ```python
+   # const 模块就是这道题要求我们自己写的
+   # const 模块用于让 Python 支持常量操作
+   import const
+   
+   const.NAME = "FishC"
+   print(const.NAME)
+   
+   try:
+       # 尝试修改常量
+       const.NAME = "FishC.com"
+   except TypeError as Err:
+       print(Err)
+   
+   try:
+       # 变量名需要大写
+       const.name = "FishC"
+   except TypeError as Err:
+       print(Err)
+   123456789101112131415161718
+   ```
+
+   执行后的结果是：
+
+   ```python
+   >>>
+   FishC
+   常量无法改变！
+   常量名必须由大写字母组成！
+   1234
+   ```
+
+   在 const 模块中我们到底做了什么，使得这个模块这么有“魔力”呢？大家跟着小甲鱼的提示，一步步来做你就懂了：
+
+   提示一：我们需要一个 Const 类
+   提示二：重写 Const 类的某一个魔法方法，指定当实例对象的属性被修改时的行为
+   提示三：检查该属性是否已存在
+   提示四：检查该属性的名字是否为大写
+   提示五：细心的鱼油可能发现了，怎么我们这个 const 模块导入之后就把它当对象来使用（const.NAME = “FishC”）了呢？难道模块也可以是一个对象？没错啦，在 Python 中无处不对象，到处都是你的对象。使用以下方法可以将你的模块与类 A 的对象挂钩。
+
+   ```python
+   '''
+   sys.modules 是一个字典，它包含了从 Python 开始运行起，被导入的所有模块。键就是模块名，值就是模块对象。
+   '''
+   import sys
+   sys.modules[__name__] = A()
+   12345
+   ```
+
+   呃……好像说得有点太多了，大家一定要自己动手先尝试完成哦
