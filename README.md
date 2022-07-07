@@ -12798,6 +12798,8 @@ class C:
         test()
     ```
 
+    所有模块都有一个 **name** 属性，**name** 的值取决于如何应用模块，在作为独立程序运行的时候，**name** 属性的值是 ‘**main**’，而作为模块导入的时候，这个值就是该模块的名字了。
+
     - 导入模块，运行主程序，在模块中调用`__name__`属性，值是模块名
     - 直接运行模块程序，`__name__`属性，值是`'__main__'`
 
@@ -12849,13 +12851,116 @@ class C:
 
      
 
-
-
 ## 课后作业
 
 ### Quiz
 
+1. `__name__`属性的含义是什么？
 
+   所有模块都有一个 **name** 属性，**name** 的值取决于如何应用模块，在作为独立程序运行的时候，**name** 属性的值是 ‘**main**’，而作为模块导入的时候，这个值就是该模块的名字了。
+
+   - 导入模块，运行主程序，在模块中调用`__name__`属性，值是模块名
+   - 直接运行模块程序，`__name__`属性，值是`'__main__'`
+
+2. 什么时候`__name__`属性，值是`'__main__'`？
+
+   模块在作为独立程序运行的时候，`__name__ `属性的值是`'__main__'`
+
+3. 如果获得当前python的搜索路径？
+
+   ```python
+   import sys
+   
+   sys.path
+   ```
+
+4. 如果你不想讲相关的模块文件放到当前文件夹中，那最好的选择是？
+
+   可以创建一个包(package),放在 site-packages 文件夹，因为它就是用来存放你的模块文件的。
+
+5. 如果你遇到import urllib.request，那么这个urllib是什么？
+
+   是一个包，Python 把同类的模块放在一个文件夹中统一管理，这个文件夹称之为一个包。
+
+   urllib 是 Python 负责管理 URL 的包，用于访问网址（后边我们会讲到）
+
+6. Python 如何区分一个文件夹是一个包还是一个普通文件夹？
+
+   看文件夹中是否有 **init**.py 文件。
+
+   必须在包文件夹中创建一个 **init**.py 的模块文件，内容可以为空。可以是一个空文件，也可以写一些初始化代码。这个是 Python 的规定，用来告诉 Python 将该目录当成一个包来处理。
 
 ### Practice
 
+1. 执行下面的a.py 或者 b.py任何一个文件，都会报错，请改正程序
+
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/201903111045135.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4OTcwNzgz,size_16,color_FFFFFF,t_70)
+
+
+
+
+
+2. 下边是一个python项目的基本结构，请你合理组织它们，便于维护和使用
+
+   ```python
+   鱼C大项目 % tree ./  
+   ./
+   ├── LICENSE.txt
+   ├── README
+   ├── docs
+   ├── help.html
+   ├── images
+   ├── moduleA.py
+   ├── moduleB.py
+   ├── moduleC.py
+   ├── package
+   │   ├── moduleA.py
+   │   ├── moduleB.py
+   │   ├── moduleC.py
+   │   └── static
+   │       ├── images
+   │       └── sounds
+   ├── quickstart.html
+   ├── readme.txt
+   ├── requirements.txt
+   ├── setup.py
+   ├── sounds
+   ├── static
+   ├── test
+   ├── test_advanced.py
+   └── test_basic.py
+   
+   10 directories, 14 files
+   
+   ```
+
+   ```
+   答：通过将相关的模块组织成包，使项目结构更为完善和合理。从而增强代码的可维护性和实用性。
+   
+   以下提供一个可供参考的Python项目结构（仅供参考，没有硬性规定）：
+   
+   |----README/
+   |    |----readme.txt
+   |    |----LICENSE.txt
+   |    |----requirents.txt
+   |    |----setup.py
+   |----docs/
+   |    |----help.html
+   |    |----quickstart.html
+   |----test/
+   |    |----__init__.py
+   |    |----test_basic.py
+   |    |----test_advanced.py
+   |----package/
+   |    |----__init__.py
+   |    |----moduleA.py
+   |    |----moduleB.py
+   |    |----moduleC.py
+   |    |----static/
+   |    |    |----images/
+   |    |    |----sounds/
+   |----setup.py
+   
+   ```
+
+   
