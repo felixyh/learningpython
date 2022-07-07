@@ -5933,10 +5933,8 @@ ZeroDivisionError: division by zero
            return my_fun2()
    
    my_fun1()
-   
-   123456789
    ```
-
+   
    但是到了 Python3 的世界里，又有了不少的改进，如果我们希望在内部函数里可以修改外部函数里的局部变量的值，那么也有一个关键字可以使用，就是 nonlocal：
 
    ```python
@@ -12550,7 +12548,7 @@ class C:
 
 1. 说到底，Python 的模块是什么？
 
-   
+   模块就是程序。没错，所谓模块就是平时我们写的任何代码，然后保存的每一个“.py”结尾的文件，都是一个独立的模块。
 
 2. 请问我如何在另外一个源文件 test.py 里边使用 hello.py 的 hi() 函数呢？
 
@@ -12560,11 +12558,22 @@ class C:
    12
    ```
 
+   ```
+   import hello as h
+   h.hi()
+   ```
+
    
 
 3. 你知道的总共有几种导入模块的方法
 
+   第一种：import 模块名
+   第二种：from 模块名 import 函数名
+   第三种：import 模块名 as 新名字
+
 4. 曾经我们讲过有办法阻止 from…import * 导入你的“私隐”属性，你还记得是怎么做的吗？
+
+   如果你不想模块中的某个属性被 from…import * 导入，那么你可以给你不想导入的属性名称的前边加上一个下划线（_）。不过需要注意的是，如果使用 import … 导入整个模块，或者显式地使用 import xx._oo 导入某个属性，那么这个隐藏的方法就不起作用了。
 
 5. 倘若有 a.py 和 b.py 两个文件，内容如下：
 
@@ -12576,7 +12585,6 @@ class C:
    # b.py
    def sayHi():
        print("嗨，我是 B 模块~")
-   1234567
    ```
 
    那么我在 test.py 文件中执行以下操作，会打印什么结果？
@@ -12588,10 +12596,9 @@ class C:
    
    sayHi()
    
-   12345
    ```
 
-   
+   会打印“嗨，我是 B 模块~”，因为第二次导入的 b 模块把 a 模块的同名函数 sayHi() 给覆盖了，这就是所谓命名空间的冲突。所以，在项目中，特别是大型项目中我们应该避免使用 from…import…，除非你非常明确不会造成命名冲突。
 
 6. 执行下边 a.py 或 b.py 任何一个文件，都会报错，请尝试解释一下此现象。
 
@@ -12616,10 +12623,30 @@ class C:
        from b import x
    ImportError: cannot import name 'x'
    
-   12345678910111213141516171819
    ```
 
+   这个是循环嵌套导入问题。无论运行 a.py 或 b.py 哪一个文件都会抛出 ImportError 异常。这是因为在执行其中某一个文件（a.py）的加载过程中，会创建模块对象并执行对应的字节码。但当执行第一个语句的时候需要导入另一个文件（from b import y），因此 CPU 会转而去加载另一个文件（b.py）。同理，执行另一个文件的第一个语句（from a import x）恰好也是需要导入之前的文件（a.py）。此时，之前的文件处于仅导入第一条语句的阶段，因此其对应的字典中并不存在 x，故抛出“ImportError: cannot import name ‘x’”异常。
 
+   解决方案是直接使用 import 语句导入：
+
+   ```python
+   # a.py
+   import b
+   
+   def x():
+   		print('x')
+   
+   # b.py
+   import a
+   
+   def y():
+       print('y')
+   
+   a.x()
+   
+   ```
+
+   
 
 ### Practice
 
@@ -12648,7 +12675,6 @@ class C:
        const.name = "FishC"
    except TypeError as Err:
        print(Err)
-   123456789101112131415161718
    ```
 
    执行后的结果是：
@@ -12658,7 +12684,6 @@ class C:
    FishC
    常量无法改变！
    常量名必须由大写字母组成！
-   1234
    ```
 
    在 const 模块中我们到底做了什么，使得这个模块这么有“魔力”呢？大家跟着小甲鱼的提示，一步步来做你就懂了：
@@ -12675,7 +12700,26 @@ class C:
    '''
    import sys
    sys.modules[__name__] = A()
-   12345
    ```
 
    呃……好像说得有点太多了，大家一定要自己动手先尝试完成哦
+
+   程序如下：
+
+   ```python
+   class Const:
+       def __setattr__(self, name, value):
+           if hasattr(self, name):
+               raise TypeError('常量无法改变！')
+           if not name.isupper():
+               raise TypeError('常量名必须由大写字母组成！')
+           super().__setattr__(name, value)
+   
+   
+   import sys
+   sys.modules[__name__] = Const()
+   ```
+
+   
+
+# 051. 模块
