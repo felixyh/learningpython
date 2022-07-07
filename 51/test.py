@@ -13,4 +13,5 @@ def test():
     print("测试，0华氏度 = %.2f摄氏度" % f2c(0))
 
 
-test()
+if __name__ == '__main__':
+    test()

@@ -12726,7 +12726,116 @@ class C:
 
 ## 知识点
 
+- 代码模块化的优势
 
+  - 代码阅读性和测试，分开更有利
+
+  - 代码的重用
+
+- `if __name__ == '__main__'`
+
+  - 举一个例子，模块中有测试代码
+
+    模块代码：test.py
+
+    ```python
+    def c2f(cel):
+        fah = cel * 1.8 + 32
+        return fah
+    
+    
+    def f2c(fah):
+        cel = (fah - 32) / 1.8
+        return cel
+    
+    
+    def test():
+        print("测试，0摄氏度 = %.2f华氏度" % c2f(0))
+        print("测试，0华氏度 = %.2f摄氏度" % f2c(0))
+    
+    
+    test()
+    ```
+
+    直接运行模块，进行测试：
+
+    ```
+    测试，0摄氏度 = 32.00华氏度
+    测试，0华氏度 = -17.78摄氏度
+    ```
+
+    
+
+    程序代码（导入模块：test）：
+
+    ```python
+    import test as tc
+    
+    print('32 摄氏度 = %.2f 华氏度' % tc.c2f(32))
+    print('32 华氏度 = %.2f 摄氏度' % tc.f2c(32))
+    ```
+
+    运行结果：（出问题了：打印了测试代码的输出）
+
+    ```
+    # 打印了测试代码的输出
+    测试，0摄氏度 = 32.00华氏度
+    测试，0华氏度 = -17.78摄氏度
+    32 摄氏度 = 89.60 华氏度
+    32 华氏度 = 0.00 摄氏度
+    ```
+
+  - 原因分析：
+
+    - 导入模块的时候，运行了模块中的测试代码：test()
+
+  - 解决方法：
+
+    使用`__name__`属性在判断是否需要运行测试代码
+
+    ```python
+    if __name__ == '__main__':
+        test()
+    ```
+
+    - 导入模块，运行主程序，在模块中调用`__name__`属性，值是模块名
+    - 直接运行模块程序，`__name__`属性，值是`'__main__'`
+
+    ```python
+    In [7]: __name__
+    Out[7]: '__main__'
+    
+    In [8]: tc.__name__
+    Out[8]: 'test'
+    ```
+
+- 搜索路径
+
+  - 推荐放置模块的位置：'/opt/homebrew/lib/python3.9/site-packages'； （不同的OS位置不一样）
+
+    ```
+    In [8]: import sys
+    
+    In [9]: sys.path
+    Out[9]: 
+    ['/opt/homebrew/bin',
+     '/opt/homebrew/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python39.zip',
+     '/opt/homebrew/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9',
+     '/opt/homebrew/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/lib-dynload',
+     '',
+     '/opt/homebrew/lib/python3.9/site-packages',
+     '/opt/homebrew/opt/python-tk@3.9/libexec']
+    ```
+
+    
+
+  - 可以添加模块路径`sys.path.append('module_path')`，以把相关的模块导入进来
+
+- 包（package）
+
+  1. 创建一个文件夹，用于存放相关的模块。文件夹的名字即包的名字；
+  2. 在文件夹中创建一个`__init__.py`的模块文件，内容可以为空；
+  3. 将相关的模块放入文件夹中
 
 
 
