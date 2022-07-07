@@ -12964,3 +12964,461 @@ class C:
    ```
 
    
+
+# 052. 模块：像个极客一样去思考
+
+## 知识点
+
+### Python的电池和充电器
+
+大家可能还不知道，在Python的社区里有句俗话：“Python自己带着电池（Batteries included）”，什么意思呢？要从Python的设计哲学说起，Python的设计哲学是：优雅、明确和简单。因此，Python开发者演变出来的哲学就是，用一种方法，最好是只有一种方法来做一件事。虽然小甲鱼常常鼓励大家多思考，条条大路通罗马，那是为了训练大家的发散性思维，但是在正式编程中，如果有完善、并且经过严密测试过的模块可以直接实现，那么最好就是使用现成的模块来工作。
+
+- 所以Python附带安装的有Python标准库，一般我们说的电池就是Python标准库中的模块，这些模块都极其有用，Python标准库中包含一般任务所需要的模块，不过呢，Python标准库包含的模块有数100个之多，一个个单独来讲那着实是不科学的，所以这一讲，我们将学习如何独立的来探索模块。
+
+- 对于Python来说，学习资料其实一直都在身边，因为Python不仅带着电池，还带着充电器！，我们这里给大家分析，遇到问题，我们应该如何去找答案，其实90%的答案你都可以通过我们以下的方式来找到解决的方法。
+
+- 首先要做的就是打开Python的文档，打开IDLE->Help->Python Docs(F1)，如下:
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200129132951392.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3cxNTk3Nzg1ODQwOA==,size_16,color_FFFFFF,t_70)
+
+### 文档的基本组成部分
+
+     ※1、What’s new in Python3.8?
+     介绍了3.8有什么新的特征，新的特性，列举自Python2.0以后所以的新特性。
+    
+     ※2、Tutorial
+     是一个简易的教程，简单地介绍了python的语法
+    
+     ※3、Liberary Reference
+     Python的枕边书，这里边详细的列举了python所有内置函数和标准库各个模块的用法，非常详细，但是，你从头到尾是看不完的，当做字典来查就可以了。
+    
+     ※4、Inatalling Python Modules
+     是一个教你如何安装python第三方模块的教程
+    
+     ※5、Distuributing Python Modules
+     教你如何发布Python的第三方模块，你需要知道，Python除了标准库的几百个官方模块之外，还有一个叫做 pypi 的社区,----https://pypi.python.org/pypi, 搜集了全球Python爱好者贡献出来的模块，你自己也可以写一个模块发布到pypi社区，分享给全世界。
+    
+     ※6、language reference
+     讨论Python的语法和设计哲学
+    
+     ※7、Python setup and usage
+     谈论Python如何在不同平台上使用
+    
+     ※8、Python HOWTOs
+     针对一些特定的主题进行深入并且详细的探讨
+    
+     ※9、Extending and Embedding
+     介绍如何用 C和 C++ 来开发Python的扩展模块，还有开发对应所需要的API函数
+    
+     ※10、FAQs
+     这个是常见问题解答
+
+### PEP
+
+- PEP是Python Enhancement Proposals 的缩写，翻译过来就是Python增强建议书的意思。它是用来规范与定义Python的各种加强和延伸功能的技术规格，好让Python开发社区能有共同遵循的依据。
+
+- 每一个PEP都有一个唯一的编号，这个编号一旦给定就不会再改变。例如，PEP 3000 就是用来定义 Python 3.0 的相关技术规格；而PEP 333 则是 Python 的 Web 应用程序界面 WSGI (Web Server Gateway Interface 1.0）的规范。关于PEP 本身的相关规范定义在 PEP 1，而PEP 8 则定义了 Python 代码的风格指南。
+- 有关 PEP 的列表大家可以参考 PEP 0 ：https://www.python.org/dev/peps/
+
+### 如何利用文档和其他资源
+
+- 比如说现在需要用到timeit模块，但自己不清楚，可以通过索引和搜索去查找查看学习timeit的文档，，如下：里边有简单的使用方法、介绍，以及这个模块里边包含了哪些类，哪些函数，还有哪些变量，他们的功能以及用法，最后有个例子，大部分文档都遵循这个顺序讲解
+
+  ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200129141329859.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3cxNTk3Nzg1ODQwOA==,size_16,color_FFFFFF,t_70)
+
+
+
+- 想要快速掌握一个模块的用法，最好是使用IDLE 交互界面，首先 import 该模块，然后可以调用 __doc__属性，这样就可以查看到这个模块的简介
+
+  ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200129142044179.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3cxNTk3Nzg1ODQwOA==,size_16,color_FFFFFF,t_70)
+
+- 事实上你对于这个方法应该很熟悉了，这跟我们之间讲过的函数文档是一样的，就是写在模块最开头的那个字符串，这个字符串是带格式的，我们可以使用 print() 把这个格式打印出来。会有缩进，换行，会显得更好看一点：
+
+  ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200129142247353.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3cxNTk3Nzg1ODQwOA==,size_16,color_FFFFFF,t_70)
+
+
+
+- 然后你可能需要知道这个模块里面定义了哪些变量，哪些函数，哪些类，你可以用 dir() 内置方法把它显示出来：
+
+  ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200129142447586.png)
+
+- 显示出来的这些并不是所有的名字对我们都有用，所以我们需要过滤一些我们不需要的东西，那你可能留意到 __all__这个属性了，这个属性事实上他就是帮助我们完成过滤的过程，我们调用 __all__属性：
+
+  ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200129142620529.png)
+
+- 它回给我们的是一个列表，这个列表只有4个成员，如果你有看前面的关于 timeit 的文档的话，你会发现，Timer是一个类，timeit、repeat、default_timer 是3个接口函数。所以，我们这个 __all__ 属性显示出来的就是这个模块可以供外界调用的所有东西
+
+  这里有两点需要注意的，
+
+  - 第一个不是所有的模块都有 __all__ 属性，有 __all__ 的话，这个属性里面包含的内容就是作者希望外部调用的名字，这些函数这些类，其它的就是不希望外部调用的了。
+
+  - 第二点就是，如果一个模块设置了 __all__ 属性，那么使用 from ‘模块名’ import * 语句导入到命名空间的操作，只有 __all__ 属性这里面的名字才能被导入。例如：
+    ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200129143307985.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3cxNTk3Nzg1ODQwOA==,size_16,color_FFFFFF,t_70)
+
+    设置了__all__ 属性，只有 __all__ 属性这里面的名字才能被导入，如第一个Timer。但是如果你没有设置这个 all 属性的话，from ‘模块名’ import * 就会把所有不以下划线开头的名字都导入到当前命名空间，所以，我们建议，*在编写模块的时候，**对外提供接口函数和类都设置到 all 属性的列表中去，这样子是比较规范的做法。***
+
+
+
+-  还有一个属性叫做 __file__ 属性，这个属性是指明了该模块的源代码所在的位置
+
+  ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200129143751352.png)
+
+- 我们说过，快速提高编程能力有三大法宝
+
+  - 一个就是不断地编写代码
+
+  - 第二个就是阅读高手的代码
+
+  - 最后我们还可以使用 help() 函数，比doc属性详细一点，比官方文档简单一点，介于中间的一个帮助文档，可以快速知道各个函数的用法
+
+    ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200129144002981.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3cxNTk3Nzg1ODQwOA==,size_16,color_FFFFFF,t_70)
+
+  
+
+  
+
+## 课后作业
+
+### Quiz
+
+总共 16 道题，不上机的情况下答中 14 道以下请自觉忏悔！
+
+​      注：题目虽然简单，但有陷阱，反正这一讲也没什么要测试的，就考考大家常识^_^
+
+1. 请问以下代码会打印什么内容？
+
+   ```
+   >>> def func():
+       pass
+    
+   >>> print(type(func()))
+   
+   ```
+
+   ```
+    A. <type ‘function’>
+    B. <type ‘tuple’>
+    C. <type ‘NoneType’>
+    D. <type ‘type’>
+   ```
+
+   C
+
+2. 请问以下代码会打印什么内容？
+
+   ```
+   >>> print(type(1J))
+   
+   ```
+
+   ```
+    A. <type ‘unicode’>
+    B. <type ‘int’>
+    C. <type ‘str’>
+    D. <type ‘complex’>
+   ```
+
+   D
+
+3. 请问以下代码会打印什么内容？
+
+   ```
+   >>> print(type(lambda:None))
+   
+   ```
+
+         A. <type ‘NoneType’>
+         B. <type ‘function’>
+         C. <type ‘int’>
+         D. <type ‘tuple’>
+
+​		B
+
+4. 请问以下代码会打印什么内容？
+
+   ```
+   >>> a = [1, 2, 3, "FishC", ('a', 'b', 'c'), [], None]
+   >>> print(len(a))
+   
+   ```
+
+         A. 13
+         B. 7
+         C. 6
+         D. 5
+
+​		B
+
+5. 请问以下代码会打印什么内容？
+
+   ```
+   class A:
+       def __init__(self, x):
+           x = x + 1
+           self.v1 = x
+   
+   
+   class B(A):
+       def __init__(self, x):
+           x = x + 1
+           self.v2 = x
+    
+   >>> b = B(8)
+   >>> print("%d %d" % b.v1, b.v2)
+   
+   ```
+
+         A. 9 10
+         B. 9 9
+         C. 10 10
+         D. 抛出异常
+
+​		D
+
+6. 请问以下代码会打印什么内容？
+
+   ```
+   class A:
+       def __init__(self, x):
+           self.x = x
+           x = 666
+    
+   >>> a = A()
+   >>> a = A(888)
+   >>> a.x
+   
+   ```
+
+         A. 666
+         B. 888
+         C. None
+         D. 抛出异常
+
+​		B
+
+7. 请问以下代码会打印什么内容？
+
+   ```
+   values = [1, 1, 2, 3, 5]
+   nums = set(values)
+    
+   def checkit(num):
+       if num in nums:
+           return True
+       else:
+           return False
+    
+   for i in filter(checkit, values):
+   print(i, end=' ')
+   ```
+
+         A. 1 2 3 5
+         B. 1 1 2 3 5
+         C. 1 2 3 4 3 2 1
+         D. 抛出异常
+
+​		B
+
+8. 请问以下代码会打印什么内容？
+
+   ```
+   values = [1, 1, 2, 3, 5]
+   def transform(num):
+       return num ** 2
+    
+   for i in map(transform, values):
+       print(i, end=' ')
+   
+   ```
+
+         A. 1 1 4 9 25
+         B. 1 1 2 3 5
+         C. 0.5 0.5 1 1.5 2.5
+         D. 2 2 4 6 10
+
+​		A
+
+
+
+9. 请问以下代码会打印什么内容？
+
+   ```
+   class A:
+       def __init__(self, x):
+           self.x = x
+    
+   a = A(100)
+   a.__dict__['y'] = 50
+   print(a.y + len(a.__dict__))
+   
+   ```
+
+         A. 2
+         B. 50
+         C. 51
+         D. 52
+
+​		D
+
+10. 请问以下代码会打印什么内容？
+
+    ```
+    class A:
+        def __init__(self):
+            pass
+        def get(self):
+            print(__name__)
+     
+    >>> a = A()
+    >>> a.get()
+    
+    ```
+
+          A. A
+          B. a
+          C. __main__
+          D. _A__a
+
+​		C
+
+11. 请问以下代码会打印什么内容？
+
+    ```
+    country_counter = {}
+     
+    def addone(country):
+        if country in country_counter:
+            country_counter[country] += 1
+        else:
+            country_counter[country] = 1
+     
+    addone('China')
+    addone('Japan')
+    addone('China')
+    addone("American")
+     
+    print(len(country_counter))
+    
+    ```
+
+          A. 0
+          B. 1
+          C. 2
+          D. 3
+
+​		D		
+
+12. 请问以下代码会打印什么内容？
+
+    ```
+    dict1 = {}
+    dict1[1] = 1
+    dict1['1'] = 2
+    dict1[1.0] = 3
+     
+    result = 0
+    for each in dict1:
+    		print(dict1[each])
+        result += dict1[each]
+    
+    print(result)
+    
+    ```
+
+          A. 2
+          B. 3
+          C. 5
+          D. 6
+
+​		C； 注意 dict1[1] 和dict1[1.0]  的键值是一样的
+
+13. 请问以下代码会打印什么内容？
+
+    ```
+    def dostuff(param1, *param2):
+        print type(param2)
+     
+    dostuff('apples', 'bananas', 'cherry', 'dates')
+    
+    ```
+
+          A. <type ‘int’>
+          B. <type ‘str’>
+          C. <type ‘tuple’>
+          D. <type ‘dict’>
+
+​		C
+
+14. 请问以下代码会打印什么内容？
+
+    ```
+    class A:
+        def __init__(self, a, b, c):
+            self.x = a + b + c
+     
+    a = A(1,2,3)
+    b = getattr(a, 'x')
+    setattr(a, 'x', b+1)
+    print(a.x)
+    
+    ```
+
+          A. 1
+          B. 2
+          C. 6
+          D. 7
+
+​		D
+
+
+
+15. 请问以下代码会打印什么内容？
+
+    ```
+    list1 = [1, 2]
+    list2 = [3, 4]
+     
+    dict1 = {'1':list1, '2':list2}
+    dict2 = dict1.copy()
+     
+    dict1['1'][0] = 5
+     
+    result = dict1['1'][0] + dict2['1'][0]
+    print(result)
+    
+    ```
+
+          A. 5
+          B. 6
+          C. 8
+          D. 10
+
+​		D
+
+16. 请问以下代码会打印什么内容？
+
+    ```
+    import copy
+     
+    list1 = [1, 2]
+    list2 = [3, 4]
+     
+    dict1 = {'1':list1, '2':list2}
+    dict2 = copy.deepcopy(dict1)
+     
+    dict1['1'][0] = 5
+     
+    result = dict1['1'][0] + dict2['1'][0]
+    print(result)
+    
+    ```
+
+          A. 5
+          B. 6
+          C. 8
+          D. 10
+
+​		B	
+
+### Practice
+
